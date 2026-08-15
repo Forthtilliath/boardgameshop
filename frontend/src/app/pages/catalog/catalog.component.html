@@ -1,0 +1,33 @@
+<section class="container catalog">
+  <div class="catalog__intro">
+    <h1>Le catalogue BGS</h1>
+    <p>Des jeux de societe pour toutes les tablees, du jeu d'ambiance a la grande strategie.</p>
+  </div>
+
+  @if (loading()) {
+    <p class="catalog__status">Chargement du catalogue...</p>
+  } @else if (error()) {
+    <p class="catalog__status catalog__status--error">
+      Impossible de charger le catalogue. Verifiez que le serveur BGS est bien demarre.
+    </p>
+  } @else {
+    <div class="catalog__filters">
+      @for (category of categories(); track category) {
+        <button
+          type="button"
+          class="chip"
+          [class.chip--active]="category === selected()"
+          (click)="selectCategory(category)"
+        >
+          {{ category }}
+        </button>
+      }
+    </div>
+
+    <div class="catalog__grid">
+      @for (game of filteredGames(); track game.id) {
+        <app-game-card [game]="game" (addToCart)="addToCart($event)" />
+      }
+    </div>
+  }
+</section>

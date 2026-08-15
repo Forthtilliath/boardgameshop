@@ -1,0 +1,48 @@
+@if (game(); as g) {
+  <section class="container detail">
+    <a routerLink="/" class="detail__back">&larr; Retour au catalogue</a>
+
+    <div class="detail__grid">
+      <div class="detail__image" [style.background-image]="'url(' + g.imageUrl + ')'"></div>
+
+      <div class="detail__info">
+        <span class="detail__category">{{ g.category }}</span>
+        <h1>{{ g.name }}</h1>
+        <p class="detail__publisher">Edite par {{ g.publisher }}</p>
+
+        <p class="detail__description">{{ g.description }}</p>
+
+        <ul class="detail__facts">
+          <li><strong>Joueurs :</strong> {{ g.minPlayers }} - {{ g.maxPlayers }}</li>
+          <li><strong>Duree :</strong> {{ g.durationMinutes }} min</li>
+          <li><strong>Stock :</strong> {{ g.stock > 0 ? g.stock + ' en stock' : 'Epuise' }}</li>
+        </ul>
+
+        <div class="detail__price">{{ g.price | currency: 'EUR' }}</div>
+
+        @if (g.stock > 0) {
+          <div class="detail__actions">
+            <div class="stepper">
+              <button type="button" (click)="decrement()">-</button>
+              <span>{{ quantity() }}</span>
+              <button type="button" (click)="increment()">+</button>
+            </div>
+            <button type="button" class="btn btn--primary" (click)="addToCart()">
+              {{ added() ? 'Ajoute !' : 'Ajouter au panier' }}
+            </button>
+          </div>
+        } @else {
+          <button type="button" class="btn btn--primary" disabled>Epuise</button>
+        }
+      </div>
+    </div>
+  </section>
+} @else if (notFound()) {
+  <section class="container detail__missing">
+    <h1>Jeu introuvable</h1>
+    <p>Ce jeu n'existe pas ou plus dans notre catalogue.</p>
+    <a routerLink="/" class="btn btn--primary">Retour au catalogue</a>
+  </section>
+} @else {
+  <p class="container detail__loading">Chargement...</p>
+}

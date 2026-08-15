@@ -1,0 +1,67 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(31, 36, 33, 0.12);
+}
+
+.card__image {
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-border);
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem;
+  flex: 1;
+}
+
+.card__category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+
+.card__name {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.card__meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.card__footer {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card__price {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.card__add {
+  padding: 0.5em 1.1em;
+  font-size: 0.85rem;
+}

@@ -1,0 +1,115 @@
+.detail {
+  padding: 2rem 1.5rem 4rem;
+}
+
+.detail__missing {
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.detail__missing .btn {
+  margin-top: 1rem;
+}
+
+.detail__loading {
+  padding: 3rem 1.5rem;
+  color: var(--color-text-muted);
+}
+
+.detail__back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.detail__back:hover {
+  color: var(--color-primary);
+}
+
+.detail__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem;
+}
+
+@media (max-width: 720px) {
+  .detail__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail__image {
+  aspect-ratio: 4 / 3;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-border);
+  border-radius: var(--radius);
+}
+
+.detail__category {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+
+.detail__publisher {
+  color: var(--color-text-muted);
+  margin-top: -0.3rem;
+}
+
+.detail__description {
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.detail__facts {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+}
+
+.detail__price {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+}
+
+.detail__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.stepper button {
+  border: none;
+  background: var(--color-surface);
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.stepper button:hover {
+  background: var(--color-bg);
+}
+
+.stepper span {
+  min-width: 2rem;
+  text-align: center;
+  font-weight: 600;
+}

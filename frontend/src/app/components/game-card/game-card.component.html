@@ -1,0 +1,21 @@
+<a class="card" [routerLink]="['/jeux', game.id]">
+  <div class="card__image" [style.background-image]="'url(' + game.imageUrl + ')'"></div>
+
+  <div class="card__body">
+    <span class="card__category">{{ game.category }}</span>
+    <h3 class="card__name">{{ game.name }}</h3>
+    <p class="card__meta">{{ game.minPlayers }}–{{ game.maxPlayers }} joueurs · {{ game.durationMinutes }} min</p>
+
+    <div class="card__footer">
+      <span class="card__price">{{ game.price | currency: 'EUR' }}</span>
+      <button
+        type="button"
+        class="btn btn--primary card__add"
+        [disabled]="game.stock === 0"
+        (click)="onAddToCart($event)"
+      >
+        {{ game.stock === 0 ? 'Epuise' : 'Ajouter' }}
+      </button>
+    </div>
+  </div>
+</a>
