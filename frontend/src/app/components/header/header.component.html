@@ -1,0 +1,20 @@
+<header class="header">
+  <div class="header__inner">
+    <a routerLink="/" class="header__brand">
+      <span class="header__logo">BGS</span>
+      <span class="header__tagline">BoardGameShop</span>
+    </a>
+
+    <nav class="header__nav">
+      <a routerLink="/" routerLinkActive="header__link--active" [routerLinkActiveOptions]="{ exact: true }" class="header__link">
+        Catalogue
+      </a>
+      <a routerLink="/panier" routerLinkActive="header__link--active" class="header__link header__link--cart">
+        Panier
+        @if (itemCount() > 0) {
+          <span class="header__badge">{{ itemCount() }}</span>
+        }
+      </a>
+    </nav>
+  </div>
+</header>
