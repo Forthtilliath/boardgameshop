@@ -1,0 +1,18 @@
+@if (user(); as u) {
+  <section class="container account">
+    <h1>Mon compte</h1>
+
+    <div class="account__card">
+      <dl>
+        <dt>Nom</dt>
+        <dd>{{ u.firstName }} {{ u.lastName }}</dd>
+        <dt>Email</dt>
+        <dd>{{ u.email }}</dd>
+        <dt>Role</dt>
+        <dd>{{ u.role === 'ADMIN' ? 'Administrateur' : 'Client' }}</dd>
+      </dl>
+
+      <button type="button" class="btn btn--ghost" (click)="logout()">Se deconnecter</button>
+    </div>
+  </section>
+}
