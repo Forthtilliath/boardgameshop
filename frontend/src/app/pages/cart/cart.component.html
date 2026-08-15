@@ -1,0 +1,78 @@
+<section class="container cart">
+  @if (confirmedOrder(); as order) {
+    <div class="cart__confirmation">
+      <h1>Merci pour votre commande !</h1>
+      <p>Votre commande <strong>#{{ order.id }}</strong> est confirmee.</p>
+
+      <ul class="cart__confirmation-lines">
+        @for (line of order.lines; track line.gameId) {
+          <li>
+            {{ line.quantity }} x {{ line.gameName }}
+            <span>{{ line.lineTotal | currency: 'EUR' }}</span>
+          </li>
+        }
+      </ul>
+
+      <div class="cart__confirmation-total">
+        Total : <strong>{{ order.totalAmount | currency: 'EUR' }}</strong>
+      </div>
+
+      <a routerLink="/" class="btn btn--primary">Continuer mes achats</a>
+    </div>
+  } @else {
+    <h1>Votre panier</h1>
+
+    @if (items().length === 0) {
+      <div class="cart__empty">
+        <p>Votre panier est vide pour le moment.</p>
+        <a routerLink="/" class="btn btn--primary">Decouvrir le catalogue</a>
+      </div>
+    } @else {
+      <div class="cart__layout">
+        <ul class="cart__list">
+          @for (item of items(); track item.game.id) {
+            <li class="cart__item">
+              <div
+                class="cart__item-image"
+                [style.background-image]="'url(' + item.game.imageUrl + ')'"
+              ></div>
+
+              <div class="cart__item-info">
+                <span class="cart__item-name">{{ item.game.name }}</span>
+                <span class="cart__item-price">{{ item.game.price | currency: 'EUR' }}</span>
+              </div>
+
+              <div class="stepper">
+                <button type="button" (click)="updateQuantity(item.game.id, item.quantity - 1)">-</button>
+                <span>{{ item.quantity }}</span>
+                <button type="button" (click)="updateQuantity(item.game.id, item.quantity + 1)">+</button>
+              </div>
+
+              <span class="cart__item-total">{{ item.game.price * item.quantity | currency: 'EUR' }}</span>
+
+              <button type="button" class="cart__item-remove" (click)="remove(item.game.id)" aria-label="Retirer">
+                &times;
+              </button>
+            </li>
+          }
+        </ul>
+
+        <aside class="cart__summary">
+          <h2>Recapitulatif</h2>
+          <div class="cart__summary-row">
+            <span>Total</span>
+            <strong>{{ total() | currency: 'EUR' }}</strong>
+          </div>
+
+          @if (errorMessage(); as message) {
+            <p class="cart__error">{{ message }}</p>
+          }
+
+          <button type="button" class="btn btn--primary cart__checkout" [disabled]="submitting()" (click)="checkout()">
+            {{ submitting() ? 'Validation...' : 'Passer la commande' }}
+          </button>
+        </aside>
+      </div>
+    }
+  }
+</section>
