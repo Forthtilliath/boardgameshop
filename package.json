@@ -1,0 +1,13 @@
+{
+  "name": "boardgameshop",
+  "private": true,
+  "description": "Lance le backend Spring Boot et le frontend Angular de BGS en parallele",
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "cd backend && .\\mvnw.cmd spring-boot:run",
+    "dev:frontend": "cd frontend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
