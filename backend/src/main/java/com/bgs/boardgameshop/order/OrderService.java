@@ -6,6 +6,9 @@ import com.bgs.boardgameshop.game.GameRepository;
 import com.bgs.boardgameshop.order.dto.CreateOrderRequest;
 import com.bgs.boardgameshop.order.dto.OrderItemRequest;
 import com.bgs.boardgameshop.order.dto.OrderResponse;
+import com.bgs.boardgameshop.user.Role;
+import com.bgs.boardgameshop.user.User;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +33,9 @@ public class OrderService {
      * immediatement.
      */
     @Transactional
-    public OrderResponse createOrder(CreateOrderRequest request) {
+    public OrderResponse createOrder(CreateOrderRequest request, User currentUser) {
         Order order = Order.builder()
+                .user(currentUser)
                 .createdAt(Instant.now())
                 .status(OrderStatus.CONFIRMEE)
                 .totalAmount(BigDecimal.ZERO)
@@ -66,9 +70,17 @@ public class OrderService {
         return OrderResponse.fromEntity(saved);
     }
 
-    public OrderResponse getOrder(Long id) {
+    @Transactional(readOnly = true)
+    public OrderResponse getOrder(Long id, User currentUser) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id));
+
+        boolean isOwner = order.getUser().getId().equals(currentUser.getId());
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("Cette commande ne vous appartient pas");
+        }
+
         return OrderResponse.fromEntity(order);
     }
 }
