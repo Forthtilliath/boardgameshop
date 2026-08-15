@@ -1,0 +1,8 @@
+{
+  // Extensions recommandees pour ce workspace (Angular + Spring Boot / Java)
+  "recommendations": [
+    "angular.ng-template",
+    "vmware.vscode-spring-boot",
+    "vscjava.vscode-spring-boot-dashboard"
+  ]
+}
