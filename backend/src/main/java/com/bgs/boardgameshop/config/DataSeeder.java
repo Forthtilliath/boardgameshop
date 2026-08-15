@@ -2,26 +2,65 @@ package com.bgs.boardgameshop.config;
 
 import com.bgs.boardgameshop.game.Game;
 import com.bgs.boardgameshop.game.GameRepository;
+import com.bgs.boardgameshop.user.Role;
+import com.bgs.boardgameshop.user.User;
+import com.bgs.boardgameshop.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 /**
- * Peuple le catalogue avec quelques jeux de societe au demarrage, pour avoir
- * des donnees de demonstration sans base externe.
+ * Peuple le catalogue et quelques comptes de demonstration au demarrage, pour
+ * avoir des donnees pretes a l'emploi sans base externe.
  */
 @Component
 public class DataSeeder implements CommandLineRunner {
 
     private final GameRepository gameRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(GameRepository gameRepository) {
+    public DataSeeder(GameRepository gameRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
+        seedUsers();
+        seedGames();
+    }
+
+    private void seedUsers() {
+        if (userRepository.count() > 0) {
+            return;
+        }
+
+        userRepository.saveAll(java.util.List.of(
+                User.builder()
+                        .email("admin@bgs.fr")
+                        .passwordHash(passwordEncoder.encode("admin1234"))
+                        .firstName("Admin")
+                        .lastName("BGS")
+                        .role(Role.ADMIN)
+                        .createdAt(Instant.now())
+                        .build(),
+                User.builder()
+                        .email("user@bgs.fr")
+                        .passwordHash(passwordEncoder.encode("user1234"))
+                        .firstName("Jean")
+                        .lastName("Dupont")
+                        .role(Role.USER)
+                        .createdAt(Instant.now())
+                        .build()
+        ));
+    }
+
+    private void seedGames() {
         if (gameRepository.count() > 0) {
             return;
         }
