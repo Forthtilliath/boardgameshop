@@ -1,8 +1,9 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { OrderResponse } from '../../models/order.model';
+import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 
@@ -15,6 +16,8 @@ import { OrderService } from '../../services/order.service';
 export class CartComponent {
   private readonly cartService = inject(CartService);
   private readonly orderService = inject(OrderService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly items = this.cartService.items;
   readonly total = this.cartService.total;
@@ -34,6 +37,11 @@ export class CartComponent {
   checkout(): void {
     const items = this.cartService.items();
     if (items.length === 0) {
+      return;
+    }
+
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/connexion'], { queryParams: { returnUrl: '/panier' } });
       return;
     }
 

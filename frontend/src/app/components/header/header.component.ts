@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
+import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -11,6 +12,15 @@ import { CartService } from '../../services/cart.service';
 })
 export class HeaderComponent {
   private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly itemCount = this.cartService.itemCount;
+  readonly isAuthenticated = this.authService.isAuthenticated;
+  readonly currentUser = this.authService.currentUser;
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigateByUrl('/');
+  }
 }

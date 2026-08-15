@@ -15,6 +15,17 @@
           <span class="header__badge">{{ itemCount() }}</span>
         }
       </a>
+
+      @if (isAuthenticated()) {
+        <a routerLink="/mon-compte" routerLinkActive="header__link--active" class="header__link">
+          {{ currentUser()?.firstName }}
+        </a>
+        <button type="button" class="header__link header__logout" (click)="logout()">Deconnexion</button>
+      } @else {
+        <a routerLink="/connexion" routerLinkActive="header__link--active" class="header__link">
+          Connexion
+        </a>
+      }
     </nav>
   </div>
 </header>
