@@ -14,6 +14,11 @@ export class TagService {
     return this.http.get<Tag[]>(this.baseUrl);
   }
 
+  /** Liste publique, utilisee par les filtres du catalogue (pas besoin d'etre admin). */
+  getPublicTags(): Observable<Tag[]> {
+    return this.http.get<Tag[]>(`${environment.apiUrl}/tags`);
+  }
+
   createTag(name: string): Observable<Tag> {
     return this.http.post<Tag>(this.baseUrl, { name });
   }
