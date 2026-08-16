@@ -20,6 +20,8 @@ export interface Game {
   onSale: boolean;
   preorder: boolean;
   tags: Tag[];
+  reviewsAverage: number | null;
+  reviewsCount: number;
 }
 
 /** Payload envoye par le dashboard admin pour creer/modifier un jeu. */

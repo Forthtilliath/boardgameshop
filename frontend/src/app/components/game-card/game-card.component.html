@@ -23,6 +23,9 @@
     <span class="card__category">{{ game.category }}</span>
     <h3 class="card__name">{{ game.name }}</h3>
     <p class="card__meta">{{ game.minPlayers }}–{{ game.maxPlayers }} joueurs · {{ game.durationMinutes }} min</p>
+    @if (game.reviewsCount > 0) {
+      <p class="card__rating">&starf; {{ game.reviewsAverage | number: '1.1-1' }} ({{ game.reviewsCount }})</p>
+    }
 
     <div class="card__footer">
       <span class="card__price">

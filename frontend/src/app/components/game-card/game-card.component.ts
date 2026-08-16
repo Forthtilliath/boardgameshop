@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, inject,Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -8,7 +8,7 @@ import { FavoriteService } from '../../services/favorite.service';
 
 @Component({
   selector: 'app-game-card',
-  imports: [RouterLink, CurrencyPipe],
+  imports: [RouterLink, CurrencyPipe, DecimalPipe],
   templateUrl: './game-card.component.html',
   styleUrl: './game-card.component.scss'
 })
