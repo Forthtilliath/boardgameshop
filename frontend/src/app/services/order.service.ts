@@ -13,4 +13,8 @@ export class OrderService {
   createOrder(request: CreateOrderRequest): Observable<OrderResponse> {
     return this.http.post<OrderResponse>(this.baseUrl, request);
   }
+
+  getOrder(id: number): Observable<OrderResponse> {
+    return this.http.get<OrderResponse>(`${this.baseUrl}/${id}`);
+  }
 }
