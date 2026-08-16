@@ -1,0 +1,47 @@
+<section class="container checkout">
+  <h1>Paiement</h1>
+
+  <div class="checkout__layout">
+    <div class="checkout__payment">
+      @if (loading()) {
+        <p class="checkout__status">Preparation du paiement...</p>
+      }
+
+      @if (errorMessage(); as message) {
+        <p class="checkout__error">{{ message }}</p>
+      }
+
+      <div [class.checkout__form--hidden]="loading()">
+        <div #paymentElement class="checkout__element"></div>
+
+        <button
+          type="button"
+          class="btn btn--primary checkout__submit"
+          [disabled]="loading() || submitting()"
+          (click)="submit()"
+        >
+          {{ submitting() ? 'Validation...' : 'Payer ' + (total() | currency: 'EUR') }}
+        </button>
+      </div>
+
+      <p class="checkout__hint">
+        Mode test Stripe : carte <strong>4242 4242 4242 4242</strong>, date future, CVC quelconque.
+      </p>
+    </div>
+
+    <aside class="checkout__summary">
+      <h2>Recapitulatif</h2>
+      <ul>
+        @for (item of items(); track item.game.id) {
+          <li>
+            {{ item.quantity }} x {{ item.game.name }}
+            <span>{{ item.game.price * item.quantity | currency: 'EUR' }}</span>
+          </li>
+        }
+      </ul>
+      <div class="checkout__total">
+        Total <strong>{{ total() | currency: 'EUR' }}</strong>
+      </div>
+    </aside>
+  </div>
+</section>

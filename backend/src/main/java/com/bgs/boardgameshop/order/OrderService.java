@@ -27,17 +27,16 @@ public class OrderService {
     }
 
     /**
-     * Cree une commande a partir du panier envoye par le client, decremente le
-     * stock des jeux commandes et retourne la confirmation. Le site etant
-     * fictif, aucun paiement reel n'est effectue : la commande est confirmee
-     * immediatement.
+     * Cree une commande a partir du panier envoye par le client et decremente
+     * (reserve) le stock des jeux commandes. La commande reste EN_ATTENTE_PAIEMENT
+     * jusqu'a confirmation du paiement Stripe (voir markAsPaid/markAsFailed).
      */
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest request, User currentUser) {
         Order order = Order.builder()
                 .user(currentUser)
                 .createdAt(Instant.now())
-                .status(OrderStatus.CONFIRMEE)
+                .status(OrderStatus.EN_ATTENTE_PAIEMENT)
                 .totalAmount(BigDecimal.ZERO)
                 .build();
 
@@ -72,6 +71,15 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderResponse getOrder(Long id, User currentUser) {
+        return OrderResponse.fromEntity(getOwnedOrder(id, currentUser));
+    }
+
+    /**
+     * Recupere la commande si elle appartient a l'utilisateur (ou s'il est admin),
+     * pour usage interne (ex : PaymentService avant de creer un Payment Intent).
+     */
+    @Transactional(readOnly = true)
+    public Order getOwnedOrder(Long id, User currentUser) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id));
 
@@ -81,6 +89,44 @@ public class OrderService {
             throw new AccessDeniedException("Cette commande ne vous appartient pas");
         }
 
-        return OrderResponse.fromEntity(order);
+        return order;
+    }
+
+    @Transactional
+    public void attachPaymentIntent(Order order, String paymentIntentId) {
+        order.setStripePaymentIntentId(paymentIntentId);
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public void markAsPaid(String paymentIntentId) {
+        Order order = findByPaymentIntentId(paymentIntentId);
+        order.setStatus(OrderStatus.PAYEE);
+        orderRepository.save(order);
+    }
+
+    /**
+     * Le paiement a echoue : la commande est marquee ECHOUEE et le stock
+     * reserve a la creation de la commande est restitue.
+     */
+    @Transactional
+    public void markAsFailed(String paymentIntentId) {
+        Order order = findByPaymentIntentId(paymentIntentId);
+        order.setStatus(OrderStatus.ECHOUEE);
+
+        for (OrderLine line : order.getLines()) {
+            gameRepository.findById(line.getGameId()).ifPresent(game -> {
+                game.setStock(game.getStock() + line.getQuantity());
+                gameRepository.save(game);
+            });
+        }
+
+        orderRepository.save(order);
+    }
+
+    private Order findByPaymentIntentId(String paymentIntentId) {
+        return orderRepository.findByStripePaymentIntentId(paymentIntentId)
+                .orElseThrow(() -> new OrderNotFoundException(
+                        "Aucune commande associee au paiement " + paymentIntentId));
     }
 }

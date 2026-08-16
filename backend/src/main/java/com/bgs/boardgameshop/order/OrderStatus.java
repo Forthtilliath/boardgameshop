@@ -1,9 +1,11 @@
 package com.bgs.boardgameshop.order;
 
 /**
- * Statut d'une commande. Le site etant fictif, il n'y a pas de vrai paiement :
- * une commande est confirmee des sa creation.
+ * Cycle de vie d'une commande, pilote par le paiement Stripe (mode test).
  */
 public enum OrderStatus {
-    CONFIRMEE
+    EN_ATTENTE_PAIEMENT,
+    PAYEE,
+    ECHOUEE,
+    ANNULEE
 }
