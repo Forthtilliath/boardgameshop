@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -89,4 +90,9 @@ public class Game {
     @Builder.Default
     @Column(nullable = false)
     private Integer reviewsCount = 0;
+
+    /** Jeu de base si cette entrée est une extension (voir GameService#getRelatedGames). */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "base_game_id")
+    private Game baseGame;
 }

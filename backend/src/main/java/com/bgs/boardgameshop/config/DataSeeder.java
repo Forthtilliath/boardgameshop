@@ -61,6 +61,7 @@ public class DataSeeder implements CommandLineRunner {
         seedUsers();
         Map<String, Tag> tags = seedTags();
         seedGames(tags);
+        linkExpansions();
         seedOrderAndReviews();
     }
 
@@ -1430,8 +1431,86 @@ public class DataSeeder implements CommandLineRunner {
                         .stock(8)
                         .minAge(12)
                         .releaseDate(today.minusYears(9))
+                        .build(),
+                Game.builder()
+                        .name("Kingdomino")
+                        .description("Assemblez vos dominos royaume après royaume pour bâtir le plus prospère des territoires.")
+                        .price(new BigDecimal("24.90"))
+                        .category("Famille")
+                        .imageUrl("https://cf.geekdo-images.com/c0m3gwZTcfKoLI63ASio8g__itemrep/img/HBQW09mf1nlYLGF4jmB9jfm4_EI=/fit-in/246x300/filters:strip_icc()/pic8443569.png")
+                        .publisher("Blue Orange")
+                        .minPlayers(2).maxPlayers(4).durationMinutes(20)
+                        .stock(28)
+                        .minAge(8)
+                        .releaseDate(today.minusYears(10))
+                        .tags(Set.of(tags.get("Pose de tuiles")))
+                        .build(),
+                Game.builder()
+                        .name("Sagrada")
+                        .description("Composez un vitrail à partir de dés colorés, en respectant des contraintes de couleur et de valeur.")
+                        .price(new BigDecimal("34.90"))
+                        .category("Stratégie")
+                        .imageUrl("https://cf.geekdo-images.com/77OxPP4ckbOgK9sPg-6KDw__itemrep/img/83w34rcD6VctDmBqAj6VmcTs6eg=/fit-in/246x300/filters:strip_icc()/pic9374520.png")
+                        .publisher("Floodgate Games")
+                        .minPlayers(1).maxPlayers(4).durationMinutes(45)
+                        .stock(20)
+                        .minAge(14)
+                        .releaseDate(today.minusYears(9))
+                        .tags(Set.of(tags.get("Abstrait"), tags.get("Dés")))
+                        .build(),
+                Game.builder()
+                        .name("Wavelength")
+                        .description("Devinez où se situe le curseur sur une échelle, en interprétant l'indice donné par votre coéquipier.")
+                        .price(new BigDecimal("29.90"))
+                        .category("Party Game")
+                        .imageUrl("https://cf.geekdo-images.com/z4fbPdmJg_5yphJEvql4ZA__itemrep/img/Dnjsh4DWMkiZBsPszNWs8bqtvGY=/fit-in/246x300/filters:strip_icc()/pic4552862.png")
+                        .publisher("Palm Court")
+                        .minPlayers(2).maxPlayers(12).durationMinutes(45)
+                        .stock(24)
+                        .minAge(14)
+                        .releaseDate(today.minusYears(7))
                         .build()
         ));
+    }
+
+    /**
+     * Relie chaque extension a son jeu de base (voir GameService#getRelatedGames),
+     * par nom plutot que par reference directe pour ne pas restructurer seedGames().
+     */
+    private void linkExpansions() {
+        List<Game> games = gameRepository.findAll();
+        if (games.stream().anyMatch(g -> g.getBaseGame() != null)) {
+            return;
+        }
+
+        Map<String, Game> byName = games.stream().collect(Collectors.toMap(Game::getName, g -> g));
+        Map<String, String> expansionToBase = Map.ofEntries(
+                Map.entry("Catan: Seafarers", "Catane"),
+                Map.entry("Catan: Cities & Knights", "Catane"),
+                Map.entry("Catan: 5-6 Player Expansion", "Catane"),
+                Map.entry("Carcassonne: The River", "Carcassonne"),
+                Map.entry("Carcassonne: Inns & Cathedrals", "Carcassonne"),
+                Map.entry("7 Wonders: Leaders", "7 Wonders"),
+                Map.entry("Terraforming Mars: Prelude", "Terraforming Mars"),
+                Map.entry("Wingspan: European Expansion", "Wingspan"),
+                Map.entry("Splendor: Cities of Splendor", "Splendor"),
+                Map.entry("Pandemic: On the Brink", "Pandemic"),
+                Map.entry("Nemesis: Lockdown", "Nemesis"),
+                Map.entry("Dune: Imperium – Uprising", "Dune: Imperium"),
+                Map.entry("Dominion: Intrigue", "Dominion"),
+                Map.entry("Concordia Venus", "Concordia"),
+                Map.entry("Too Many Bones: Undertow", "Too Many Bones"),
+                Map.entry("Aeon's End: War Eternal", "Aeon's End")
+        );
+
+        expansionToBase.forEach((expansionName, baseName) -> {
+            Game expansion = byName.get(expansionName);
+            Game base = byName.get(baseName);
+            if (expansion != null && base != null) {
+                expansion.setBaseGame(base);
+                gameRepository.save(expansion);
+            }
+        });
     }
 
     /**
