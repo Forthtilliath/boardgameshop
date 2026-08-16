@@ -1,0 +1,15 @@
+<section class="container favorites">
+  <h1>Mes favoris</h1>
+
+  @if (loading()) {
+    <p class="favorites__status">Chargement...</p>
+  } @else if (games().length === 0) {
+    <p class="favorites__status">Vous n'avez pas encore ajoute de favori.</p>
+  } @else {
+    <div class="favorites__grid">
+      @for (game of games(); track game.id) {
+        <app-game-card [game]="game" (addToCart)="addToCart($event)" />
+      }
+    </div>
+  }
+</section>

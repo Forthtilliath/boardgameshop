@@ -1,6 +1,7 @@
 package com.bgs.boardgameshop.admin;
 
 import com.bgs.boardgameshop.admin.dto.AdminGameRequest;
+import com.bgs.boardgameshop.game.GameFilter;
 import com.bgs.boardgameshop.game.GameResponse;
 import com.bgs.boardgameshop.game.GameService;
 import jakarta.validation.Valid;
@@ -31,7 +32,7 @@ public class AdminGameController {
 
     @GetMapping
     public List<GameResponse> getGames() {
-        return gameService.getGames(null);
+        return gameService.getGames(GameFilter.empty());
     }
 
     @PostMapping

@@ -1,5 +1,23 @@
 <a class="card" [routerLink]="['/jeux', game.id]">
-  <div class="card__image" [style.background-image]="'url(' + game.imageUrl + ')'"></div>
+  <div class="card__image" [style.background-image]="'url(' + game.imageUrl + ')'">
+    @if (game.onSale) {
+      <span class="card__badge card__badge--accent">-{{ game.discountPercent }}%</span>
+    } @else if (game.preorder) {
+      <span class="card__badge">Precommande</span>
+    }
+
+    @if (isAuthenticated()) {
+      <button
+        type="button"
+        class="card__favorite"
+        [class.card__favorite--active]="isFavorite()"
+        (click)="onToggleFavorite($event)"
+        [attr.aria-label]="isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+      >
+        {{ isFavorite() ? '♥' : '♡' }}
+      </button>
+    }
+  </div>
 
   <div class="card__body">
     <span class="card__category">{{ game.category }}</span>
@@ -7,7 +25,12 @@
     <p class="card__meta">{{ game.minPlayers }}–{{ game.maxPlayers }} joueurs · {{ game.durationMinutes }} min</p>
 
     <div class="card__footer">
-      <span class="card__price">{{ game.price | currency: 'EUR' }}</span>
+      <span class="card__price">
+        @if (game.onSale) {
+          <span class="card__price-original">{{ game.price | currency: 'EUR' }}</span>
+        }
+        {{ game.finalPrice | currency: 'EUR' }}
+      </span>
       <button
         type="button"
         class="btn btn--primary card__add"
