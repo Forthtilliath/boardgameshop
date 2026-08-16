@@ -4,6 +4,12 @@ import com.bgs.boardgameshop.game.Game;
 import com.bgs.boardgameshop.game.GameRepository;
 import com.bgs.boardgameshop.game.Tag;
 import com.bgs.boardgameshop.game.TagRepository;
+import com.bgs.boardgameshop.order.Order;
+import com.bgs.boardgameshop.order.OrderLine;
+import com.bgs.boardgameshop.order.OrderRepository;
+import com.bgs.boardgameshop.order.OrderStatus;
+import com.bgs.boardgameshop.review.Review;
+import com.bgs.boardgameshop.review.ReviewRepository;
 import com.bgs.boardgameshop.user.Role;
 import com.bgs.boardgameshop.user.User;
 import com.bgs.boardgameshop.user.UserRepository;
@@ -30,17 +36,23 @@ public class DataSeeder implements CommandLineRunner {
     private final GameRepository gameRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final ReviewRepository reviewRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataSeeder(
             GameRepository gameRepository,
             TagRepository tagRepository,
             UserRepository userRepository,
+            OrderRepository orderRepository,
+            ReviewRepository reviewRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.gameRepository = gameRepository;
         this.tagRepository = tagRepository;
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.reviewRepository = reviewRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -49,6 +61,7 @@ public class DataSeeder implements CommandLineRunner {
         seedUsers();
         Map<String, Tag> tags = seedTags();
         seedGames(tags);
+        seedOrderAndReviews();
     }
 
     private void seedUsers() {
@@ -265,5 +278,76 @@ public class DataSeeder implements CommandLineRunner {
                         .tags(Set.of(tags.get("Pose de tuiles")))
                         .build()
         ));
+    }
+
+    /**
+     * Une commande livree + quelques avis, pour que la page d'accueil (avis
+     * recents, top ventes) ne soit pas vide au premier demarrage.
+     */
+    private void seedOrderAndReviews() {
+        if (orderRepository.count() > 0) {
+            return;
+        }
+
+        User buyer = userRepository.findByEmail("user@bgs.fr")
+                .orElseThrow(() -> new IllegalStateException("Utilisateur de demo introuvable"));
+        List<Game> games = gameRepository.findAll();
+        Game catane = findByName(games, "Catane");
+        Game pandemic = findByName(games, "Pandemic");
+        Game azul = findByName(games, "Azul");
+
+        Order order = Order.builder()
+                .user(buyer)
+                .createdAt(Instant.now().minus(5, ChronoUnit.DAYS))
+                .status(OrderStatus.LIVREE)
+                .totalAmount(BigDecimal.ZERO)
+                .build();
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (Game game : List.of(catane, pandemic, azul)) {
+            OrderLine line = OrderLine.builder()
+                    .gameId(game.getId())
+                    .gameName(game.getName())
+                    .unitPrice(game.getPrice())
+                    .quantity(1)
+                    .build();
+            order.addLine(line);
+            total = total.add(line.getLineTotal());
+        }
+        order.setTotalAmount(total);
+        orderRepository.save(order);
+
+        reviewRepository.saveAll(List.of(
+                Review.builder()
+                        .game(catane).user(buyer).rating(5)
+                        .comment("Un classique indemodable, parfait pour recevoir en famille !")
+                        .createdAt(Instant.now().minus(4, ChronoUnit.DAYS))
+                        .build(),
+                Review.builder()
+                        .game(pandemic).user(buyer).rating(4)
+                        .comment("Tres bon jeu cooperatif, tendu jusqu'a la derniere carte.")
+                        .createdAt(Instant.now().minus(3, ChronoUnit.DAYS))
+                        .build(),
+                Review.builder()
+                        .game(azul).user(buyer).rating(5)
+                        .comment("Magnifique et addictif, on ne s'en lasse pas.")
+                        .createdAt(Instant.now().minus(2, ChronoUnit.DAYS))
+                        .build()
+        ));
+
+        for (Game game : List.of(catane, pandemic, azul)) {
+            List<Review> gameReviews = reviewRepository.findByGame_IdOrderByCreatedAtDesc(game.getId());
+            double average = gameReviews.stream().mapToInt(Review::getRating).average().orElse(0);
+            game.setReviewsAverage(average);
+            game.setReviewsCount(gameReviews.size());
+            gameRepository.save(game);
+        }
+    }
+
+    private Game findByName(List<Game> games, String name) {
+        return games.stream()
+                .filter(game -> game.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Jeu introuvable dans le seed : " + name));
     }
 }
