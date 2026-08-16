@@ -28,12 +28,12 @@
       Total : <strong>{{ o.totalAmount | currency: 'EUR' }}</strong>
     </div>
 
-    <a routerLink="/" class="btn btn--primary">Continuer mes achats</a>
+    <a routerLink="/jeux" class="btn btn--primary">Continuer mes achats</a>
   </section>
 } @else if (notFound()) {
   <section class="container confirmation confirmation--missing">
     <h1>Commande introuvable</h1>
-    <a routerLink="/" class="btn btn--primary">Retour au catalogue</a>
+    <a routerLink="/jeux" class="btn btn--primary">Retour au catalogue</a>
   </section>
 } @else {
   <p class="container confirmation__loading">Chargement...</p>
