@@ -1,0 +1,36 @@
+<h1>Tableau de bord</h1>
+
+@if (stats(); as s) {
+  <div class="stats__tiles">
+    <div class="tile">
+      <span class="tile__label">Chiffre d'affaires</span>
+      <span class="tile__value">{{ s.totalRevenue | currency: 'EUR' }}</span>
+    </div>
+    <div class="tile">
+      <span class="tile__label">Commandes payees</span>
+      <span class="tile__value">{{ s.totalOrders }}</span>
+    </div>
+  </div>
+
+  <section class="chart-card">
+    <h2>Top des ventes</h2>
+
+    @if (s.topSellingGames.length === 0) {
+      <p class="stats__status">Pas encore de vente enregistree.</p>
+    } @else {
+      <div class="bar-chart">
+        @for (game of s.topSellingGames; track game.gameId) {
+          <div class="bar-row" [attr.title]="game.gameName + ' : ' + game.quantitySold + ' vendu(s), ' + (game.revenue | currency: 'EUR')">
+            <span class="bar-row__label">{{ game.gameName }}</span>
+            <div class="bar-row__track">
+              <div class="bar-row__fill" [style.width.%]="barWidth(game.quantitySold)"></div>
+            </div>
+            <span class="bar-row__value">{{ game.quantitySold }}</span>
+          </div>
+        }
+      </div>
+    }
+  </section>
+} @else {
+  <p class="stats__status">Chargement des statistiques...</p>
+}

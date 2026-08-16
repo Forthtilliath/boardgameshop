@@ -1,0 +1,20 @@
+<div class="container admin">
+  <nav class="admin__nav">
+    <a routerLink="/admin" routerLinkActive="admin__link--active" [routerLinkActiveOptions]="{ exact: true }" class="admin__link">
+      Stats
+    </a>
+    <a routerLink="/admin/jeux" routerLinkActive="admin__link--active" class="admin__link">
+      Jeux
+    </a>
+    <a routerLink="/admin/commandes" routerLinkActive="admin__link--active" class="admin__link">
+      Commandes
+    </a>
+    <a routerLink="/admin/utilisateurs" routerLinkActive="admin__link--active" class="admin__link">
+      Utilisateurs
+    </a>
+  </nav>
+
+  <div class="admin__content">
+    <router-outlet />
+  </div>
+</div>
