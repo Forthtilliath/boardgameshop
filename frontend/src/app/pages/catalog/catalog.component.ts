@@ -47,7 +47,7 @@ export class CatalogComponent {
   constructor() {
     this.tagService.getPublicTags().subscribe((tags) => { this.tags.set(tags); });
 
-    // Chips de categorie derivees du catalogue complet (independant des filtres actifs).
+    // Chips de catégorie dérivées du catalogue complet (indépendant des filtres actifs).
     this.gameService.getGames().subscribe((games) => {
       this.categories.set(['Toutes', ...new Set(games.map((g) => g.category))]);
     });

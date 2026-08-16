@@ -23,7 +23,7 @@ export class AdminGameService {
   }
 
   deleteGame(id: number): Observable<void> {
-    // Seule facon de typer une reponse HTTP sans corps avec HttpClient.
+    // Seule façon de typer une réponse HTTP sans corps avec HttpClient.
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }

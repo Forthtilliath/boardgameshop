@@ -42,8 +42,8 @@ export class AuthService {
   }
 
   /**
-   * Recharge l'utilisateur courant a partir d'un token deja stocke (au demarrage
-   * de l'app). Appele une seule fois via provideAppInitializer.
+   * Recharge l'utilisateur courant à partir d'un token déjà stocké (au démarrage
+   * de l'app). Appelé une seule fois via provideAppInitializer.
    */
   restoreSession(): Observable<unknown> {
     const token = this.getToken();

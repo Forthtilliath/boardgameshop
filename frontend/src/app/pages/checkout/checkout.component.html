@@ -4,7 +4,7 @@
   <div class="checkout__layout">
     <div class="checkout__payment">
       @if (loading()) {
-        <p class="checkout__status">Preparation du paiement...</p>
+        <p class="checkout__status">Préparation du paiement...</p>
       }
 
       @if (errorMessage(); as message) {
@@ -30,7 +30,7 @@
     </div>
 
     <aside class="checkout__summary">
-      <h2>Recapitulatif</h2>
+      <h2>Récapitulatif</h2>
       <ul>
         @for (item of items(); track item.game.id) {
           <li>

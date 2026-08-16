@@ -5,7 +5,7 @@
     @if (g.onSale) {
       <span class="card__badge card__badge--accent">-{{ g.discountPercent }}%</span>
     } @else if (g.preorder) {
-      <span class="card__badge">Precommande</span>
+      <span class="card__badge">Précommande</span>
     }
 
     @if (isAuthenticated()) {
@@ -42,7 +42,7 @@
         [disabled]="g.stock === 0"
         (click)="onAddToCart($event)"
       >
-        {{ g.stock === 0 ? 'Epuise' : 'Ajouter' }}
+        {{ g.stock === 0 ? 'Épuisé' : 'Ajouter' }}
       </button>
     </div>
   </div>

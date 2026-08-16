@@ -30,7 +30,7 @@ export class AdminGamesListComponent {
   }
 
   deleteGame(game: Game): void {
-    if (!confirm(`Supprimer "${game.name}" ? Cette action est irreversible.`)) {
+    if (!confirm(`Supprimer "${game.name}" ? Cette action est irréversible.`)) {
       return;
     }
     this.adminGameService.deleteGame(game.id).subscribe(() => { this.loadGames(); });

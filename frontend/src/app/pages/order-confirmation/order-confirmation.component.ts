@@ -10,9 +10,9 @@ const POLL_INTERVAL_MS = 1500;
 const MAX_POLLS = 5;
 
 /**
- * Le paiement est confirme cote serveur de facon asynchrone par le webhook
- * Stripe : si la commande est encore EN_ATTENTE_PAIEMENT a l'affichage, on
- * reinterroge quelques fois avant d'abandonner (le webhook met generalement
+ * Le paiement est confirmé côté serveur de façon asynchrone par le webhook
+ * Stripe : si la commande est encore EN_ATTENTE_PAIEMENT à l'affichage, on
+ * réinterroge quelques fois avant d'abandonner (le webhook met généralement
  * moins d'une seconde en local via `stripe listen`).
  */
 @Component({

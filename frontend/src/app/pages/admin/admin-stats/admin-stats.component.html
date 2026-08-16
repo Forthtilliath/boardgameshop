@@ -7,7 +7,7 @@
       <span class="tile__value">{{ s.totalRevenue | currency: 'EUR' }}</span>
     </div>
     <div class="tile">
-      <span class="tile__label">Commandes payees</span>
+      <span class="tile__label">Commandes payées</span>
       <span class="tile__value">{{ s.totalOrders }}</span>
     </div>
   </div>
@@ -16,7 +16,7 @@
     <h2>Top des ventes</h2>
 
     @if (s.topSellingGames.length === 0) {
-      <p class="stats__status">Pas encore de vente enregistree.</p>
+      <p class="stats__status">Pas encore de vente enregistrée.</p>
     } @else {
       <div class="bar-chart">
         @for (game of s.topSellingGames; track game.gameId) {

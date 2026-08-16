@@ -4,7 +4,7 @@
   @if (loading()) {
     <p class="favorites__status">Chargement...</p>
   } @else if (games().length === 0) {
-    <p class="favorites__status">Vous n'avez pas encore ajoute de favori.</p>
+    <p class="favorites__status">Vous n'avez pas encore ajouté de favori.</p>
   } @else {
     <div class="favorites__grid">
       @for (game of games(); track game.id) {

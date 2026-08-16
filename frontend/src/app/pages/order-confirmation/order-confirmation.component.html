@@ -3,11 +3,11 @@
     @switch (o.status) {
       @case ('PAYEE') {
         <h1>Merci pour votre commande !</h1>
-        <p>Votre commande <strong>#{{ o.id }}</strong> est payee et confirmee.</p>
+        <p>Votre commande <strong>#{{ o.id }}</strong> est payée et confirmée.</p>
       }
       @case ('ECHOUEE') {
-        <h1>Le paiement a echoue</h1>
-        <p>Votre commande <strong>#{{ o.id }}</strong> n'a pas pu etre payee. Le stock a ete liberee.</p>
+        <h1>Le paiement a échoué</h1>
+        <p>Votre commande <strong>#{{ o.id }}</strong> n'a pas pu être payée. Le stock a été libéré.</p>
       }
       @default {
         <h1>Paiement en cours de confirmation...</h1>

@@ -41,7 +41,7 @@ export class LoginComponent {
       },
       error: (err: HttpErrorResponse) => {
         const message = (err.error as { message?: string } | null)?.message;
-        this.errorMessage.set(message ?? 'Connexion impossible. Reessayez.');
+        this.errorMessage.set(message ?? 'Connexion impossible. Réessayez.');
         this.submitting.set(false);
       }
     });

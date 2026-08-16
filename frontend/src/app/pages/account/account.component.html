@@ -8,11 +8,11 @@
         <dd>{{ u.firstName }} {{ u.lastName }}</dd>
         <dt>Email</dt>
         <dd>{{ u.email }}</dd>
-        <dt>Role</dt>
+        <dt>Rôle</dt>
         <dd>{{ u.role === 'ADMIN' ? 'Administrateur' : 'Client' }}</dd>
       </dl>
 
-      <button type="button" class="btn btn--ghost" (click)="logout()">Se deconnecter</button>
+      <button type="button" class="btn btn--ghost" (click)="logout()">Se déconnecter</button>
     </div>
   </section>
 }

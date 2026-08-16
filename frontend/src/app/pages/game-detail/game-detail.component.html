@@ -21,7 +21,7 @@
           }
         </div>
         <h1>{{ g.name }}</h1>
-        <p class="detail__publisher">Edite par {{ g.publisher }}</p>
+        <p class="detail__publisher">Édité par {{ g.publisher }}</p>
 
         @if (g.reviewsCount > 0) {
           <p class="detail__rating">
@@ -33,18 +33,18 @@
         }
 
         @if (g.preorder) {
-          <p class="detail__preorder">Precommande — sortie prevue le {{ g.releaseDate }}</p>
+          <p class="detail__preorder">Précommande — sortie prévue le {{ g.releaseDate }}</p>
         }
 
         <p class="detail__description">{{ g.description }}</p>
 
         <ul class="detail__facts">
           <li><strong>Joueurs :</strong> {{ g.minPlayers }} - {{ g.maxPlayers }}</li>
-          <li><strong>Duree :</strong> {{ g.durationMinutes }} min</li>
+          <li><strong>Durée :</strong> {{ g.durationMinutes }} min</li>
           @if (g.minAge) {
-            <li><strong>Age conseille :</strong> {{ g.minAge }} ans et plus</li>
+            <li><strong>Âge conseillé :</strong> {{ g.minAge }} ans et plus</li>
           }
-          <li><strong>Stock :</strong> {{ g.stock > 0 ? g.stock + ' en stock' : 'Epuise' }}</li>
+          <li><strong>Stock :</strong> {{ g.stock > 0 ? g.stock + ' en stock' : 'Épuisé' }}</li>
         </ul>
 
         <div class="detail__price">
@@ -63,11 +63,11 @@
               <button type="button" (click)="increment()">+</button>
             </div>
             <button type="button" class="btn btn--primary" (click)="addToCart()">
-              {{ added() ? 'Ajoute !' : 'Ajouter au panier' }}
+              {{ added() ? 'Ajouté !' : 'Ajouter au panier' }}
             </button>
           </div>
         } @else {
-          <button type="button" class="btn btn--primary" disabled>Epuise</button>
+          <button type="button" class="btn btn--primary" disabled>Épuisé</button>
         }
       </div>
     </div>

@@ -10,9 +10,9 @@ import { OrderService } from '../../services/order.service';
 import { PaymentService } from '../../services/payment.service';
 
 /**
- * Cree la commande (statut EN_ATTENTE_PAIEMENT), initialise le Payment Intent
+ * Crée la commande (statut EN_ATTENTE_PAIEMENT), initialise le Payment Intent
  * Stripe correspondant, puis monte le Payment Element pour saisir la carte.
- * Le statut definitif (PAYEE/ECHOUEE) est confirme cote serveur par le webhook
+ * Le statut définitif (PAYEE/ECHOUEE) est confirmé côté serveur par le webhook
  * Stripe ; cette page redirige vers la confirmation une fois le paiement soumis.
  */
 @Component({
@@ -58,7 +58,7 @@ export class CheckoutComponent implements OnInit {
         },
         error: (err: HttpErrorResponse) => {
           const message = (err.error as { message?: string } | null)?.message;
-          this.errorMessage.set(message ?? 'Impossible de creer la commande.');
+          this.errorMessage.set(message ?? 'Impossible de créer la commande.');
           this.loading.set(false);
         }
       });
@@ -81,7 +81,7 @@ export class CheckoutComponent implements OnInit {
     });
 
     if (error) {
-      this.errorMessage.set(error.message ?? 'Le paiement a echoue. Reessayez.');
+      this.errorMessage.set(error.message ?? 'Le paiement a échoué. Réessayez.');
       this.submitting.set(false);
       return;
     }

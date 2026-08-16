@@ -23,7 +23,7 @@ import { RegisterComponent } from './pages/register/register.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'BGS - Accueil' },
   { path: 'jeux', component: CatalogComponent, title: 'BGS - Catalogue' },
-  { path: 'jeux/:id', component: GameDetailComponent, title: 'BGS - Detail du jeu' },
+  { path: 'jeux/:id', component: GameDetailComponent, title: 'BGS - Détail du jeu' },
   { path: 'panier', component: CartComponent, title: 'BGS - Panier' },
   { path: 'favoris', component: FavoritesComponent, title: 'BGS - Mes favoris', canActivate: [authGuard] },
   { path: 'commande', component: CheckoutComponent, title: 'BGS - Paiement', canActivate: [authGuard] },

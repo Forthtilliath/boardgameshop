@@ -4,7 +4,7 @@
   @if (items().length === 0) {
     <div class="cart__empty">
       <p>Votre panier est vide pour le moment.</p>
-      <a routerLink="/jeux" class="btn btn--primary">Decouvrir le catalogue</a>
+      <a routerLink="/jeux" class="btn btn--primary">Découvrir le catalogue</a>
     </div>
   } @else {
     <div class="cart__layout">
@@ -37,7 +37,7 @@
       </ul>
 
       <aside class="cart__summary">
-        <h2>Recapitulatif</h2>
+        <h2>Récapitulatif</h2>
         <div class="cart__summary-row">
           <span>Total</span>
           <strong>{{ total() | currency: 'EUR' }}</strong>

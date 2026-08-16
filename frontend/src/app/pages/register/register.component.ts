@@ -39,7 +39,7 @@ export class RegisterComponent {
       next: () => { void this.router.navigateByUrl('/'); },
       error: (err: HttpErrorResponse) => {
         const message = (err.error as { message?: string } | null)?.message;
-        this.errorMessage.set(message ?? 'Inscription impossible. Reessayez.');
+        this.errorMessage.set(message ?? 'Inscription impossible. Réessayez.');
         this.submitting.set(false);
       }
     });
