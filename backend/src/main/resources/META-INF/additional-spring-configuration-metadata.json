@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Cle secrete HMAC (Base64) utilisee pour signer et verifier les JWT."
+    },
+    {
+      "name": "jwt.expiration-minutes",
+      "type": "java.lang.Long",
+      "description": "Duree de validite d'un JWT, en minutes."
+    },
+    {
+      "name": "stripe.secret-key",
+      "type": "java.lang.String",
+      "description": "Cle secrete Stripe (sk_test_...), lue depuis la variable d'environnement STRIPE_SECRET_KEY."
+    },
+    {
+      "name": "stripe.webhook-secret",
+      "type": "java.lang.String",
+      "description": "Secret de signature du webhook Stripe (whsec_...), fourni par `stripe listen` en developpement."
+    }
+  ]
+}
