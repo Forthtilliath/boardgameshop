@@ -1,0 +1,50 @@
+<div class="admin-page__header">
+  <h1>Jeux</h1>
+  <a routerLink="/admin/jeux/nouveau" class="btn btn--primary">+ Nouveau jeu</a>
+</div>
+
+@if (loading()) {
+  <p class="admin-page__status">Chargement...</p>
+} @else {
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Nom</th>
+          <th>Categorie</th>
+          <th>Prix</th>
+          <th>Stock</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (game of games(); track game.id) {
+          <tr>
+            <td>
+              <div class="admin-table__thumb" [style.background-image]="'url(' + game.imageUrl + ')'"></div>
+            </td>
+            <td>
+              {{ game.name }}
+              @if (game.onSale) {
+                <span class="badge badge--accent">Promo</span>
+              }
+              @if (game.preorder) {
+                <span class="badge">Precommande</span>
+              }
+            </td>
+            <td>{{ game.category }}</td>
+            <td>{{ game.price | currency: 'EUR' }}</td>
+            <td>{{ game.stock === 0 ? 'Epuise' : game.stock }}</td>
+            <td class="admin-table__actions">
+              <a [routerLink]="['/admin/jeux', game.id, 'modifier']" class="btn btn--ghost">Modifier</a>
+              <button type="button" class="btn btn--ghost admin-table__delete" (click)="deleteGame(game)">
+                Supprimer
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

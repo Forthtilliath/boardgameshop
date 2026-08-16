@@ -1,0 +1,30 @@
+<h1>Utilisateurs</h1>
+
+@if (loading()) {
+  <p class="admin-page__status">Chargement...</p>
+} @else {
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+          <tr>
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="badge" [class.badge--accent]="user.role === 'ADMIN'">
+                {{ user.role === 'ADMIN' ? 'Administrateur' : 'Client' }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

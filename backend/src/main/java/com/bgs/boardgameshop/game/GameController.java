@@ -12,25 +12,19 @@ import java.util.List;
 @RequestMapping("/api/games")
 public class GameController {
 
-    private final GameRepository gameRepository;
+    private final GameService gameService;
 
-    public GameController(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @GetMapping
     public List<GameResponse> getGames(@RequestParam(required = false) String category) {
-        List<Game> games = (category == null || category.isBlank())
-                ? gameRepository.findAll()
-                : gameRepository.findByCategoryIgnoreCase(category);
-
-        return games.stream().map(GameResponse::fromEntity).toList();
+        return gameService.getGames(category);
     }
 
     @GetMapping("/{id}")
     public GameResponse getGame(@PathVariable Long id) {
-        Game game = gameRepository.findById(id)
-                .orElseThrow(() -> new GameNotFoundException(id));
-        return GameResponse.fromEntity(game);
+        return gameService.getGame(id);
     }
 }

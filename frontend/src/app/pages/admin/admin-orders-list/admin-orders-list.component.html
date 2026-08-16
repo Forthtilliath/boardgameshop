@@ -1,0 +1,48 @@
+<h1>Commandes</h1>
+
+@if (loading()) {
+  <p class="admin-page__status">Chargement...</p>
+} @else {
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Client</th>
+          <th>Total</th>
+          <th>Statut</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of orders(); track order.id) {
+          <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              {{ order.userFullName }}
+              <div class="admin-table__muted">{{ order.userEmail }}</div>
+            </td>
+            <td>{{ order.totalAmount | currency: 'EUR' }}</td>
+            <td>
+              <span class="status status--{{ order.status.toLowerCase() }}">{{ statusLabel(order.status) }}</span>
+            </td>
+            <td class="admin-table__actions">
+              @for (next of nextStatuses(order.status); track next) {
+                <button
+                  type="button"
+                  class="btn btn--ghost"
+                  [disabled]="updatingId() === order.id"
+                  (click)="updateStatus(order, next)"
+                >
+                  {{ statusLabel(next) }}
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

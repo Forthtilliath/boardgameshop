@@ -1,7 +1,10 @@
 package com.bgs.boardgameshop.common;
 
 import com.bgs.boardgameshop.game.GameNotFoundException;
+import com.bgs.boardgameshop.game.TagAlreadyExistsException;
+import com.bgs.boardgameshop.game.TagNotFoundException;
 import com.bgs.boardgameshop.order.InsufficientStockException;
+import com.bgs.boardgameshop.order.InvalidOrderStatusTransitionException;
 import com.bgs.boardgameshop.order.OrderNotFoundException;
 import com.bgs.boardgameshop.payment.OrderNotPayableException;
 import com.bgs.boardgameshop.user.EmailAlreadyUsedException;
@@ -19,7 +22,7 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({GameNotFoundException.class, OrderNotFoundException.class})
+    @ExceptionHandler({GameNotFoundException.class, OrderNotFoundException.class, TagNotFoundException.class})
     public ResponseEntity<ApiError> handleNotFound(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ApiError.of(HttpStatus.NOT_FOUND.value(), "Not Found", ex.getMessage()));
@@ -51,6 +54,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(OrderNotPayableException.class)
     public ResponseEntity<ApiError> handleOrderNotPayable(OrderNotPayableException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiError.of(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage()));
+    }
+
+    @ExceptionHandler({TagAlreadyExistsException.class, InvalidOrderStatusTransitionException.class})
+    public ResponseEntity<ApiError> handleConflict(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiError.of(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage()));
     }
