@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -19,8 +20,18 @@ public class GameController {
     }
 
     @GetMapping
-    public List<GameResponse> getGames(@RequestParam(required = false) String category) {
-        return gameService.getGames(category);
+    public List<GameResponse> getGames(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) BigDecimal priceMin,
+            @RequestParam(required = false) BigDecimal priceMax,
+            @RequestParam(required = false) Integer players,
+            @RequestParam(required = false) Integer maxDuration,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) List<Long> tags,
+            @RequestParam(required = false) String sort
+    ) {
+        GameFilter filter = new GameFilter(category, priceMin, priceMax, players, maxDuration, age, tags, sort);
+        return gameService.getGames(filter);
     }
 
     @GetMapping("/{id}")
