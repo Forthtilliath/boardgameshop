@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import type { ElementRef } from '@angular/core';
+import { Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 
 import { GameCardComponent } from '../../components/game-card/game-card.component';
 import type { Game } from '../../models/game.model';
@@ -15,6 +16,9 @@ const SORT_OPTIONS: { value: GameSort | ''; label: string }[] = [
   { value: 'price_asc', label: 'Prix croissant' },
   { value: 'price_desc', label: 'Prix decroissant' }
 ];
+
+/** Nombre de jeux affiches initialement, puis ajoutes a chaque atteinte du bas de page. */
+const PAGE_SIZE = 24;
 
 @Component({
   selector: 'app-catalog',
@@ -44,6 +48,14 @@ export class CatalogComponent {
   readonly age = signal<number | null>(null);
   readonly selectedTagIds = signal<Set<number>>(new Set());
 
+  /** Pagination cote client : le back renvoie la liste filtree complete, on n'en affiche qu'une tranche. */
+  private readonly visibleCount = signal(PAGE_SIZE);
+  readonly visibleGames = computed(() => this.games().slice(0, this.visibleCount()));
+  readonly hasMore = computed(() => this.visibleCount() < this.games().length);
+
+  private readonly sentinel = viewChild<ElementRef<HTMLDivElement>>('sentinel');
+  private observer: IntersectionObserver | null = null;
+
   constructor() {
     this.tagService.getPublicTags().subscribe((tags) => { this.tags.set(tags); });
 
@@ -53,6 +65,26 @@ export class CatalogComponent {
     });
 
     this.loadGames();
+
+    // Reobserve le repere de fin de liste a chaque fois qu'il (re)apparait dans le DOM
+    // (nouveau chargement, changement de filtres, ou epuisement de la page courante).
+    effect(() => {
+      const element = this.sentinel()?.nativeElement;
+      this.observer?.disconnect();
+      if (!element) {
+        return;
+      }
+      this.observer = new IntersectionObserver((entries) => {
+        if (entries[0]?.isIntersecting) {
+          this.showMore();
+        }
+      });
+      this.observer.observe(element);
+    });
+  }
+
+  showMore(): void {
+    this.visibleCount.update((count) => Math.min(count + PAGE_SIZE, this.games().length));
   }
 
   selectCategory(category: string): void {
@@ -113,6 +145,7 @@ export class CatalogComponent {
     this.gameService.getGames(filter).subscribe({
       next: (games) => {
         this.games.set(games);
+        this.visibleCount.set(PAGE_SIZE);
         this.loading.set(false);
       },
       error: () => {
