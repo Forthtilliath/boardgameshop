@@ -2,7 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { Game } from '../../../models/game.model';
+import type { Game } from '../../../models/game.model';
 import { AdminGameService } from '../../../services/admin-game.service';
 
 @Component({
@@ -33,6 +33,6 @@ export class AdminGamesListComponent {
     if (!confirm(`Supprimer "${game.name}" ? Cette action est irreversible.`)) {
       return;
     }
-    this.adminGameService.deleteGame(game.id).subscribe(() => this.loadGames());
+    this.adminGameService.deleteGame(game.id).subscribe(() => { this.loadGames(); });
   }
 }

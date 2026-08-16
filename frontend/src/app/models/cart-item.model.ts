@@ -1,4 +1,4 @@
-import { Game } from './game.model';
+import type { Game } from './game.model';
 
 export interface CartItem {
   game: Game;

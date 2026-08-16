@@ -1,4 +1,4 @@
-import { Tag } from './tag.model';
+import type { Tag } from './tag.model';
 
 export interface Game {
   id: number;

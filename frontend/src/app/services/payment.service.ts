@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Stripe, loadStripe } from '@stripe/stripe-js';
-import { Observable, from, shareReplay } from 'rxjs';
+import { inject,Injectable } from '@angular/core';
+import type {Stripe } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import type { Observable} from 'rxjs';
+import { from, shareReplay } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { CreatePaymentIntentRequest, PaymentIntentResponse } from '../models/payment.model';
+import type { CreatePaymentIntentRequest, PaymentIntentResponse } from '../models/payment.model';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
@@ -17,9 +19,7 @@ export class PaymentService {
    * Charge le SDK Stripe.js une seule fois (mis en cache pour le reste de la session).
    */
   getStripe(): Observable<Stripe | null> {
-    if (!this.stripePromise) {
-      this.stripePromise = from(loadStripe(environment.stripePublicKey)).pipe(shareReplay(1));
-    }
+    this.stripePromise ??= from(loadStripe(environment.stripePublicKey)).pipe(shareReplay(1));
     return this.stripePromise;
   }
 

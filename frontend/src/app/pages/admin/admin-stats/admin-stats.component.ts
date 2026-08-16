@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 
-import { AdminStats } from '../../../models/admin-stats.model';
+import type { AdminStats } from '../../../models/admin-stats.model';
 import { AdminStatsService } from '../../../services/admin-stats.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class AdminStatsComponent {
   });
 
   constructor() {
-    this.adminStatsService.getStats().subscribe((stats) => this.stats.set(stats));
+    this.adminStatsService.getStats().subscribe((stats) => { this.stats.set(stats); });
   }
 
   barWidth(quantity: number): number {

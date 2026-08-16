@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import type { Observable} from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { AuthResponse, LoginRequest, RegisterRequest } from '../models/auth.model';
-import { User } from '../models/user.model';
+import type { AuthResponse, LoginRequest, RegisterRequest } from '../models/auth.model';
+import type { User } from '../models/user.model';
 
 const TOKEN_KEY = 'bgs-token';
 
@@ -21,13 +22,13 @@ export class AuthService {
 
   register(request: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/register`, request).pipe(
-      tap((response) => this.applyAuth(response))
+      tap((response) => { this.applyAuth(response); })
     );
   }
 
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request).pipe(
-      tap((response) => this.applyAuth(response))
+      tap((response) => { this.applyAuth(response); })
     );
   }
 
@@ -51,7 +52,7 @@ export class AuthService {
     }
 
     return this.http.get<User>(`${this.baseUrl}/me`).pipe(
-      tap((user) => this.currentUserSignal.set(user)),
+      tap((user) => { this.currentUserSignal.set(user); }),
       catchError(() => {
         this.logout();
         return of(null);

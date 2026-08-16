@@ -1,12 +1,12 @@
+import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
-import { Game } from '../../models/game.model';
+import type { Game } from '../../models/game.model';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { GameService } from '../../services/game.service';
-import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-game-detail',
@@ -30,8 +30,8 @@ export class GameDetailComponent {
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.gameService.getGame(id).subscribe({
-      next: (game) => this.game.set(game),
-      error: () => this.notFound.set(true)
+      next: (game) => { this.game.set(game); },
+      error: () => { this.notFound.set(true); }
     });
   }
 
@@ -51,7 +51,7 @@ export class GameDetailComponent {
     }
     this.cartService.addToCart(game, this.quantity());
     this.added.set(true);
-    setTimeout(() => this.added.set(false), 2000);
+    setTimeout(() => { this.added.set(false); }, 2000);
   }
 
   isFavorite(): boolean {

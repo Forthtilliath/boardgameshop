@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 
-import { AdminOrderResponse, OrderStatus } from '../../../models/order.model';
+import type { AdminOrderResponse, OrderStatus } from '../../../models/order.model';
 import { AdminOrderService } from '../../../services/admin-order.service';
 
 const NEXT_STATUSES: Partial<Record<OrderStatus, OrderStatus[]>> = {
@@ -36,7 +36,10 @@ export class AdminOrdersListComponent {
   }
 
   statusLabel(status: string): string {
-    return STATUS_LABELS[status as OrderStatus] ?? status;
+    // Cast defensif : `status` vient du backend et n'est pas garanti d'etre
+    // une valeur connue de OrderStatus, meme si le typage le suppose.
+    const label = STATUS_LABELS[status as OrderStatus] as string | undefined;
+    return label ?? status;
   }
 
   nextStatuses(status: string): OrderStatus[] {
@@ -50,7 +53,7 @@ export class AdminOrdersListComponent {
         this.updatingId.set(null);
         this.loadOrders();
       },
-      error: () => this.updatingId.set(null)
+      error: () => { this.updatingId.set(null); }
     });
   }
 

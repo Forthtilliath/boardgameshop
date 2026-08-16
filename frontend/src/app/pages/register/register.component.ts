@@ -1,3 +1,4 @@
+import type { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -35,9 +36,10 @@ export class RegisterComponent {
     this.errorMessage.set(null);
 
     this.authService.register(this.form.getRawValue()).subscribe({
-      next: () => this.router.navigateByUrl('/'),
-      error: (err) => {
-        this.errorMessage.set(err?.error?.message ?? 'Inscription impossible. Reessayez.');
+      next: () => { void this.router.navigateByUrl('/'); },
+      error: (err: HttpErrorResponse) => {
+        const message = (err.error as { message?: string } | null)?.message;
+        this.errorMessage.set(message ?? 'Inscription impossible. Reessayez.');
         this.submitting.set(false);
       }
     });

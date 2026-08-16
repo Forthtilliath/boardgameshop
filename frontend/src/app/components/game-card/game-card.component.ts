@@ -1,8 +1,8 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, inject,Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { Game } from '../../models/game.model';
+import type { Game } from '../../models/game.model';
 import { AuthService } from '../../services/auth.service';
 import { FavoriteService } from '../../services/favorite.service';
 

@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject,Injectable } from '@angular/core';
+import type { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { AdminStats } from '../models/admin-stats.model';
+import type { AdminStats } from '../models/admin-stats.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminStatsService {

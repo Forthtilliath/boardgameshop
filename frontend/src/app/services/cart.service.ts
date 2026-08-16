@@ -1,7 +1,7 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 
-import { CartItem } from '../models/cart-item.model';
-import { Game } from '../models/game.model';
+import type { CartItem } from '../models/cart-item.model';
+import type { Game } from '../models/game.model';
 
 const STORAGE_KEY = 'bgs-cart';
 
