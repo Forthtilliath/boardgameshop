@@ -15,10 +15,58 @@
 }
 
 .card__image {
+  position: relative;
   height: 160px;
   background-size: cover;
   background-position: center;
   background-color: var(--color-border);
+}
+
+.card__badge {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+}
+
+.card__badge--accent {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.card__favorite {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card__favorite--active {
+  color: var(--color-accent);
+}
+
+.card__price-original {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  margin-right: 0.35rem;
 }
 
 .card__body {
