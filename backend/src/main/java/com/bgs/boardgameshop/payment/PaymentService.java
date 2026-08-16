@@ -24,9 +24,9 @@ public class PaymentService {
     }
 
     /**
-     * Cree (ou reutilise) un Payment Intent Stripe pour une commande en attente
-     * de paiement, et retourne le client secret necessaire a Stripe Elements
-     * cote frontend.
+     * Crée (ou réutilise) un Payment Intent Stripe pour une commande en attente
+     * de paiement, et retourne le client secret nécessaire à Stripe Elements
+     * côté frontend.
      */
     public PaymentIntentResponse createPaymentIntent(Long orderId, User currentUser) throws StripeException {
         Order order = orderService.getOwnedOrder(orderId, currentUser);
@@ -40,7 +40,7 @@ public class PaymentService {
                 .longValueExact();
 
         // Carte bancaire uniquement : pas de Klarna/Bancontact/etc, inutile pour
-        // une petite boutique de jeux de societe et ca simplifie le formulaire.
+        // une petite boutique de jeux de société et ça simplifie le formulaire.
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount(amountInCents)
                 .setCurrency("eur")
@@ -55,8 +55,8 @@ public class PaymentService {
     }
 
     /**
-     * Traite un evenement webhook Stripe deja verifie (signature validee par
-     * le controller). Les evenements inconnus/non pertinents sont ignores.
+     * Traite un événement webhook Stripe déjà vérifié (signature validée par
+     * le controller). Les événements inconnus/non pertinents sont ignorés.
      */
     public void handleWebhookEvent(Event event) {
         StripeObject stripeObject = event.getDataObjectDeserializer().getObject().orElse(null);
@@ -68,7 +68,7 @@ public class PaymentService {
         switch (event.getType()) {
             case "payment_intent.succeeded" -> orderService.markAsPaid(paymentIntent.getId());
             case "payment_intent.payment_failed" -> orderService.markAsFailed(paymentIntent.getId());
-            default -> { /* evenement non gere, ignore volontairement */ }
+            default -> { /* événement non géré, ignoré volontairement */ }
         }
     }
 }

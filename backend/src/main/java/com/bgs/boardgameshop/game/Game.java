@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Un jeu de societe du catalogue BGS.
+ * Un jeu de société du catalogue BGS.
  */
 @Entity
 @Table(name = "games")
@@ -62,16 +62,16 @@ public class Game {
     @Column(nullable = false)
     private Integer stock;
 
-    /** Age minimum conseille. */
+    /** Âge minimum conseillé. */
     private Integer minAge;
 
-    /** Date de sortie : dans le futur = precommande, recente = nouveaute (voir GameController). */
+    /** Date de sortie : dans le futur = précommande, récente = nouveauté (voir GameController). */
     private LocalDate releaseDate;
 
     /** Pourcentage de remise en cours (1-100), null si pas de promotion active. */
     private Integer discountPercent;
 
-    /** Fin de la promotion ; au-dela, discountPercent est ignore meme s'il est encore renseigne. */
+    /** Fin de la promotion ; au-delà, discountPercent est ignoré même s'il est encore renseigné. */
     private Instant discountEndsAt;
 
     @Builder.Default
@@ -83,7 +83,7 @@ public class Game {
     )
     private Set<Tag> tags = new HashSet<>();
 
-    /** Cache recalcule a chaque avis (voir ReviewService), pour eviter d'agreger a chaque lecture. */
+    /** Cache recalculé à chaque avis (voir ReviewService), pour éviter d'agréger à chaque lecture. */
     private Double reviewsAverage;
 
     @Builder.Default

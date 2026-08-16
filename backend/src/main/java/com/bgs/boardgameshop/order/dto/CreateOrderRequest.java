@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 public record CreateOrderRequest(
-        @NotEmpty(message = "Le panier ne peut pas etre vide")
+        @NotEmpty(message = "Le panier ne peut pas être vide")
         @Valid
         List<OrderItemRequest> items
 ) {

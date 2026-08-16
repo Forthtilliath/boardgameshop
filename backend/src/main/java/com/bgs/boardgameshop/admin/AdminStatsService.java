@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Seules les commandes ayant reellement ete payees (PAYEE, EXPEDIEE, LIVREE)
+ * Seules les commandes ayant réellement été payées (PAYEE, EXPEDIEE, LIVREE)
  * comptent dans le chiffre d'affaires et le classement des ventes.
  */
 @Service

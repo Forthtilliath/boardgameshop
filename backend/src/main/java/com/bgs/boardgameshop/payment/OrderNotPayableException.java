@@ -1,8 +1,8 @@
 package com.bgs.boardgameshop.payment;
 
 /**
- * La commande n'est plus dans un etat qui permet de lancer/reprendre un paiement
- * (deja payee, echouee ou annulee).
+ * La commande n'est plus dans un état qui permet de lancer/reprendre un paiement
+ * (déjà payée, échouée ou annulée).
  */
 public class OrderNotPayableException extends RuntimeException {
 

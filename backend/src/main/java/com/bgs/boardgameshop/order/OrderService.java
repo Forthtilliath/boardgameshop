@@ -28,9 +28,9 @@ public class OrderService {
     }
 
     /**
-     * Cree une commande a partir du panier envoye par le client et decremente
-     * (reserve) le stock des jeux commandes. La commande reste EN_ATTENTE_PAIEMENT
-     * jusqu'a confirmation du paiement Stripe (voir markAsPaid/markAsFailed).
+     * Crée une commande à partir du panier envoyé par le client et décrémente
+     * (réserve) le stock des jeux commandés. La commande reste EN_ATTENTE_PAIEMENT
+     * jusqu'à confirmation du paiement Stripe (voir markAsPaid/markAsFailed).
      */
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest request, User currentUser) {
@@ -76,8 +76,8 @@ public class OrderService {
     }
 
     /**
-     * Recupere la commande si elle appartient a l'utilisateur (ou s'il est admin),
-     * pour usage interne (ex : PaymentService avant de creer un Payment Intent).
+     * Récupère la commande si elle appartient à l'utilisateur (ou s'il est admin),
+     * pour usage interne (ex : PaymentService avant de créer un Payment Intent).
      */
     @Transactional(readOnly = true)
     public Order getOwnedOrder(Long id, User currentUser) {
@@ -107,8 +107,8 @@ public class OrderService {
     }
 
     /**
-     * Le paiement a echoue : la commande est marquee ECHOUEE et le stock
-     * reserve a la creation de la commande est restitue.
+     * Le paiement a échoué : la commande est marquée ECHOUEE et le stock
+     * réservé à la création de la commande est restitué.
      */
     @Transactional
     public void markAsFailed(String paymentIntentId) {
@@ -119,8 +119,8 @@ public class OrderService {
     }
 
     /**
-     * Liste des commandes pour le dashboard admin (toutes, ou filtrees par
-     * statut), les plus recentes en premier.
+     * Liste des commandes pour le dashboard admin (toutes, ou filtrées par
+     * statut), les plus récentes en premier.
      */
     @Transactional(readOnly = true)
     public List<Order> adminListOrders(OrderStatus statusFilter) {
@@ -131,8 +131,8 @@ public class OrderService {
 
     /**
      * Fait progresser une commande dans son cycle de vie (PAYEE -> EXPEDIEE ->
-     * LIVREE, ou annulation). Restitue le stock si la commande est annulee
-     * apres avoir ete payee.
+     * LIVREE, ou annulation). Restitue le stock si la commande est annulée
+     * après avoir été payée.
      */
     @Transactional
     public Order adminUpdateStatus(Long orderId, OrderStatus newStatus) {
@@ -172,6 +172,6 @@ public class OrderService {
     private Order findByPaymentIntentId(String paymentIntentId) {
         return orderRepository.findByStripePaymentIntentId(paymentIntentId)
                 .orElseThrow(() -> new OrderNotFoundException(
-                        "Aucune commande associee au paiement " + paymentIntentId));
+                        "Aucune commande associée au paiement " + paymentIntentId));
     }
 }

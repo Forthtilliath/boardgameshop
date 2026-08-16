@@ -43,10 +43,10 @@ public class PaymentController {
     }
 
     /**
-     * Appele directement par Stripe (pas par le frontend) : aucune authentification
-     * JWT, la securite repose sur la verification de la signature de la requete.
-     * Le corps doit rester brut (pas de desincorporation Jackson automatique)
-     * pour que cette verification soit possible.
+     * Appelé directement par Stripe (pas par le frontend) : aucune authentification
+     * JWT, la sécurité repose sur la vérification de la signature de la requête.
+     * Le corps doit rester brut (pas de désincorporation Jackson automatique)
+     * pour que cette vérification soit possible.
      */
     @PostMapping("/webhook")
     public ResponseEntity<Void> webhook(

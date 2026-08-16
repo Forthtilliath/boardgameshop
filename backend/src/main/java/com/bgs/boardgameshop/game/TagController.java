@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Liste publique des tags, utilisee par les filtres du catalogue (a ne pas
- * confondre avec AdminTagController, qui permet de creer des tags).
+ * Liste publique des tags, utilisée par les filtres du catalogue (à ne pas
+ * confondre avec AdminTagController, qui permet de créer des tags).
  */
 @RestController
 @RequestMapping("/api/tags")

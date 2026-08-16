@@ -21,8 +21,8 @@ import lombok.Setter;
 import java.time.Instant;
 
 /**
- * Avis client sur un jeu. Un seul avis par couple (utilisateur, jeu), reserve
- * aux utilisateurs ayant reellement achete ce jeu (voir ReviewService).
+ * Avis client sur un jeu. Un seul avis par couple (utilisateur, jeu), réservé
+ * aux utilisateurs ayant réellement acheté ce jeu (voir ReviewService).
  */
 @Entity
 @Table(name = "reviews", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "game_id"}))
