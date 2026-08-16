@@ -4,6 +4,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
+import { GameSliderComponent } from '../../components/game-slider/game-slider.component';
 import type { Game } from '../../models/game.model';
 import type { Review } from '../../models/review.model';
 import { AuthService } from '../../services/auth.service';
@@ -14,7 +15,7 @@ import { ReviewService } from '../../services/review.service';
 
 @Component({
   selector: 'app-game-detail',
-  imports: [RouterLink, CurrencyPipe, DatePipe, DecimalPipe, ReactiveFormsModule],
+  imports: [RouterLink, CurrencyPipe, DatePipe, DecimalPipe, ReactiveFormsModule, GameSliderComponent],
   templateUrl: './game-detail.component.html',
   styleUrl: './game-detail.component.scss'
 })
@@ -41,6 +42,8 @@ export class GameDetailComponent {
   readonly reviewError = signal<string | null>(null);
   readonly ratingScale = [1, 2, 3, 4, 5];
 
+  readonly relatedGames = signal<Game[]>([]);
+
   readonly reviewForm = this.fb.nonNullable.group({
     rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
     comment: ['']
@@ -57,6 +60,12 @@ export class GameDetailComponent {
     if (this.isAuthenticated()) {
       this.reviewService.canReview(this.gameId).subscribe((canReview) => { this.canReview.set(canReview); });
     }
+
+    this.gameService.getRelatedGames(this.gameId).subscribe((games) => { this.relatedGames.set(games); });
+  }
+
+  addRelatedToCart(game: Game): void {
+    this.cartService.addToCart(game);
   }
 
   submitReview(): void {

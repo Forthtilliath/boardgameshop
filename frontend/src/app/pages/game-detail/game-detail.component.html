@@ -72,6 +72,12 @@
       </div>
     </div>
 
+    <app-game-slider
+      title="Vous pourriez aussi aimer"
+      [games]="relatedGames()"
+      (addToCart)="addRelatedToCart($event)"
+    />
+
     <section class="reviews">
       <h2>Avis clients</h2>
 

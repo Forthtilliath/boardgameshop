@@ -29,7 +29,9 @@ public record GameResponse(
         boolean preorder,
         List<TagResponse> tags,
         Double reviewsAverage,
-        Integer reviewsCount
+        Integer reviewsCount,
+        Long baseGameId,
+        String baseGameName
 ) {
 
     public static GameResponse fromEntity(Game game) {
@@ -65,7 +67,9 @@ public record GameResponse(
                 game.getReleaseDate() != null && game.getReleaseDate().isAfter(LocalDate.now()),
                 game.getTags().stream().map(TagResponse::fromEntity).toList(),
                 game.getReviewsAverage(),
-                game.getReviewsCount()
+                game.getReviewsCount(),
+                game.getBaseGame() != null ? game.getBaseGame().getId() : null,
+                game.getBaseGame() != null ? game.getBaseGame().getName() : null
         );
     }
 }

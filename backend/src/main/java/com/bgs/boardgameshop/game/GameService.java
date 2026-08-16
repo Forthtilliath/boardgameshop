@@ -8,8 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +19,7 @@ public class GameService {
 
     private static final List<OrderStatus> PAID_STATUSES =
             List.of(OrderStatus.PAYEE, OrderStatus.EXPEDIEE, OrderStatus.LIVREE);
+    private static final int RELATED_GAMES_LIMIT = 8;
 
     private final GameRepository gameRepository;
     private final OrderLineRepository orderLineRepository;
@@ -46,6 +49,59 @@ public class GameService {
     public Game findEntity(Long id) {
         return gameRepository.findById(id)
                 .orElseThrow(() -> new GameNotFoundException(id));
+    }
+
+    /**
+     * Jeux suggeres sur la fiche d'un jeu : son jeu de base / ses extensions en priorite,
+     * puis meme editeur, puis tags en commun (du plus proche au moins proche), puis meme
+     * categorie. Dedoublonne et limite a {@link #RELATED_GAMES_LIMIT}.
+     */
+    @Transactional(readOnly = true)
+    public List<GameResponse> getRelatedGames(Long id) {
+        Game game = findEntity(id);
+        List<Game> all = gameRepository.findAll();
+
+        Set<Game> related = new LinkedHashSet<>();
+
+        if (game.getBaseGame() != null) {
+            related.add(game.getBaseGame());
+        }
+
+        Long baseId = game.getBaseGame() != null ? game.getBaseGame().getId() : game.getId();
+        all.stream()
+                .filter(g -> !g.getId().equals(game.getId()))
+                .filter(g -> g.getBaseGame() != null && g.getBaseGame().getId().equals(baseId))
+                .forEach(related::add);
+
+        if (game.getPublisher() != null) {
+            all.stream()
+                    .filter(g -> !g.getId().equals(game.getId()))
+                    .filter(g -> game.getPublisher().equals(g.getPublisher()))
+                    .forEach(related::add);
+        }
+
+        Set<Long> gameTagIds = game.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
+        if (!gameTagIds.isEmpty()) {
+            all.stream()
+                    .filter(g -> !g.getId().equals(game.getId()))
+                    .filter(g -> g.getTags().stream().anyMatch(t -> gameTagIds.contains(t.getId())))
+                    .sorted(Comparator.<Game>comparingLong(
+                            g -> g.getTags().stream().filter(t -> gameTagIds.contains(t.getId())).count()
+                    ).reversed())
+                    .forEach(related::add);
+        }
+
+        if (game.getCategory() != null) {
+            all.stream()
+                    .filter(g -> !g.getId().equals(game.getId()))
+                    .filter(g -> game.getCategory().equals(g.getCategory()))
+                    .forEach(related::add);
+        }
+
+        return related.stream()
+                .limit(RELATED_GAMES_LIMIT)
+                .map(GameResponse::fromEntity)
+                .toList();
     }
 
     private boolean matches(GameResponse game, GameFilter filter) {
