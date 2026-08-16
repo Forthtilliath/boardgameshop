@@ -3,7 +3,9 @@ package com.bgs.boardgameshop.common;
 import com.bgs.boardgameshop.game.GameNotFoundException;
 import com.bgs.boardgameshop.order.InsufficientStockException;
 import com.bgs.boardgameshop.order.OrderNotFoundException;
+import com.bgs.boardgameshop.payment.OrderNotPayableException;
 import com.bgs.boardgameshop.user.EmailAlreadyUsedException;
+import com.stripe.exception.StripeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -45,6 +47,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiError.of(HttpStatus.FORBIDDEN.value(), "Forbidden", "Acces refuse"));
+    }
+
+    @ExceptionHandler(OrderNotPayableException.class)
+    public ResponseEntity<ApiError> handleOrderNotPayable(OrderNotPayableException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiError.of(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage()));
+    }
+
+    @ExceptionHandler(StripeException.class)
+    public ResponseEntity<ApiError> handleStripeException(StripeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(ApiError.of(HttpStatus.BAD_GATEWAY.value(), "Bad Gateway",
+                        "Le service de paiement est indisponible, reessayez plus tard"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
