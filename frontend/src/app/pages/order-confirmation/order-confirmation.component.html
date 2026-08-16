@@ -1,0 +1,40 @@
+@if (order(); as o) {
+  <section class="container confirmation">
+    @switch (o.status) {
+      @case ('PAYEE') {
+        <h1>Merci pour votre commande !</h1>
+        <p>Votre commande <strong>#{{ o.id }}</strong> est payee et confirmee.</p>
+      }
+      @case ('ECHOUEE') {
+        <h1>Le paiement a echoue</h1>
+        <p>Votre commande <strong>#{{ o.id }}</strong> n'a pas pu etre payee. Le stock a ete liberee.</p>
+      }
+      @default {
+        <h1>Paiement en cours de confirmation...</h1>
+        <p>Votre commande <strong>#{{ o.id }}</strong> est en attente de confirmation du paiement.</p>
+      }
+    }
+
+    <ul class="confirmation__lines">
+      @for (line of o.lines; track line.gameId) {
+        <li>
+          {{ line.quantity }} x {{ line.gameName }}
+          <span>{{ line.lineTotal | currency: 'EUR' }}</span>
+        </li>
+      }
+    </ul>
+
+    <div class="confirmation__total">
+      Total : <strong>{{ o.totalAmount | currency: 'EUR' }}</strong>
+    </div>
+
+    <a routerLink="/" class="btn btn--primary">Continuer mes achats</a>
+  </section>
+} @else if (notFound()) {
+  <section class="container confirmation confirmation--missing">
+    <h1>Commande introuvable</h1>
+    <a routerLink="/" class="btn btn--primary">Retour au catalogue</a>
+  </section>
+} @else {
+  <p class="container confirmation__loading">Chargement...</p>
+}
