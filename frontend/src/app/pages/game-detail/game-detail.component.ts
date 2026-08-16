@@ -1,8 +1,10 @@
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import type { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 
 import { GameSliderComponent } from '../../components/game-slider/game-slider.component';
 import type { Game } from '../../models/game.model';
@@ -28,7 +30,15 @@ export class GameDetailComponent {
   private readonly reviewService = inject(ReviewService);
   private readonly fb = inject(FormBuilder);
 
-  private readonly gameId = Number(this.route.snapshot.paramMap.get('id'));
+  /**
+   * Signal (pas snapshot) : Angular reutilise la meme instance de composant en
+   * naviguant d'une fiche jeu a une autre (meme route `/jeux/:id`), donc lire
+   * l'id une seule fois dans le constructeur ne suit pas les changements d'URL.
+   */
+  private readonly gameId = toSignal(
+    this.route.paramMap.pipe(map((params) => Number(params.get('id')))),
+    { requireSync: true }
+  );
 
   readonly game = signal<Game | null>(null);
   readonly notFound = signal(false);
@@ -50,18 +60,29 @@ export class GameDetailComponent {
   });
 
   constructor() {
-    this.gameService.getGame(this.gameId).subscribe({
-      next: (game) => { this.game.set(game); },
-      error: () => { this.notFound.set(true); }
+    effect(() => {
+      const id = this.gameId();
+
+      this.game.set(null);
+      this.notFound.set(false);
+      this.quantity.set(1);
+      this.reviews.set([]);
+      this.canReview.set(false);
+      this.relatedGames.set([]);
+
+      this.gameService.getGame(id).subscribe({
+        next: (game) => { this.game.set(game); },
+        error: () => { this.notFound.set(true); }
+      });
+
+      this.reviewService.getReviews(id).subscribe((reviews) => { this.reviews.set(reviews); });
+
+      if (this.isAuthenticated()) {
+        this.reviewService.canReview(id).subscribe((canReview) => { this.canReview.set(canReview); });
+      }
+
+      this.gameService.getRelatedGames(id).subscribe((games) => { this.relatedGames.set(games); });
     });
-
-    this.reviewService.getReviews(this.gameId).subscribe((reviews) => { this.reviews.set(reviews); });
-
-    if (this.isAuthenticated()) {
-      this.reviewService.canReview(this.gameId).subscribe((canReview) => { this.canReview.set(canReview); });
-    }
-
-    this.gameService.getRelatedGames(this.gameId).subscribe((games) => { this.relatedGames.set(games); });
   }
 
   addRelatedToCart(game: Game): void {
@@ -77,7 +98,7 @@ export class GameDetailComponent {
     this.reviewError.set(null);
 
     const raw = this.reviewForm.getRawValue();
-    this.reviewService.createReview(this.gameId, { rating: raw.rating, comment: raw.comment || null }).subscribe({
+    this.reviewService.createReview(this.gameId(), { rating: raw.rating, comment: raw.comment || null }).subscribe({
       next: (review) => {
         this.reviews.update((reviews) => [review, ...reviews]);
         this.canReview.set(false);
