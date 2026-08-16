@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: boardgameshop
+      POSTGRES_USER: boardgameshop
+      POSTGRES_PASSWORD: boardgameshop
+    ports:
+      # 5434 sur l'hote : cette machine a deja des PostgreSQL natifs sur 5432 et 5433.
+      - "5434:5432"
+    volumes:
+      - boardgameshop-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U boardgameshop -d boardgameshop"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  boardgameshop-db:

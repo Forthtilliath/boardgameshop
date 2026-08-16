@@ -16,7 +16,6 @@ frontend/npm-debug.log*
 # --- Backend (Java / Maven) ---
 backend/target/
 backend/.mvn/wrapper/maven-wrapper.jar
-backend/data/
 
 # --- Outils locaux (ex: Stripe CLI telechargee, non commitee) ---
 tools/

@@ -24,7 +24,18 @@ boardgameshop/
 - Node.js 22+ et npm
 - Java 21
 - (Maven n'est pas requis : le wrapper `mvnw` / `mvnw.cmd` est inclus)
+- Docker (pour la base PostgreSQL — voir plus bas)
 - Un compte Stripe gratuit (mode test) pour le paiement — voir plus bas
+
+## Demarrer la base de donnees
+
+```bash
+docker compose up -d
+```
+
+Lance un PostgreSQL local (identifiants de dev dans `docker-compose.yml`, sans consequence
+car uniquement accessible en local). A faire une fois avant de demarrer le backend ; les
+donnees persistent ensuite dans un volume Docker nomme entre les redemarrages.
 
 ## Demarrer les deux serveurs en une commande
 
@@ -44,9 +55,9 @@ cd backend
 ./mvnw spring-boot:run        # Linux / macOS
 ```
 
-L'API demarre sur `http://localhost:8080`. Une base H2 sur fichier local (`backend/data/`, non
-commitee) est peuplee automatiquement avec un jeu de donnees de demonstration au premier
-demarrage (catalogue + comptes de test ci-dessous). Console H2 disponible sur `/h2-console`.
+L'API demarre sur `http://localhost:8080` (necessite `docker compose up -d` au prealable).
+La base est peuplee automatiquement avec un jeu de donnees de demonstration au premier
+demarrage (catalogue + comptes de test ci-dessous).
 
 ### Comptes de demonstration
 
@@ -113,4 +124,4 @@ Date d'expiration : n'importe quelle date future. CVC : n'importe quel 3 chiffre
 ## Stack technique
 
 - **Frontend** : Angular 19, composants standalone, signals, SCSS, Stripe.js
-- **Backend** : Spring Boot 4.1, Java 21, Spring Security (JWT), Spring Data JPA, H2, Stripe Java SDK, Bean Validation, Lombok, Maven
+- **Backend** : Spring Boot 4.1, Java 21, Spring Security (JWT), Spring Data JPA, PostgreSQL, Stripe Java SDK, Bean Validation, Lombok, Maven
