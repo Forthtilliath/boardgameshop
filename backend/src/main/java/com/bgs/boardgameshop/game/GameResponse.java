@@ -27,7 +27,9 @@ public record GameResponse(
         BigDecimal finalPrice,
         boolean onSale,
         boolean preorder,
-        List<TagResponse> tags
+        List<TagResponse> tags,
+        Double reviewsAverage,
+        Integer reviewsCount
 ) {
 
     public static GameResponse fromEntity(Game game) {
@@ -57,7 +59,9 @@ public record GameResponse(
                 finalPrice,
                 onSale,
                 game.getReleaseDate() != null && game.getReleaseDate().isAfter(LocalDate.now()),
-                game.getTags().stream().map(TagResponse::fromEntity).toList()
+                game.getTags().stream().map(TagResponse::fromEntity).toList(),
+                game.getReviewsAverage(),
+                game.getReviewsCount()
         );
     }
 

@@ -47,8 +47,13 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/payments/webhook").permitAll()
+                        // Regle specifique AVANT la regle generale GET /api/games/** ci-dessous :
+                        // can-review a besoin de l'utilisateur connecte (@AuthenticationPrincipal).
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/games/*/reviews/can-review")
+                        .authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/games/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/tags").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/home").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

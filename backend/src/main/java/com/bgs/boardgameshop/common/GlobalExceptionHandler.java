@@ -7,6 +7,7 @@ import com.bgs.boardgameshop.order.InsufficientStockException;
 import com.bgs.boardgameshop.order.InvalidOrderStatusTransitionException;
 import com.bgs.boardgameshop.order.OrderNotFoundException;
 import com.bgs.boardgameshop.payment.OrderNotPayableException;
+import com.bgs.boardgameshop.review.ReviewNotAllowedException;
 import com.bgs.boardgameshop.user.EmailAlreadyUsedException;
 import com.stripe.exception.StripeException;
 import org.springframework.http.HttpStatus;
@@ -58,7 +59,11 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage()));
     }
 
-    @ExceptionHandler({TagAlreadyExistsException.class, InvalidOrderStatusTransitionException.class})
+    @ExceptionHandler({
+            TagAlreadyExistsException.class,
+            InvalidOrderStatusTransitionException.class,
+            ReviewNotAllowedException.class
+    })
     public ResponseEntity<ApiError> handleConflict(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiError.of(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage()));

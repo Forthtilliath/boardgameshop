@@ -103,6 +103,9 @@ public class GameService {
                         g -> quantitySoldByGame.getOrDefault(g.id(), 0L)
                 ).reversed();
             }
+            case "rating" -> Comparator.comparing(
+                    (GameResponse g) -> g.reviewsAverage() == null ? -1.0 : g.reviewsAverage()
+            ).reversed();
             default -> null;
         };
 
