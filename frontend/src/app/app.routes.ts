@@ -12,6 +12,7 @@ import { AdminUsersListComponent } from './pages/admin/admin-users-list/admin-us
 import { CartComponent } from './pages/cart/cart.component';
 import { CatalogComponent } from './pages/catalog/catalog.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
+import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { GameDetailComponent } from './pages/game-detail/game-detail.component';
 import { LoginComponent } from './pages/login/login.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: '', component: CatalogComponent, title: 'BGS - Catalogue' },
   { path: 'jeux/:id', component: GameDetailComponent, title: 'BGS - Detail du jeu' },
   { path: 'panier', component: CartComponent, title: 'BGS - Panier' },
+  { path: 'favoris', component: FavoritesComponent, title: 'BGS - Mes favoris', canActivate: [authGuard] },
   { path: 'commande', component: CheckoutComponent, title: 'BGS - Paiement', canActivate: [authGuard] },
   {
     path: 'confirmation/:id',
