@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -113,15 +114,59 @@ public class OrderService {
     public void markAsFailed(String paymentIntentId) {
         Order order = findByPaymentIntentId(paymentIntentId);
         order.setStatus(OrderStatus.ECHOUEE);
+        restituteStock(order);
+        orderRepository.save(order);
+    }
 
+    /**
+     * Liste des commandes pour le dashboard admin (toutes, ou filtrees par
+     * statut), les plus recentes en premier.
+     */
+    @Transactional(readOnly = true)
+    public List<Order> adminListOrders(OrderStatus statusFilter) {
+        return statusFilter == null
+                ? orderRepository.findAllByOrderByCreatedAtDesc()
+                : orderRepository.findByStatusOrderByCreatedAtDesc(statusFilter);
+    }
+
+    /**
+     * Fait progresser une commande dans son cycle de vie (PAYEE -> EXPEDIEE ->
+     * LIVREE, ou annulation). Restitue le stock si la commande est annulee
+     * apres avoir ete payee.
+     */
+    @Transactional
+    public Order adminUpdateStatus(Long orderId, OrderStatus newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+
+        validateTransition(order.getStatus(), newStatus);
+
+        if (newStatus == OrderStatus.ANNULEE) {
+            restituteStock(order);
+        }
+
+        order.setStatus(newStatus);
+        return orderRepository.save(order);
+    }
+
+    private void validateTransition(OrderStatus from, OrderStatus to) {
+        boolean valid = switch (from) {
+            case PAYEE -> to == OrderStatus.EXPEDIEE || to == OrderStatus.ANNULEE;
+            case EXPEDIEE -> to == OrderStatus.LIVREE || to == OrderStatus.ANNULEE;
+            default -> false;
+        };
+        if (!valid) {
+            throw new InvalidOrderStatusTransitionException(from, to);
+        }
+    }
+
+    private void restituteStock(Order order) {
         for (OrderLine line : order.getLines()) {
             gameRepository.findById(line.getGameId()).ifPresent(game -> {
                 game.setStock(game.getStock() + line.getQuantity());
                 gameRepository.save(game);
             });
         }
-
-        orderRepository.save(order);
     }
 
     private Order findByPaymentIntentId(String paymentIntentId) {
