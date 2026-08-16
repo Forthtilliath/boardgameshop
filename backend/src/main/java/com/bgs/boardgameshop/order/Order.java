@@ -52,6 +52,8 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
+    private String stripePaymentIntentId;
+
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLine> lines = new ArrayList<>();
