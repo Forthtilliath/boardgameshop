@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  * Peuple le catalogue, quelques tags et comptes de démonstration au démarrage,
- * pour avoir des données prêtes à l'emploi sans base externe.
+ * pour avoir des données prêtes à l'emploi (base vide uniquement, voir seedUsers/seedGames).
  */
 @Component
 public class DataSeeder implements CommandLineRunner {
