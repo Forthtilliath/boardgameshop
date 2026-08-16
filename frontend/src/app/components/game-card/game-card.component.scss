@@ -17,7 +17,8 @@
 .card__image {
   position: relative;
   height: 160px;
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
   background-position: center;
   background-color: var(--color-border);
 }

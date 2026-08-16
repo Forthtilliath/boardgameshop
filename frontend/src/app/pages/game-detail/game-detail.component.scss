@@ -41,7 +41,8 @@
 
 .detail__image {
   aspect-ratio: 4 / 3;
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
   background-position: center;
   background-color: var(--color-border);
   border-radius: var(--radius);
