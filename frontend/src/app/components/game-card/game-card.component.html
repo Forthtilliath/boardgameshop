@@ -1,7 +1,7 @@
 @let g = game();
 
 <a class="card" [routerLink]="['/jeux', g.id]">
-  <div class="card__image" [style.background-image]="'url(' + g.imageUrl + ')'">
+  <div class="card__image" [style.background-image]="'url(\'' + g.imageUrl + '\')'">
     @if (g.onSale) {
       <span class="card__badge card__badge--accent">-{{ g.discountPercent }}%</span>
     } @else if (g.preorder) {
