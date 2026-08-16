@@ -3,7 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { EMPTY, expand, switchMap, timer } from 'rxjs';
 
-import { OrderResponse } from '../../models/order.model';
+import type { OrderResponse } from '../../models/order.model';
 import { OrderService } from '../../services/order.service';
 
 const POLL_INTERVAL_MS = 1500;
@@ -41,8 +41,8 @@ export class OrderConfirmationComponent {
         )
       )
       .subscribe({
-        next: (order) => this.order.set(order),
-        error: () => this.notFound.set(true)
+        next: (order) => { this.order.set(order); },
+        error: () => { this.notFound.set(true); }
       });
   }
 }

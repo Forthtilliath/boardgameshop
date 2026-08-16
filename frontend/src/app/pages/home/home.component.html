@@ -1,0 +1,99 @@
+<section class="hero">
+  <div class="container hero__inner">
+    <h1>Des jeux de societe pour toutes les tablees</h1>
+    <p>Nouveautes, meilleures ventes, precommandes et promotions — tout BGS sur une seule page.</p>
+    <a routerLink="/jeux" class="btn btn--primary">Voir tout le catalogue</a>
+  </div>
+</section>
+
+<div class="container">
+  @if (home(); as h) {
+    @if (h.newest.length > 0) {
+      <section class="home__section">
+        <div class="home__section-heading">
+          <h2>Nouveautes</h2>
+          <a routerLink="/jeux" class="home__section-link">Tout voir &rarr;</a>
+        </div>
+        <div class="home__grid">
+          @for (game of h.newest; track game.id) {
+            <app-game-card [game]="game" (addToCart)="addToCart($event)" />
+          }
+        </div>
+      </section>
+    }
+
+    @if (h.bestSellers.length > 0) {
+      <section class="home__section">
+        <div class="home__section-heading">
+          <h2>Meilleures ventes</h2>
+          <a routerLink="/jeux" class="home__section-link">Tout voir &rarr;</a>
+        </div>
+        <div class="home__grid">
+          @for (game of h.bestSellers; track game.id) {
+            <app-game-card [game]="game" (addToCart)="addToCart($event)" />
+          }
+        </div>
+      </section>
+    }
+
+    @if (h.preorders.length > 0) {
+      <section class="home__section">
+        <div class="home__section-heading">
+          <h2>Precommandes</h2>
+          <a routerLink="/jeux" class="home__section-link">Tout voir &rarr;</a>
+        </div>
+        <div class="home__grid">
+          @for (game of h.preorders; track game.id) {
+            <app-game-card [game]="game" (addToCart)="addToCart($event)" />
+          }
+        </div>
+      </section>
+    }
+
+    @if (h.onSale.length > 0) {
+      <section class="home__section">
+        <div class="home__section-heading">
+          <h2>Promotions</h2>
+          <a routerLink="/jeux" class="home__section-link">Tout voir &rarr;</a>
+        </div>
+        <div class="home__grid">
+          @for (game of h.onSale; track game.id) {
+            <app-game-card [game]="game" (addToCart)="addToCart($event)" />
+          }
+        </div>
+      </section>
+    }
+
+    @if (h.recentReviews.length > 0) {
+      <section class="home__section">
+        <div class="home__section-heading">
+          <h2>Avis recents</h2>
+        </div>
+        <div class="home__reviews">
+          @for (review of h.recentReviews; track review.id) {
+            <article class="review-card">
+              <div class="review-card__stars">
+                @for (n of ratingScale; track n) {
+                  <span [class.review-card__star--filled]="n <= review.rating">&starf;</span>
+                }
+              </div>
+              @if (review.comment) {
+                <p class="review-card__comment">{{ review.comment }}</p>
+              }
+              <p class="review-card__meta">
+                {{ review.userFirstName }} — <a [routerLink]="['/jeux', review.gameId]">{{ review.gameName }}</a>
+                · {{ review.createdAt | date: 'dd/MM/yyyy' }}
+              </p>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  } @else if (loading()) {
+    <p class="home__status">Chargement...</p>
+  } @else if (error()) {
+    <p class="home__status home__status--error">
+      Impossible de charger la page d'accueil. Verifiez que le serveur BGS est bien demarre.
+    </p>
+  }
+</div>

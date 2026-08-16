@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 
 import { GameCardComponent } from '../../components/game-card/game-card.component';
-import { Game } from '../../models/game.model';
+import type { Game } from '../../models/game.model';
 import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 

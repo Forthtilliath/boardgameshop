@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject,Injectable } from '@angular/core';
+import type { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { AdminGameRequest, Game } from '../models/game.model';
+import type { AdminGameRequest, Game } from '../models/game.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminGameService {
@@ -23,6 +23,8 @@ export class AdminGameService {
   }
 
   deleteGame(id: number): Observable<void> {
+    // Seule facon de typer une reponse HTTP sans corps avec HttpClient.
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

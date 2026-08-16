@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 
 import { GameCardComponent } from '../../components/game-card/game-card.component';
-import { GameFilter, GameSort } from '../../models/game-filter.model';
-import { Game } from '../../models/game.model';
-import { Tag } from '../../models/tag.model';
+import type { Game } from '../../models/game.model';
+import type { GameFilter, GameSort } from '../../models/game-filter.model';
+import type { Tag } from '../../models/tag.model';
 import { CartService } from '../../services/cart.service';
 import { GameService } from '../../services/game.service';
 import { TagService } from '../../services/tag.service';
@@ -45,7 +45,7 @@ export class CatalogComponent {
   readonly selectedTagIds = signal<Set<number>>(new Set());
 
   constructor() {
-    this.tagService.getPublicTags().subscribe((tags) => this.tags.set(tags));
+    this.tagService.getPublicTags().subscribe((tags) => { this.tags.set(tags); });
 
     // Chips de categorie derivees du catalogue complet (independant des filtres actifs).
     this.gameService.getGames().subscribe((games) => {

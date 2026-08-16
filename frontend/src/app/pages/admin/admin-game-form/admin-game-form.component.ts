@@ -1,9 +1,10 @@
+import type { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { AdminGameRequest } from '../../../models/game.model';
-import { Tag } from '../../../models/tag.model';
+import type { AdminGameRequest } from '../../../models/game.model';
+import type { Tag } from '../../../models/tag.model';
 import { AdminGameService } from '../../../services/admin-game.service';
 import { TagService } from '../../../services/tag.service';
 
@@ -48,7 +49,7 @@ export class AdminGameFormComponent {
   });
 
   constructor() {
-    this.tagService.getTags().subscribe((tags) => this.tags.set(tags));
+    this.tagService.getTags().subscribe((tags) => { this.tags.set(tags); });
 
     if (this.isEditMode) {
       this.adminGameService.getGames().subscribe((games) => {
@@ -132,9 +133,10 @@ export class AdminGameFormComponent {
       : this.adminGameService.createGame(request);
 
     save$.subscribe({
-      next: () => this.router.navigateByUrl('/admin/jeux'),
-      error: (err) => {
-        this.errorMessage.set(err?.error?.message ?? 'Enregistrement impossible.');
+      next: () => { void this.router.navigateByUrl('/admin/jeux'); },
+      error: (err: HttpErrorResponse) => {
+        const message = (err.error as { message?: string } | null)?.message;
+        this.errorMessage.set(message ?? 'Enregistrement impossible.');
         this.submitting.set(false);
       }
     });

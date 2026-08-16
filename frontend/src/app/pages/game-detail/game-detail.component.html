@@ -1,6 +1,6 @@
 @if (game(); as g) {
   <section class="container detail">
-    <a routerLink="/" class="detail__back">&larr; Retour au catalogue</a>
+    <a routerLink="/jeux" class="detail__back">&larr; Retour au catalogue</a>
 
     <div class="detail__grid">
       <div class="detail__image" [style.background-image]="'url(' + g.imageUrl + ')'"></div>
@@ -22,6 +22,15 @@
         </div>
         <h1>{{ g.name }}</h1>
         <p class="detail__publisher">Edite par {{ g.publisher }}</p>
+
+        @if (g.reviewsCount > 0) {
+          <p class="detail__rating">
+            @for (n of ratingScale; track n) {
+              <span [class.detail__star--filled]="n <= (g.reviewsAverage ?? 0)">&starf;</span>
+            }
+            <span class="detail__rating-count">{{ g.reviewsAverage | number: '1.1-1' }} ({{ g.reviewsCount }} avis)</span>
+          </p>
+        }
 
         @if (g.preorder) {
           <p class="detail__preorder">Precommande — sortie prevue le {{ g.releaseDate }}</p>
@@ -62,12 +71,59 @@
         }
       </div>
     </div>
+
+    <section class="reviews">
+      <h2>Avis clients</h2>
+
+      @if (canReview()) {
+        <form class="review-form" [formGroup]="reviewForm" (submit)="$event.preventDefault(); submitReview()">
+          <label class="field">
+            <span>Votre note</span>
+            <select formControlName="rating">
+              @for (n of ratingScale; track n) {
+                <option [value]="n">{{ n }} / 5</option>
+              }
+            </select>
+          </label>
+          <label class="field">
+            <span>Votre avis (facultatif)</span>
+            <textarea formControlName="comment" rows="3"></textarea>
+          </label>
+          @if (reviewError()) {
+            <p class="review-form__error">{{ reviewError() }}</p>
+          }
+          <button type="submit" class="btn btn--primary" [disabled]="reviewSubmitting()">
+            {{ reviewSubmitting() ? 'Envoi...' : 'Publier mon avis' }}
+          </button>
+        </form>
+      }
+
+      @if (reviews().length === 0) {
+        <p class="reviews__empty">Aucun avis pour ce jeu pour le moment.</p>
+      } @else {
+        <ul class="reviews__list">
+          @for (review of reviews(); track review.id) {
+            <li class="review-card">
+              <div class="review-card__stars">
+                @for (n of ratingScale; track n) {
+                  <span [class.review-card__star--filled]="n <= review.rating">&starf;</span>
+                }
+              </div>
+              @if (review.comment) {
+                <p class="review-card__comment">{{ review.comment }}</p>
+              }
+              <p class="review-card__meta">{{ review.userFirstName }} · {{ review.createdAt | date: 'dd/MM/yyyy' }}</p>
+            </li>
+          }
+        </ul>
+      }
+    </section>
   </section>
 } @else if (notFound()) {
   <section class="container detail__missing">
     <h1>Jeu introuvable</h1>
     <p>Ce jeu n'existe pas ou plus dans notre catalogue.</p>
-    <a routerLink="/" class="btn btn--primary">Retour au catalogue</a>
+    <a routerLink="/jeux" class="btn btn--primary">Retour au catalogue</a>
   </section>
 } @else {
   <p class="container detail__loading">Chargement...</p>

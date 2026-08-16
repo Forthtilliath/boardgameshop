@@ -27,14 +27,20 @@ public record GameResponse(
         BigDecimal finalPrice,
         boolean onSale,
         boolean preorder,
-        List<TagResponse> tags
+        List<TagResponse> tags,
+        Double reviewsAverage,
+        Integer reviewsCount
 ) {
 
     public static GameResponse fromEntity(Game game) {
-        boolean onSale = isDiscountActive(game);
+        Integer discountPercent = game.getDiscountPercent();
+        Instant discountEndsAt = game.getDiscountEndsAt();
+        boolean onSale = discountPercent != null
+                && (discountEndsAt == null || discountEndsAt.isAfter(Instant.now()));
+
         BigDecimal finalPrice = onSale
                 ? game.getPrice()
-                        .multiply(BigDecimal.valueOf(100 - game.getDiscountPercent()))
+                        .multiply(BigDecimal.valueOf(100 - discountPercent))
                         .divide(BigDecimal.valueOf(100))
                 : game.getPrice();
 
@@ -52,19 +58,14 @@ public record GameResponse(
                 game.getStock(),
                 game.getMinAge(),
                 game.getReleaseDate(),
-                game.getDiscountPercent(),
-                game.getDiscountEndsAt(),
+                discountPercent,
+                discountEndsAt,
                 finalPrice,
                 onSale,
                 game.getReleaseDate() != null && game.getReleaseDate().isAfter(LocalDate.now()),
-                game.getTags().stream().map(TagResponse::fromEntity).toList()
+                game.getTags().stream().map(TagResponse::fromEntity).toList(),
+                game.getReviewsAverage(),
+                game.getReviewsCount()
         );
-    }
-
-    private static boolean isDiscountActive(Game game) {
-        if (game.getDiscountPercent() == null) {
-            return false;
-        }
-        return game.getDiscountEndsAt() == null || game.getDiscountEndsAt().isAfter(Instant.now());
     }
 }

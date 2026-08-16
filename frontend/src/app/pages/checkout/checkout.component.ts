@@ -1,5 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, OnInit, inject, signal, viewChild } from '@angular/core';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { ElementRef, OnInit} from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
 
@@ -41,7 +43,7 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     const items = this.cartService.items();
     if (items.length === 0) {
-      this.router.navigateByUrl('/panier');
+      void this.router.navigateByUrl('/panier');
       return;
     }
 
@@ -54,8 +56,9 @@ export class CheckoutComponent implements OnInit {
           this.orderId = order.id;
           this.setupPayment(order.id);
         },
-        error: (err) => {
-          this.errorMessage.set(err?.error?.message ?? 'Impossible de creer la commande.');
+        error: (err: HttpErrorResponse) => {
+          const message = (err.error as { message?: string } | null)?.message;
+          this.errorMessage.set(message ?? 'Impossible de creer la commande.');
           this.loading.set(false);
         }
       });
@@ -84,7 +87,7 @@ export class CheckoutComponent implements OnInit {
     }
 
     this.cartService.clear();
-    this.router.navigateByUrl(`/confirmation/${this.orderId}`);
+    void this.router.navigateByUrl(`/confirmation/${this.orderId}`);
   }
 
   private setupPayment(orderId: number): void {
@@ -103,8 +106,9 @@ export class CheckoutComponent implements OnInit {
           this.loading.set(false);
         });
       },
-      error: (err) => {
-        this.errorMessage.set(err?.error?.message ?? "Impossible d'initialiser le paiement.");
+      error: (err: HttpErrorResponse) => {
+        const message = (err.error as { message?: string } | null)?.message;
+        this.errorMessage.set(message ?? "Impossible d'initialiser le paiement.");
         this.loading.set(false);
       }
     });

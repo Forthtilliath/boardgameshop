@@ -82,4 +82,11 @@ public class Game {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
+
+    /** Cache recalcule a chaque avis (voir ReviewService), pour eviter d'agreger a chaque lecture. */
+    private Double reviewsAverage;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Integer reviewsCount = 0;
 }

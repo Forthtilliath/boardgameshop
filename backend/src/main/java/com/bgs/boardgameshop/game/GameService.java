@@ -6,7 +6,6 @@ import com.bgs.boardgameshop.order.OrderStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -103,6 +102,9 @@ public class GameService {
                         g -> quantitySoldByGame.getOrDefault(g.id(), 0L)
                 ).reversed();
             }
+            case "rating" -> Comparator.comparing(
+                    (GameResponse g) -> g.reviewsAverage() == null ? -1.0 : g.reviewsAverage()
+            ).reversed();
             default -> null;
         };
 

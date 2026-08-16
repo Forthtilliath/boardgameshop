@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 
-import { User } from '../../../models/user.model';
+import type { User } from '../../../models/user.model';
 import { AdminUserService } from '../../../services/admin-user.service';
 
 @Component({

@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -44,9 +45,11 @@ public class OrderLine {
     @Column(nullable = false)
     private String gameName;
 
+    @NonNull
     @Column(nullable = false)
     private BigDecimal unitPrice;
 
+    @NonNull
     @Column(nullable = false)
     private Integer quantity;
 

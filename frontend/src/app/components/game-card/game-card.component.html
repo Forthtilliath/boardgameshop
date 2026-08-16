@@ -1,8 +1,10 @@
-<a class="card" [routerLink]="['/jeux', game.id]">
-  <div class="card__image" [style.background-image]="'url(' + game.imageUrl + ')'">
-    @if (game.onSale) {
-      <span class="card__badge card__badge--accent">-{{ game.discountPercent }}%</span>
-    } @else if (game.preorder) {
+@let g = game();
+
+<a class="card" [routerLink]="['/jeux', g.id]">
+  <div class="card__image" [style.background-image]="'url(' + g.imageUrl + ')'">
+    @if (g.onSale) {
+      <span class="card__badge card__badge--accent">-{{ g.discountPercent }}%</span>
+    } @else if (g.preorder) {
       <span class="card__badge">Precommande</span>
     }
 
@@ -20,24 +22,27 @@
   </div>
 
   <div class="card__body">
-    <span class="card__category">{{ game.category }}</span>
-    <h3 class="card__name">{{ game.name }}</h3>
-    <p class="card__meta">{{ game.minPlayers }}–{{ game.maxPlayers }} joueurs · {{ game.durationMinutes }} min</p>
+    <span class="card__category">{{ g.category }}</span>
+    <h3 class="card__name">{{ g.name }}</h3>
+    <p class="card__meta">{{ g.minPlayers }}–{{ g.maxPlayers }} joueurs · {{ g.durationMinutes }} min</p>
+    @if (g.reviewsCount > 0) {
+      <p class="card__rating">&starf; {{ g.reviewsAverage | number: '1.1-1' }} ({{ g.reviewsCount }})</p>
+    }
 
     <div class="card__footer">
       <span class="card__price">
-        @if (game.onSale) {
-          <span class="card__price-original">{{ game.price | currency: 'EUR' }}</span>
+        @if (g.onSale) {
+          <span class="card__price-original">{{ g.price | currency: 'EUR' }}</span>
         }
-        {{ game.finalPrice | currency: 'EUR' }}
+        {{ g.finalPrice | currency: 'EUR' }}
       </span>
       <button
         type="button"
         class="btn btn--primary card__add"
-        [disabled]="game.stock === 0"
+        [disabled]="g.stock === 0"
         (click)="onAddToCart($event)"
       >
-        {{ game.stock === 0 ? 'Epuise' : 'Ajouter' }}
+        {{ g.stock === 0 ? 'Epuise' : 'Ajouter' }}
       </button>
     </div>
   </div>

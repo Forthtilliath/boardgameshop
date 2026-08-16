@@ -17,6 +17,6 @@ export class AccountComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigateByUrl('/');
+    void this.router.navigateByUrl('/');
   }
 }

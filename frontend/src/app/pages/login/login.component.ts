@@ -1,3 +1,4 @@
+import type { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -36,10 +37,11 @@ export class LoginComponent {
     this.authService.login(this.form.getRawValue()).subscribe({
       next: () => {
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/';
-        this.router.navigateByUrl(returnUrl);
+        void this.router.navigateByUrl(returnUrl);
       },
-      error: (err) => {
-        this.errorMessage.set(err?.error?.message ?? 'Connexion impossible. Reessayez.');
+      error: (err: HttpErrorResponse) => {
+        const message = (err.error as { message?: string } | null)?.message;
+        this.errorMessage.set(message ?? 'Connexion impossible. Reessayez.');
         this.submitting.set(false);
       }
     });

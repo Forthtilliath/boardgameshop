@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import type { Observable} from 'rxjs';
+import { tap } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Game } from '../models/game.model';
+import type { Game } from '../models/game.model';
 
 @Injectable({ providedIn: 'root' })
 export class FavoriteService {
@@ -20,8 +21,8 @@ export class FavoriteService {
   /** (Re)charge la liste des favoris depuis le serveur : a appeler apres connexion. */
   refresh(): void {
     this.http.get<Game[]>(this.baseUrl).subscribe({
-      next: (games) => this.favoriteIdsSignal.set(new Set(games.map((g) => g.id))),
-      error: () => this.favoriteIdsSignal.set(new Set())
+      next: (games) => { this.favoriteIdsSignal.set(new Set(games.map((g) => g.id))); },
+      error: () => { this.favoriteIdsSignal.set(new Set()); }
     });
   }
 
@@ -43,19 +44,23 @@ export class FavoriteService {
   }
 
   private add(gameId: number): Observable<void> {
+    // Seule facon de typer une reponse HTTP sans corps avec HttpClient.
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     return this.http.post<void>(`${this.baseUrl}/${gameId}`, {}).pipe(
-      tap(() => this.favoriteIdsSignal.update((ids) => new Set(ids).add(gameId)))
+      tap(() => { this.favoriteIdsSignal.update((ids) => new Set(ids).add(gameId)); })
     );
   }
 
   private remove(gameId: number): Observable<void> {
+    // Seule facon de typer une reponse HTTP sans corps avec HttpClient.
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     return this.http.delete<void>(`${this.baseUrl}/${gameId}`).pipe(
       tap(() =>
-        this.favoriteIdsSignal.update((ids) => {
+        { this.favoriteIdsSignal.update((ids) => {
           const next = new Set(ids);
           next.delete(gameId);
           return next;
-        })
+        }); }
       )
     );
   }

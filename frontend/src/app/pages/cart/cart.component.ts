@@ -30,6 +30,6 @@ export class CartComponent {
       return;
     }
     // authGuard sur /commande redirige vers /connexion?returnUrl=/commande si besoin
-    this.router.navigateByUrl('/commande');
+    void this.router.navigateByUrl('/commande');
   }
 }

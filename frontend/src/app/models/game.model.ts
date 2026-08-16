@@ -1,4 +1,4 @@
-import { Tag } from './tag.model';
+import type { Tag } from './tag.model';
 
 export interface Game {
   id: number;
@@ -20,6 +20,8 @@ export interface Game {
   onSale: boolean;
   preorder: boolean;
   tags: Tag[];
+  reviewsAverage: number | null;
+  reviewsCount: number;
 }
 
 /** Payload envoye par le dashboard admin pour creer/modifier un jeu. */
