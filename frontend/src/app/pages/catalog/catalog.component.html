@@ -1,7 +1,7 @@
 <section class="container catalog">
   <div class="catalog__intro">
     <h1>Le catalogue BGS</h1>
-    <p>Des jeux de societe pour toutes les tablees, du jeu d'ambiance a la grande strategie.</p>
+    <p>Des jeux de société pour toutes les tablées, du jeu d'ambiance à la grande stratégie.</p>
   </div>
 
   <div class="catalog__filters">
@@ -53,7 +53,7 @@
       </label>
 
       <label class="field">
-        <span>Duree max (min)</span>
+        <span>Durée max (min)</span>
         <input
           type="number"
           min="0"
@@ -63,7 +63,7 @@
       </label>
 
       <label class="field">
-        <span>Age du joueur</span>
+        <span>Âge du joueur</span>
         <input
           type="number"
           min="0"
@@ -90,7 +90,7 @@
 
       <div class="filters__actions">
         <button type="button" class="btn btn--primary" (click)="applyFilters()">Appliquer</button>
-        <button type="button" class="btn btn--ghost" (click)="resetFilters()">Reinitialiser</button>
+        <button type="button" class="btn btn--ghost" (click)="resetFilters()">Réinitialiser</button>
       </div>
     </aside>
 
@@ -111,10 +111,10 @@
         <p class="catalog__status">Chargement du catalogue...</p>
       } @else if (error()) {
         <p class="catalog__status catalog__status--error">
-          Impossible de charger le catalogue. Verifiez que le serveur BGS est bien demarre.
+          Impossible de charger le catalogue. Vérifiez que le serveur BGS est bien démarré.
         </p>
       } @else if (games().length === 0) {
-        <p class="catalog__status">Aucun jeu ne correspond a ces filtres.</p>
+        <p class="catalog__status">Aucun jeu ne correspond à ces filtres.</p>
       } @else {
         <div class="catalog__grid">
           @for (game of games(); track game.id) {

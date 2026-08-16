@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiError.of(HttpStatus.FORBIDDEN.value(), "Forbidden", "Acces refuse"));
+                .body(ApiError.of(HttpStatus.FORBIDDEN.value(), "Forbidden", "Accès refusé"));
     }
 
     @ExceptionHandler(OrderNotPayableException.class)
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleStripeException(StripeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                 .body(ApiError.of(HttpStatus.BAD_GATEWAY.value(), "Bad Gateway",
-                        "Le service de paiement est indisponible, reessayez plus tard"));
+                        "Le service de paiement est indisponible, réessayez plus tard"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -83,6 +83,6 @@ public class GlobalExceptionHandler {
                 .toList();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiError.of(HttpStatus.BAD_REQUEST.value(), "Bad Request",
-                        "Donnees invalides", details));
+                        "Données invalides", details));
     }
 }

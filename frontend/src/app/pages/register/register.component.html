@@ -1,11 +1,11 @@
 <section class="container auth">
   <div class="auth__card">
-    <h1>Creer un compte</h1>
+    <h1>Créer un compte</h1>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="auth__form">
       <div class="auth__row">
         <label class="field">
-          <span>Prenom</span>
+          <span>Prénom</span>
           <input type="text" formControlName="firstName" autocomplete="given-name" />
         </label>
 
@@ -23,7 +23,7 @@
       <label class="field">
         <span>Mot de passe</span>
         <input type="password" formControlName="password" autocomplete="new-password" />
-        <small>8 caracteres minimum</small>
+        <small>8 caractères minimum</small>
       </label>
 
       @if (errorMessage(); as message) {
@@ -31,12 +31,12 @@
       }
 
       <button type="submit" class="btn btn--primary" [disabled]="submitting()">
-        {{ submitting() ? 'Creation...' : 'Creer mon compte' }}
+        {{ submitting() ? 'Création...' : 'Créer mon compte' }}
       </button>
     </form>
 
     <p class="auth__switch">
-      Deja un compte ? <a routerLink="/connexion">Se connecter</a>
+      Déjà un compte ? <a routerLink="/connexion">Se connecter</a>
     </p>
   </div>
 </section>

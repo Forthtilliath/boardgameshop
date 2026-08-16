@@ -11,11 +11,11 @@ const NEXT_STATUSES: Partial<Record<OrderStatus, OrderStatus[]>> = {
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
   EN_ATTENTE_PAIEMENT: 'En attente de paiement',
-  PAYEE: 'Payee',
-  ECHOUEE: 'Paiement echoue',
-  EXPEDIEE: 'Expediee',
-  LIVREE: 'Livree',
-  ANNULEE: 'Annulee'
+  PAYEE: 'Payée',
+  ECHOUEE: 'Paiement échoué',
+  EXPEDIEE: 'Expédiée',
+  LIVREE: 'Livrée',
+  ANNULEE: 'Annulée'
 };
 
 @Component({
@@ -36,8 +36,8 @@ export class AdminOrdersListComponent {
   }
 
   statusLabel(status: string): string {
-    // Cast defensif : `status` vient du backend et n'est pas garanti d'etre
-    // une valeur connue de OrderStatus, meme si le typage le suppose.
+    // Cast défensif : `status` vient du backend et n'est pas garanti d'être
+    // une valeur connue de OrderStatus, même si le typage le suppose.
     const label = STATUS_LABELS[status as OrderStatus] as string | undefined;
     return label ?? status;
   }

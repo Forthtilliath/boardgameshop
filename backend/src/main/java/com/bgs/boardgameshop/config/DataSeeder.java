@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Peuple le catalogue, quelques tags et comptes de demonstration au demarrage,
- * pour avoir des donnees pretes a l'emploi sans base externe.
+ * Peuple le catalogue, quelques tags et comptes de démonstration au démarrage,
+ * pour avoir des données prêtes à l'emploi sans base externe.
  */
 @Component
 public class DataSeeder implements CommandLineRunner {
@@ -96,12 +96,12 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         List<Tag> tags = List.of(
-                Tag.builder().name("Cooperatif").slug("cooperatif").build(),
+                Tag.builder().name("Coopératif").slug("cooperatif").build(),
                 Tag.builder().name("Gestion de ressources").slug("gestion-de-ressources").build(),
                 Tag.builder().name("Deck-building").slug("deck-building").build(),
                 Tag.builder().name("Draft").slug("draft").build(),
                 Tag.builder().name("Bluff").slug("bluff").build(),
-                Tag.builder().name("Enigme").slug("enigme").build(),
+                Tag.builder().name("Énigme").slug("enigme").build(),
                 Tag.builder().name("Pose de tuiles").slug("pose-de-tuiles").build(),
                 Tag.builder().name("Ambiance familiale").slug("ambiance-familiale").build()
         );
@@ -119,9 +119,9 @@ public class DataSeeder implements CommandLineRunner {
         gameRepository.saveAll(List.of(
                 Game.builder()
                         .name("Catane")
-                        .description("Colonisez une ile, echangez des ressources et batissez routes et cites.")
+                        .description("Colonisez une île, échangez des ressources et bâtissez routes et cités.")
                         .price(new BigDecimal("34.90"))
-                        .category("Strategie")
+                        .category("Stratégie")
                         .imageUrl("https://picsum.photos/seed/catane/400/300")
                         .publisher("Kosmos")
                         .minPlayers(3).maxPlayers(4).durationMinutes(90)
@@ -132,11 +132,11 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("Carcassonne")
-                        .description("Construisez cites, routes et abbayes en posant des tuiles au fil de la partie.")
+                        .description("Construisez cités, routes et abbayes en posant des tuiles au fil de la partie.")
                         .price(new BigDecimal("24.90"))
                         .category("Famille")
                         .imageUrl("https://picsum.photos/seed/carcassonne/400/300")
-                        .publisher("Hans im Gluck")
+                        .publisher("Hans im Glück")
                         .minPlayers(2).maxPlayers(5).durationMinutes(45)
                         .stock(30)
                         .minAge(7)
@@ -147,9 +147,9 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("7 Wonders")
-                        .description("Developpez une civilisation antique a travers trois ages, en draft de cartes.")
+                        .description("Développez une civilisation antique à travers trois âges, en draft de cartes.")
                         .price(new BigDecimal("39.90"))
-                        .category("Strategie")
+                        .category("Stratégie")
                         .imageUrl("https://picsum.photos/seed/7wonders/400/300")
                         .publisher("Repos Production")
                         .minPlayers(3).maxPlayers(7).durationMinutes(30)
@@ -160,9 +160,9 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("Terraforming Mars")
-                        .description("Dirigez une corporation chargee de rendre Mars habitable.")
+                        .description("Dirigez une corporation chargée de rendre Mars habitable.")
                         .price(new BigDecimal("54.90"))
-                        .category("Strategie")
+                        .category("Stratégie")
                         .imageUrl("https://picsum.photos/seed/terraforming/400/300")
                         .publisher("FryxGames")
                         .minPlayers(1).maxPlayers(5).durationMinutes(120)
@@ -173,7 +173,7 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("Azul")
-                        .description("Composez les plus beaux motifs d'azulejos en piochant des tuiles colorees.")
+                        .description("Composez les plus beaux motifs d'azulejos en piochant des tuiles colorées.")
                         .price(new BigDecimal("29.90"))
                         .category("Ambiance")
                         .imageUrl("https://picsum.photos/seed/azul/400/300")
@@ -186,7 +186,7 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("Dixit")
-                        .description("Racontez une histoire a partir d'une carte illustree et faites deviner les autres.")
+                        .description("Racontez une histoire à partir d'une carte illustrée et faites deviner les autres.")
                         .price(new BigDecimal("27.90"))
                         .category("Ambiance")
                         .imageUrl("https://picsum.photos/seed/dixit/400/300")
@@ -199,9 +199,9 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("Pandemic")
-                        .description("Unissez vos forces pour enrayer quatre epidemies mondiales avant qu'il ne soit trop tard.")
+                        .description("Unissez vos forces pour enrayer quatre épidémies mondiales avant qu'il ne soit trop tard.")
                         .price(new BigDecimal("32.90"))
-                        .category("Cooperatif")
+                        .category("Coopératif")
                         .imageUrl("https://picsum.photos/seed/pandemic/400/300")
                         .publisher("Z-Man Games")
                         .minPlayers(2).maxPlayers(4).durationMinutes(45)
@@ -210,13 +210,13 @@ public class DataSeeder implements CommandLineRunner {
                         .releaseDate(today.minusYears(9))
                         .discountPercent(20)
                         .discountEndsAt(Instant.now().plus(7, ChronoUnit.DAYS))
-                        .tags(Set.of(tags.get("Cooperatif")))
+                        .tags(Set.of(tags.get("Coopératif")))
                         .build(),
                 Game.builder()
                         .name("Splendor")
-                        .description("Batissez un empire de marchand de pierres precieuses de la Renaissance.")
+                        .description("Bâtissez un empire de marchand de pierres précieuses de la Renaissance.")
                         .price(new BigDecimal("26.90"))
-                        .category("Strategie")
+                        .category("Stratégie")
                         .imageUrl("https://picsum.photos/seed/splendor/400/300")
                         .publisher("Space Cowboys")
                         .minPlayers(2).maxPlayers(4).durationMinutes(30)
@@ -227,7 +227,7 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("Codenames")
-                        .description("Faites deviner les mots de votre equipe en un seul indice, sans toucher a ceux de l'adversaire.")
+                        .description("Faites deviner les mots de votre équipe en un seul indice, sans toucher à ceux de l'adversaire.")
                         .price(new BigDecimal("19.90"))
                         .category("Party Game")
                         .imageUrl("https://picsum.photos/seed/codenames/400/300")
@@ -240,9 +240,9 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("Wingspan")
-                        .description("Attirez les plus beaux oiseaux dans vos reserves naturelles.")
+                        .description("Attirez les plus beaux oiseaux dans vos réserves naturelles.")
                         .price(new BigDecimal("44.90"))
-                        .category("Strategie")
+                        .category("Stratégie")
                         .imageUrl("https://picsum.photos/seed/wingspan/400/300")
                         .publisher("Stonemaier Games")
                         .minPlayers(1).maxPlayers(5).durationMinutes(70)
@@ -253,22 +253,22 @@ public class DataSeeder implements CommandLineRunner {
                         .build(),
                 Game.builder()
                         .name("Nemesis")
-                        .description("Survivez a bord d'un vaisseau infeste de creatures hostiles. Precommande ouverte.")
+                        .description("Survivez à bord d'un vaisseau infesté de créatures hostiles. Précommande ouverte.")
                         .price(new BigDecimal("89.90"))
-                        .category("Cooperatif")
+                        .category("Coopératif")
                         .imageUrl("https://picsum.photos/seed/nemesis/400/300")
                         .publisher("Awaken Realms")
                         .minPlayers(1).maxPlayers(5).durationMinutes(120)
                         .stock(8)
                         .minAge(16)
                         .releaseDate(today.plusMonths(2))
-                        .tags(Set.of(tags.get("Cooperatif"), tags.get("Bluff")))
+                        .tags(Set.of(tags.get("Coopératif"), tags.get("Bluff")))
                         .build(),
                 Game.builder()
                         .name("Cascadia")
-                        .description("Amenagez un paysage naturel harmonieux pour attirer une faune variee. Sortie a venir.")
+                        .description("Aménagez un paysage naturel harmonieux pour attirer une faune variée. Sortie à venir.")
                         .price(new BigDecimal("36.90"))
-                        .category("Strategie")
+                        .category("Stratégie")
                         .imageUrl("https://picsum.photos/seed/cascadia/400/300")
                         .publisher("Flatout Games")
                         .minPlayers(1).maxPlayers(4).durationMinutes(45)
@@ -281,8 +281,8 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     /**
-     * Une commande livree + quelques avis, pour que la page d'accueil (avis
-     * recents, top ventes) ne soit pas vide au premier demarrage.
+     * Une commande livrée + quelques avis, pour que la page d'accueil (avis
+     * récents, top ventes) ne soit pas vide au premier démarrage.
      */
     private void seedOrderAndReviews() {
         if (orderRepository.count() > 0) {
@@ -290,7 +290,7 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         User buyer = userRepository.findByEmail("user@bgs.fr")
-                .orElseThrow(() -> new IllegalStateException("Utilisateur de demo introuvable"));
+                .orElseThrow(() -> new IllegalStateException("Utilisateur de démo introuvable"));
         List<Game> games = gameRepository.findAll();
         Game catane = findByName(games, "Catane");
         Game pandemic = findByName(games, "Pandemic");
@@ -320,12 +320,12 @@ public class DataSeeder implements CommandLineRunner {
         reviewRepository.saveAll(List.of(
                 Review.builder()
                         .game(catane).user(buyer).rating(5)
-                        .comment("Un classique indemodable, parfait pour recevoir en famille !")
+                        .comment("Un classique indémodable, parfait pour recevoir en famille !")
                         .createdAt(Instant.now().minus(4, ChronoUnit.DAYS))
                         .build(),
                 Review.builder()
                         .game(pandemic).user(buyer).rating(4)
-                        .comment("Tres bon jeu cooperatif, tendu jusqu'a la derniere carte.")
+                        .comment("Très bon jeu coopératif, tendu jusqu'à la dernière carte.")
                         .createdAt(Instant.now().minus(3, ChronoUnit.DAYS))
                         .build(),
                 Review.builder()

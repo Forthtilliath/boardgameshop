@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 
 /**
- * Verification manuelle des identifiants (pas d'AuthenticationManager complet) :
- * moins de boilerplate a comprendre pour un simple login email/mot de passe.
+ * Vérification manuelle des identifiants (pas d'AuthenticationManager complet) :
+ * moins de boilerplate à comprendre pour un simple login email/mot de passe.
  */
 @Service
 public class AuthService {

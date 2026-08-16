@@ -14,8 +14,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 /**
- * Emission et validation des JWT (HMAC/HS256), sans serveur d'authentification
- * externe : le backend signe et verifie lui-meme ses propres tokens.
+ * Émission et validation des JWT (HMAC/HS256), sans serveur d'authentification
+ * externe : le backend signe et vérifie lui-même ses propres tokens.
  */
 @Service
 public class JwtService {

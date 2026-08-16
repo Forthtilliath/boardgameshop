@@ -16,7 +16,7 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * Un avis n'est autorise que pour un jeu reellement achete (commande PAYEE,
+ * Un avis n'est autorisé que pour un jeu réellement acheté (commande PAYEE,
  * EXPEDIEE ou LIVREE contenant ce jeu), et une seule fois par utilisateur.
  */
 @Service
@@ -66,10 +66,10 @@ public class ReviewService {
     @Transactional
     public ReviewResponse createReview(Long gameId, Long userId, CreateReviewRequest request) {
         if (!orderLineRepository.existsPurchase(userId, gameId, PAID_STATUSES)) {
-            throw new ReviewNotAllowedException("Vous devez avoir achete ce jeu pour laisser un avis");
+            throw new ReviewNotAllowedException("Vous devez avoir acheté ce jeu pour laisser un avis");
         }
         if (reviewRepository.existsByUser_IdAndGame_Id(userId, gameId)) {
-            throw new ReviewNotAllowedException("Vous avez deja laisse un avis pour ce jeu");
+            throw new ReviewNotAllowedException("Vous avez déjà laissé un avis pour ce jeu");
         }
 
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException(gameId));

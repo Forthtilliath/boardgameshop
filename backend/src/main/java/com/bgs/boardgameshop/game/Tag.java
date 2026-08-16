@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Mecanique/theme utilise pour les filtres avances du catalogue (ex : "Cooperatif",
+ * Mécanique/thème utilisé pour les filtres avancés du catalogue (ex : "Coopératif",
  * "Gestion de ressources", "Deck-building").
  */
 @Entity

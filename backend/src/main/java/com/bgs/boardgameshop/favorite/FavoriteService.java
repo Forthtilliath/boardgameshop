@@ -13,8 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * L'utilisateur authentifie fourni par le controller (via @AuthenticationPrincipal)
- * provient d'une session Hibernate deja fermee : on le recharge toujours par id
+ * L'utilisateur authentifié fourni par le controller (via @AuthenticationPrincipal)
+ * provient d'une session Hibernate déjà fermée : on le recharge toujours par id
  * dans la transaction active avant de toucher sa collection lazy favoriteGames.
  */
 @Service

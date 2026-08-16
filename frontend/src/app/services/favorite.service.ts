@@ -18,7 +18,7 @@ export class FavoriteService {
     return this.favoriteIdsSignal().has(gameId);
   }
 
-  /** (Re)charge la liste des favoris depuis le serveur : a appeler apres connexion. */
+  /** (Re)charge la liste des favoris depuis le serveur : à appeler après connexion. */
   refresh(): void {
     this.http.get<Game[]>(this.baseUrl).subscribe({
       next: (games) => { this.favoriteIdsSignal.set(new Set(games.map((g) => g.id))); },
@@ -26,7 +26,7 @@ export class FavoriteService {
     });
   }
 
-  /** A appeler a la deconnexion, pour ne pas garder les favoris d'un autre compte. */
+  /** À appeler à la déconnexion, pour ne pas garder les favoris d'un autre compte. */
   clear(): void {
     this.favoriteIdsSignal.set(new Set());
   }
@@ -44,7 +44,7 @@ export class FavoriteService {
   }
 
   private add(gameId: number): Observable<void> {
-    // Seule facon de typer une reponse HTTP sans corps avec HttpClient.
+    // Seule façon de typer une réponse HTTP sans corps avec HttpClient.
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     return this.http.post<void>(`${this.baseUrl}/${gameId}`, {}).pipe(
       tap(() => { this.favoriteIdsSignal.update((ids) => new Set(ids).add(gameId)); })
@@ -52,7 +52,7 @@ export class FavoriteService {
   }
 
   private remove(gameId: number): Observable<void> {
-    // Seule facon de typer une reponse HTTP sans corps avec HttpClient.
+    // Seule façon de typer une réponse HTTP sans corps avec HttpClient.
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     return this.http.delete<void>(`${this.baseUrl}/${gameId}`).pipe(
       tap(() =>

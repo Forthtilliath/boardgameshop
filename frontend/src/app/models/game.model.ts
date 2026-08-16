@@ -24,7 +24,7 @@ export interface Game {
   reviewsCount: number;
 }
 
-/** Payload envoye par le dashboard admin pour creer/modifier un jeu. */
+/** Payload envoyé par le dashboard admin pour créer/modifier un jeu. */
 export interface AdminGameRequest {
   name: string;
   description: string | null;
