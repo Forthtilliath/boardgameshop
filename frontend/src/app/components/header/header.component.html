@@ -17,6 +17,11 @@
       </a>
 
       @if (isAuthenticated()) {
+        @if (isAdmin()) {
+          <a routerLink="/admin" routerLinkActive="header__link--active" class="header__link">
+            Admin
+          </a>
+        }
         <a routerLink="/mon-compte" routerLinkActive="header__link--active" class="header__link">
           {{ currentUser()?.firstName }}
         </a>

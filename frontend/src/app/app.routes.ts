@@ -1,7 +1,14 @@
 import { Routes } from '@angular/router';
 
+import { adminGuard } from './guards/admin.guard';
 import { authGuard } from './guards/auth.guard';
 import { AccountComponent } from './pages/account/account.component';
+import { AdminGameFormComponent } from './pages/admin/admin-game-form/admin-game-form.component';
+import { AdminGamesListComponent } from './pages/admin/admin-games-list/admin-games-list.component';
+import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
+import { AdminOrdersListComponent } from './pages/admin/admin-orders-list/admin-orders-list.component';
+import { AdminStatsComponent } from './pages/admin/admin-stats/admin-stats.component';
+import { AdminUsersListComponent } from './pages/admin/admin-users-list/admin-users-list.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { CatalogComponent } from './pages/catalog/catalog.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
@@ -25,5 +32,18 @@ export const routes: Routes = [
   { path: 'connexion', component: LoginComponent, title: 'BGS - Connexion' },
   { path: 'inscription', component: RegisterComponent, title: 'BGS - Inscription' },
   { path: 'mon-compte', component: AccountComponent, title: 'BGS - Mon compte', canActivate: [authGuard] },
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [adminGuard],
+    children: [
+      { path: '', component: AdminStatsComponent, title: 'BGS Admin - Tableau de bord' },
+      { path: 'jeux', component: AdminGamesListComponent, title: 'BGS Admin - Jeux' },
+      { path: 'jeux/nouveau', component: AdminGameFormComponent, title: 'BGS Admin - Nouveau jeu' },
+      { path: 'jeux/:id/modifier', component: AdminGameFormComponent, title: 'BGS Admin - Modifier le jeu' },
+      { path: 'commandes', component: AdminOrdersListComponent, title: 'BGS Admin - Commandes' },
+      { path: 'utilisateurs', component: AdminUsersListComponent, title: 'BGS Admin - Utilisateurs' }
+    ]
+  },
   { path: '**', component: NotFoundComponent, title: 'BGS - Page introuvable' }
 ];
