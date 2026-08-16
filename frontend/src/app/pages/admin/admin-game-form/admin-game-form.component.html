@@ -1,0 +1,113 @@
+<div class="admin-page__header">
+  <h1>{{ isEditMode ? 'Modifier le jeu' : 'Nouveau jeu' }}</h1>
+  <a routerLink="/admin/jeux" class="btn btn--ghost">Retour</a>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="game-form">
+  <div class="game-form__grid">
+    <label class="field field--wide">
+      <span>Nom</span>
+      <input type="text" formControlName="name" />
+    </label>
+
+    <label class="field field--wide">
+      <span>Description</span>
+      <textarea formControlName="description" rows="3"></textarea>
+    </label>
+
+    <label class="field">
+      <span>Prix (EUR)</span>
+      <input type="number" step="0.01" formControlName="price" />
+    </label>
+
+    <label class="field">
+      <span>Stock</span>
+      <input type="number" formControlName="stock" />
+    </label>
+
+    <label class="field">
+      <span>Categorie</span>
+      <input type="text" formControlName="category" placeholder="Strategie, Famille..." />
+    </label>
+
+    <label class="field">
+      <span>Editeur</span>
+      <input type="text" formControlName="publisher" />
+    </label>
+
+    <label class="field field--wide">
+      <span>URL de l'image</span>
+      <input type="text" formControlName="imageUrl" />
+    </label>
+
+    <label class="field">
+      <span>Joueurs min</span>
+      <input type="number" formControlName="minPlayers" />
+    </label>
+
+    <label class="field">
+      <span>Joueurs max</span>
+      <input type="number" formControlName="maxPlayers" />
+    </label>
+
+    <label class="field">
+      <span>Duree (min)</span>
+      <input type="number" formControlName="durationMinutes" />
+    </label>
+
+    <label class="field">
+      <span>Age minimum</span>
+      <input type="number" formControlName="minAge" />
+    </label>
+
+    <label class="field">
+      <span>Date de sortie</span>
+      <input type="date" formControlName="releaseDate" />
+      <small>Dans le futur = affiche en precommande</small>
+    </label>
+
+    <label class="field">
+      <span>Remise (%)</span>
+      <input type="number" formControlName="discountPercent" />
+    </label>
+
+    <label class="field">
+      <span>Fin de la promotion</span>
+      <input type="date" formControlName="discountEndsAt" />
+    </label>
+  </div>
+
+  <div class="game-form__tags">
+    <span class="field__title">Tags</span>
+    <div class="tag-list">
+      @for (tag of tags(); track tag.id) {
+        <button
+          type="button"
+          class="tag-chip"
+          [class.tag-chip--active]="selectedTagIds().has(tag.id)"
+          (click)="toggleTag(tag.id)"
+        >
+          {{ tag.name }}
+        </button>
+      }
+    </div>
+
+    <div class="tag-create">
+      <input
+        type="text"
+        placeholder="Nouveau tag..."
+        [value]="newTagName()"
+        (input)="newTagName.set($any($event.target).value)"
+      />
+      <button type="button" class="btn btn--ghost" (click)="createTag()">Ajouter</button>
+    </div>
+  </div>
+
+  @if (errorMessage(); as message) {
+    <p class="game-form__error">{{ message }}</p>
+  }
+
+  <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+    {{ submitting() ? 'Enregistrement...' : 'Enregistrer' }}
+  </button>
+</form>
