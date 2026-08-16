@@ -22,3 +22,17 @@ export interface OrderResponse {
   lines: OrderLineResponse[];
   totalAmount: number;
 }
+
+export type OrderStatus =
+  | 'EN_ATTENTE_PAIEMENT'
+  | 'PAYEE'
+  | 'ECHOUEE'
+  | 'EXPEDIEE'
+  | 'LIVREE'
+  | 'ANNULEE';
+
+export interface AdminOrderResponse extends OrderResponse {
+  userId: number;
+  userEmail: string;
+  userFullName: string;
+}
