@@ -6,6 +6,8 @@ import com.bgs.boardgameshop.game.GameRepository;
 import com.bgs.boardgameshop.order.dto.CreateOrderRequest;
 import com.bgs.boardgameshop.order.dto.OrderItemRequest;
 import com.bgs.boardgameshop.order.dto.OrderResponse;
+import com.bgs.boardgameshop.promocode.PromoCode;
+import com.bgs.boardgameshop.promocode.PromoCodeService;
 import com.bgs.boardgameshop.user.Role;
 import com.bgs.boardgameshop.user.User;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,11 +27,18 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final GameRepository gameRepository;
     private final InvoiceService invoiceService;
+    private final PromoCodeService promoCodeService;
 
-    public OrderService(OrderRepository orderRepository, GameRepository gameRepository, InvoiceService invoiceService) {
+    public OrderService(
+            OrderRepository orderRepository,
+            GameRepository gameRepository,
+            InvoiceService invoiceService,
+            PromoCodeService promoCodeService
+    ) {
         this.orderRepository = orderRepository;
         this.gameRepository = gameRepository;
         this.invoiceService = invoiceService;
+        this.promoCodeService = promoCodeService;
     }
 
     /**
@@ -71,6 +80,20 @@ public class OrderService {
             order.addLine(line);
 
             total = total.add(line.getLineTotal());
+        }
+
+        // Le code promo est revalidé ici (jamais fait confiance au pourcentage vu côté
+        // client) : si invalide, l'ensemble de la commande échoue (rollback transactionnel,
+        // le stock déjà décrémenté ci-dessus est annulé avec).
+        if (request.promoCode() != null && !request.promoCode().isBlank()) {
+            PromoCode promoCode = promoCodeService.validateAndGet(request.promoCode());
+            BigDecimal discount = total
+                    .multiply(BigDecimal.valueOf(promoCode.getDiscountPercent()))
+                    .divide(BigDecimal.valueOf(100));
+            total = total.subtract(discount);
+            order.setPromoCode(promoCode.getCode());
+            order.setDiscountAmount(discount);
+            promoCodeService.incrementUsage(promoCode);
         }
 
         order.setTotalAmount(total);

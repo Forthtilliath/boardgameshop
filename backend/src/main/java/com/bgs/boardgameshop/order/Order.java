@@ -54,6 +54,12 @@ public class Order {
 
     private String stripePaymentIntentId;
 
+    /** Code promo appliqué à cette commande, le cas échéant (voir OrderService#createOrder). */
+    private String promoCode;
+
+    /** Montant de la réduction appliquée par le code promo, null si aucun code n'a été utilisé. */
+    private BigDecimal discountAmount;
+
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLine> lines = new ArrayList<>();

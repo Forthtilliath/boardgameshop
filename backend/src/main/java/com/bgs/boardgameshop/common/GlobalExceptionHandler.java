@@ -9,6 +9,9 @@ import com.bgs.boardgameshop.order.InvalidOrderStatusTransitionException;
 import com.bgs.boardgameshop.order.InvoiceNotAvailableException;
 import com.bgs.boardgameshop.order.OrderNotFoundException;
 import com.bgs.boardgameshop.payment.OrderNotPayableException;
+import com.bgs.boardgameshop.promocode.PromoCodeAlreadyExistsException;
+import com.bgs.boardgameshop.promocode.PromoCodeInvalidException;
+import com.bgs.boardgameshop.promocode.PromoCodeNotFoundException;
 import com.bgs.boardgameshop.review.ReviewNotAllowedException;
 import com.bgs.boardgameshop.security.TooManyLoginAttemptsException;
 import com.bgs.boardgameshop.user.EmailAlreadyUsedException;
@@ -30,7 +33,8 @@ public class GlobalExceptionHandler {
             GameNotFoundException.class,
             OrderNotFoundException.class,
             TagNotFoundException.class,
-            ShareLinkNotFoundException.class
+            ShareLinkNotFoundException.class,
+            PromoCodeNotFoundException.class
     })
     public ResponseEntity<ApiError> handleNotFound(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -77,11 +81,18 @@ public class GlobalExceptionHandler {
             TagAlreadyExistsException.class,
             InvalidOrderStatusTransitionException.class,
             ReviewNotAllowedException.class,
-            InvoiceNotAvailableException.class
+            InvoiceNotAvailableException.class,
+            PromoCodeAlreadyExistsException.class
     })
     public ResponseEntity<ApiError> handleConflict(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiError.of(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage()));
+    }
+
+    @ExceptionHandler(PromoCodeInvalidException.class)
+    public ResponseEntity<ApiError> handlePromoCodeInvalid(PromoCodeInvalidException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiError.of(HttpStatus.BAD_REQUEST.value(), "Bad Request", ex.getMessage()));
     }
 
     @ExceptionHandler(StripeException.class)
