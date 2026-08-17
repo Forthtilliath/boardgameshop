@@ -44,7 +44,10 @@ public class OrderService {
         BigDecimal total = BigDecimal.ZERO;
 
         for (OrderItemRequest item : request.items()) {
-            Game game = gameRepository.findById(item.gameId())
+            // Verrou pessimiste : deux commandes concurrentes sur le meme jeu ne peuvent
+            // pas lire/decrementer le stock en meme temps (evite la survente du dernier
+            // exemplaire). Voir GameRepository#findByIdForUpdate.
+            Game game = gameRepository.findByIdForUpdate(item.gameId())
                     .orElseThrow(() -> new GameNotFoundException(item.gameId()));
 
             if (game.getStock() < item.quantity()) {
@@ -162,7 +165,7 @@ public class OrderService {
 
     private void restituteStock(Order order) {
         for (OrderLine line : order.getLines()) {
-            gameRepository.findById(line.getGameId()).ifPresent(game -> {
+            gameRepository.findByIdForUpdate(line.getGameId()).ifPresent(game -> {
                 game.setStock(game.getStock() + line.getQuantity());
                 gameRepository.save(game);
             });
