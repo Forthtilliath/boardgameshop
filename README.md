@@ -77,6 +77,17 @@ npm start
 
 L'application est disponible sur `http://localhost:4200` et appelle l'API sur `http://localhost:8080/api`.
 
+## Authentification (JWT en cookies HttpOnly)
+
+Le backend signe ses propres JWT (HMAC/HS256) et les pose en cookies HttpOnly (jamais
+accessibles en JavaScript) plutôt que de les renvoyer dans le corps JSON — voir
+`jwt.secret` dans `application.properties`. Une valeur de dev est fournie par défaut,
+à surcharger via variable d'environnement pour un déploiement réel :
+
+```powershell
+setx JWT_SECRET "une-cle-hmac-base64-generee-toi-meme"   # rouvrir un terminal ensuite
+```
+
 ## Configurer Stripe (paiement en mode test)
 
 1. Crée un compte gratuit sur [stripe.com](https://stripe.com) si tu n'en as pas.
@@ -119,8 +130,10 @@ Date d'expiration : n'importe quelle date future. CVC : n'importe quel 3 chiffre
 | GET     | `/api/games/{id}/reviews`           | Avis d'un jeu                                    | non |
 | GET     | `/api/games/{id}/reviews/can-review`| Vérifie si l'utilisateur peut laisser un avis     | oui |
 | POST    | `/api/games/{id}/reviews`           | Publier un avis (achat vérifié)                  | oui |
-| POST    | `/api/auth/register`                | Créer un compte                                  | non |
-| POST    | `/api/auth/login`                   | Se connecter (retourne un JWT)                   | non |
+| POST    | `/api/auth/register`                | Créer un compte (pose les cookies de session)    | non |
+| POST    | `/api/auth/login`                   | Se connecter (pose les cookies de session)       | non |
+| POST    | `/api/auth/refresh`                 | Renouvelle l'access token via le refresh token   | non (cookie) |
+| POST    | `/api/auth/logout`                  | Efface les cookies de session                    | non |
 | GET     | `/api/auth/me`                      | Utilisateur courant                              | oui |
 | GET/POST/DELETE | `/api/favorites`, `/api/favorites/{gameId}` | Gérer ses favoris              | oui |
 | POST    | `/api/orders`                       | Créer une commande à partir du panier            | oui |
