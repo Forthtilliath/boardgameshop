@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
+import { StockAlertService } from '../../services/stock-alert.service';
 
 @Component({
   selector: 'app-header',
@@ -13,12 +14,28 @@ import { CartService } from '../../services/cart.service';
 export class HeaderComponent {
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
+  private readonly stockAlertService = inject(StockAlertService);
   private readonly router = inject(Router);
 
   readonly itemCount = this.cartService.itemCount;
   readonly isAuthenticated = this.authService.isAuthenticated;
   readonly isAdmin = this.authService.isAdmin;
   readonly currentUser = this.authService.currentUser;
+
+  readonly readyAlerts = this.stockAlertService.readyAlerts;
+  readonly readyAlertsMenuOpen = signal(false);
+
+  toggleReadyAlertsMenu(): void {
+    this.readyAlertsMenuOpen.update((open) => !open);
+  }
+
+  closeReadyAlertsMenu(): void {
+    this.readyAlertsMenuOpen.set(false);
+  }
+
+  dismissReadyAlert(gameId: number): void {
+    this.stockAlertService.dismissReadyAlert(gameId).subscribe();
+  }
 
   logout(): void {
     this.authService.logout();

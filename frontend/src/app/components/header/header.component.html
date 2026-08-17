@@ -25,6 +25,43 @@
         <a routerLink="/favoris" routerLinkActive="header__link--active" class="header__link">
           Favoris
         </a>
+
+        <div class="header__alerts">
+          <button
+            type="button"
+            class="header__link header__alerts-toggle"
+            (click)="toggleReadyAlertsMenu()"
+            aria-label="Alertes retour en stock"
+          >
+            🔔
+            @if (readyAlerts().length > 0) {
+              <span class="header__badge">{{ readyAlerts().length }}</span>
+            }
+          </button>
+
+          @if (readyAlertsMenuOpen()) {
+            <div class="header__alerts-menu">
+              @if (readyAlerts().length === 0) {
+                <p class="header__alerts-empty">Aucune alerte pour le moment.</p>
+              } @else {
+                <ul>
+                  @for (game of readyAlerts(); track game.id) {
+                    <li>
+                      <a [routerLink]="['/jeux', game.id]" (click)="closeReadyAlertsMenu()">{{ game.name }}</a>
+                      <button
+                        type="button"
+                        aria-label="Ignorer cette alerte"
+                        (click)="dismissReadyAlert(game.id)"
+                      >
+                        &times;
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          }
+        </div>
         <a routerLink="/mon-compte" routerLinkActive="header__link--active" class="header__link">
           {{ currentUser()?.firstName }}
         </a>
