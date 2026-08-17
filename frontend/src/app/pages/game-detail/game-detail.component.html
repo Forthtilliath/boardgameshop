@@ -3,7 +3,9 @@
     <a routerLink="/jeux" class="detail__back">&larr; Retour au catalogue</a>
 
     <div class="detail__grid">
-      <div class="detail__image" [style.background-image]="'url(\'' + g.imageUrl + '\')'"></div>
+      <div class="detail__image">
+        <img [src]="g.imageUrl" [alt]="g.name" fetchpriority="high" decoding="async" />
+      </div>
 
       <div class="detail__info">
         <div class="detail__heading">

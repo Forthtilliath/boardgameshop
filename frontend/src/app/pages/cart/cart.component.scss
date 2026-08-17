@@ -47,12 +47,12 @@
 }
 
 .cart__item-image {
+  display: block;
   width: 64px;
   height: 64px;
   border-radius: 8px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  object-fit: contain;
+  object-position: center;
   background-color: var(--color-border);
 }
 
