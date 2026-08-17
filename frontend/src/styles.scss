@@ -92,3 +92,37 @@ button {
   margin: 0 auto;
   padding: 0 1.5rem;
 }
+
+/** Badge de statut de commande, partagé entre l'historique client et l'admin. */
+.status {
+  display: inline-block;
+  padding: 0.25em 0.65em;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.status--payee,
+.status--livree {
+  background: #dff3e6;
+  color: #1f6f42;
+}
+
+.status--expediee {
+  background: #e2ecff;
+  color: #2453a6;
+}
+
+.status--echouee,
+.status--annulee {
+  background: #fbe3df;
+  color: #b3402f;
+}
+
+.status--en_attente_paiement {
+  background: #fdf1d6;
+  color: #93690e;
+}

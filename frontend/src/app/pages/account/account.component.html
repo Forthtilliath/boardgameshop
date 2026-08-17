@@ -14,5 +14,46 @@
 
       <button type="button" class="btn btn--ghost" (click)="logout()">Se déconnecter</button>
     </div>
+
+    <h2 class="account__section-title">Mes commandes</h2>
+
+    @if (loadingOrders()) {
+      <p class="account__status">Chargement de vos commandes...</p>
+    } @else if (orders().length === 0) {
+      <p class="account__status">Vous n'avez pas encore passé de commande.</p>
+    } @else {
+      <ul class="orders">
+        @for (order of orders(); track order.id) {
+          <li class="order-card">
+            <button type="button" class="order-card__header" (click)="toggleOrder(order.id)">
+              <span class="order-card__id">Commande #{{ order.id }}</span>
+              <span class="order-card__date">{{ order.createdAt | date: 'dd/MM/yyyy' }}</span>
+              <span class="status status--{{ order.status.toLowerCase() }}">{{ statusLabel(order.status) }}</span>
+              <span class="order-card__total">{{ order.totalAmount | currency: 'EUR' }}</span>
+            </button>
+
+            @if (expandedOrderId() === order.id) {
+              <div class="order-card__detail">
+                <ul class="order-card__lines">
+                  @for (line of order.lines; track line.gameId) {
+                    <li>{{ line.quantity }} x {{ line.gameName }} — {{ line.lineTotal | currency: 'EUR' }}</li>
+                  }
+                </ul>
+                @if (canDownloadInvoice(order.status)) {
+                  <button
+                    type="button"
+                    class="btn btn--ghost"
+                    [disabled]="downloadingInvoiceId() === order.id"
+                    (click)="downloadInvoice(order)"
+                  >
+                    {{ downloadingInvoiceId() === order.id ? 'Génération...' : 'Télécharger la facture' }}
+                  </button>
+                }
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    }
   </section>
 }
