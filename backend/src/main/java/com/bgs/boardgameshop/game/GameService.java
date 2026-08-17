@@ -3,6 +3,8 @@ package com.bgs.boardgameshop.game;
 import com.bgs.boardgameshop.order.OrderLine;
 import com.bgs.boardgameshop.order.OrderLineRepository;
 import com.bgs.boardgameshop.order.OrderStatus;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -85,7 +88,13 @@ public class GameService {
     @Transactional(readOnly = true)
     public List<GameResponse> getRelatedGames(Long id) {
         Game game = findEntity(id);
-        List<Game> all = gameRepository.findAll();
+        Long baseId = game.getBaseGame() != null ? game.getBaseGame().getId() : game.getId();
+        Set<Long> gameTagIds = game.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
+
+        // Ne récupère que les candidats plausibles (même base/extension, éditeur,
+        // catégorie ou tag partagé) plutôt que tout le catalogue via findAll() :
+        // évite de charger des jeux qui seront de toute façon exclus juste après.
+        List<Game> candidates = gameRepository.findAll(relatedCandidatesSpec(game, baseId, gameTagIds));
 
         Set<Game> related = new LinkedHashSet<>();
 
@@ -93,23 +102,18 @@ public class GameService {
             related.add(game.getBaseGame());
         }
 
-        Long baseId = game.getBaseGame() != null ? game.getBaseGame().getId() : game.getId();
-        all.stream()
-                .filter(g -> !g.getId().equals(game.getId()))
+        candidates.stream()
                 .filter(g -> g.getBaseGame() != null && g.getBaseGame().getId().equals(baseId))
                 .forEach(related::add);
 
         if (game.getPublisher() != null) {
-            all.stream()
-                    .filter(g -> !g.getId().equals(game.getId()))
+            candidates.stream()
                     .filter(g -> game.getPublisher().equals(g.getPublisher()))
                     .forEach(related::add);
         }
 
-        Set<Long> gameTagIds = game.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
         if (!gameTagIds.isEmpty()) {
-            all.stream()
-                    .filter(g -> !g.getId().equals(game.getId()))
+            candidates.stream()
                     .filter(g -> g.getTags().stream().anyMatch(t -> gameTagIds.contains(t.getId())))
                     .sorted(Comparator.<Game>comparingLong(
                             g -> g.getTags().stream().filter(t -> gameTagIds.contains(t.getId())).count()
@@ -118,8 +122,7 @@ public class GameService {
         }
 
         if (game.getCategory() != null) {
-            all.stream()
-                    .filter(g -> !g.getId().equals(game.getId()))
+            candidates.stream()
                     .filter(g -> game.getCategory().equals(g.getCategory()))
                     .forEach(related::add);
         }
@@ -128,6 +131,24 @@ public class GameService {
                 .limit(RELATED_GAMES_LIMIT)
                 .map(GameResponse::fromEntity)
                 .toList();
+    }
+
+    private Specification<Game> relatedCandidatesSpec(Game game, Long baseId, Set<Long> gameTagIds) {
+        return (root, query, cb) -> {
+            List<Predicate> orPredicates = new ArrayList<>();
+            orPredicates.add(cb.equal(root.join("baseGame", JoinType.LEFT).get("id"), baseId));
+            if (game.getPublisher() != null) {
+                orPredicates.add(cb.equal(root.get("publisher"), game.getPublisher()));
+            }
+            if (game.getCategory() != null) {
+                orPredicates.add(cb.equal(root.get("category"), game.getCategory()));
+            }
+            if (!gameTagIds.isEmpty()) {
+                orPredicates.add(root.join("tags", JoinType.LEFT).get("id").in(gameTagIds));
+            }
+            query.distinct(true);
+            return cb.and(cb.notEqual(root.get("id"), game.getId()), cb.or(orPredicates.toArray(new Predicate[0])));
+        };
     }
 
     private Sort resolveSort(String sortKey) {
