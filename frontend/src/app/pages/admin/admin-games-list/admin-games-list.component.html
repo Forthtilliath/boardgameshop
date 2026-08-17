@@ -22,7 +22,7 @@
         @for (game of games(); track game.id) {
           <tr>
             <td>
-              <div class="admin-table__thumb" [style.background-image]="'url(\'' + game.imageUrl + '\')'"></div>
+              <img class="admin-table__thumb" [src]="game.imageUrl" [alt]="game.name" loading="lazy" decoding="async" />
             </td>
             <td>
               {{ game.name }}

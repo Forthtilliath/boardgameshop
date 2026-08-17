@@ -11,10 +11,13 @@
       <ul class="cart__list">
         @for (item of items(); track item.game.id) {
           <li class="cart__item">
-            <div
+            <img
               class="cart__item-image"
-              [style.background-image]="'url(\'' + item.game.imageUrl + '\')'"
-            ></div>
+              [src]="item.game.imageUrl"
+              [alt]="item.game.name"
+              loading="lazy"
+              decoding="async"
+            />
 
             <div class="cart__item-info">
               <span class="cart__item-name">{{ item.game.name }}</span>
