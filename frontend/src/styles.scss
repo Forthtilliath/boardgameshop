@@ -5,10 +5,48 @@
   --color-text-muted: #5f6b66;
   --color-primary: #1f6f5c;
   --color-primary-dark: #144f42;
-  --color-accent: #e2725b;
+  // #e2725b d'origine ne passait pas WCAG AA (contraste ~2.9:1) utilisé comme
+  // texte d'erreur sur fond clair (login/register/panier/checkout/formulaires
+  // admin...) : assombri à #bd4628 (~4.8-5.2:1) sans trop dévier de la teinte terracotta.
+  --color-accent: #bd4628;
   --color-border: #e4ded3;
   --shadow-card: 0 1px 3px rgba(31, 36, 33, 0.08), 0 1px 2px rgba(31, 36, 33, 0.06);
   --radius: 10px;
+}
+
+// Mode sombre : suit la préférence système par défaut (tant que l'utilisateur n'a
+// pas explicitement choisi via le bouton du header, voir ThemeService), et peut
+// être forcé dans un sens ou l'autre via l'attribut data-theme sur <html>.
+//
+// --color-primary/--color-accent servent à la fois de texte (liens, prix...) et de
+// fond de bouton/badge avec texte blanc par-dessus : deux usages aux besoins de
+// contraste opposés pour une seule variable (héritage du design d'origine). Valeurs
+// choisies en compromis mesuré (contraste ~4-4.7:1 dans les deux rôles) plutôt
+// qu'optimales pour un seul des deux.
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #1a1d1b;
+    --color-surface: #232722;
+    --color-text: #f0ede6;
+    --color-text-muted: #a3ada6;
+    --color-primary: #358d77;
+    --color-primary-dark: #3fa68d;
+    --color-accent: #dd613c;
+    --color-border: #383d38;
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #1a1d1b;
+  --color-surface: #232722;
+  --color-text: #f0ede6;
+  --color-text-muted: #a3ada6;
+  --color-primary: #358d77;
+  --color-primary-dark: #3fa68d;
+  --color-accent: #dd613c;
+  --color-border: #383d38;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -68,6 +106,15 @@ button {
   cursor: not-allowed;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+  .btn:active {
+    transform: none;
+  }
+}
+
 .btn--primary {
   background: var(--color-primary);
   color: #fff;
@@ -124,5 +171,6 @@ button {
 
 .status--en_attente_paiement {
   background: #fdf1d6;
-  color: #93690e;
+  // #93690e ne passait pas tout a fait WCAG AA (~4.4:1) ; assombri a #87610d (~5:1).
+  color: #87610d;
 }

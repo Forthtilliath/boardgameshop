@@ -14,6 +14,9 @@
   border-radius: var(--radius);
   box-shadow: var(--shadow-card);
   font-size: 0.9rem;
+  font-family: inherit;
+  text-align: left;
+  border: none;
   color: #fff;
   cursor: pointer;
   animation: toast-in 0.2s ease-out;
