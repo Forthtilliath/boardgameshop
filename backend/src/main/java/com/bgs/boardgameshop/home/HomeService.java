@@ -34,7 +34,7 @@ public class HomeService {
                 .toList();
 
         List<GameResponse> bestSellers = gameService.getGames(
-                new GameFilter(null, null, null, null, null, null, null, "popularity")
+                new GameFilter(null, null, null, null, null, null, null, "popularity", null)
         ).stream().limit(SECTION_LIMIT).toList();
 
         List<GameResponse> preorders = allGames.stream()

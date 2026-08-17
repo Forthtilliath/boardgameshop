@@ -15,10 +15,12 @@ public record GameFilter(
         Integer maxDuration,
         Integer age,
         List<Long> tagIds,
-        String sort
+        String sort,
+        /** Recherche libre sur le nom et l'éditeur (contains, insensible à la casse). */
+        String search
 ) {
 
     public static GameFilter empty() {
-        return new GameFilter(null, null, null, null, null, null, null, null);
+        return new GameFilter(null, null, null, null, null, null, null, null, null);
     }
 }
