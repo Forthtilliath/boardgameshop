@@ -2,9 +2,10 @@ import { CurrencyPipe } from '@angular/common';
 import type { HttpErrorResponse } from '@angular/common/http';
 import type { ElementRef, OnInit} from '@angular/core';
 import { Component, inject, signal, viewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
 
+import type { OrderResponse } from '../../models/order.model';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { PaymentService } from '../../services/payment.service';
@@ -26,15 +27,17 @@ export class CheckoutComponent implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly paymentService = inject(PaymentService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly paymentElementContainer = viewChild.required<ElementRef<HTMLDivElement>>('paymentElement');
 
   readonly items = this.cartService.items;
-  readonly total = this.cartService.total;
 
   readonly loading = signal(true);
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  /** Montant/réduction réels, tels que recalculés côté serveur (voir OrderService#createOrder). */
+  readonly order = signal<OrderResponse | null>(null);
 
   private stripe: Stripe | null = null;
   private elements: StripeElements | null = null;
@@ -47,13 +50,17 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
+    const promoCode = this.route.snapshot.queryParamMap.get('promo') ?? undefined;
+
     this.orderService
       .createOrder({
-        items: items.map((item) => ({ gameId: item.game.id, quantity: item.quantity }))
+        items: items.map((item) => ({ gameId: item.game.id, quantity: item.quantity })),
+        promoCode
       })
       .subscribe({
         next: (order) => {
           this.orderId = order.id;
+          this.order.set(order);
           this.setupPayment(order.id);
         },
         error: (err: HttpErrorResponse) => {

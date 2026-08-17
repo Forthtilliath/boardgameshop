@@ -38,9 +38,50 @@
 
       <aside class="cart__summary">
         <h2>Récapitulatif</h2>
+
+        @if (appliedPromoCode(); as promo) {
+          <div class="cart__promo cart__promo--applied">
+            <span>Code <strong>{{ promo.code }}</strong> (-{{ promo.discountPercent }}%)</span>
+            <button type="button" class="cart__promo-remove" (click)="removePromoCode()" aria-label="Retirer le code promo">
+              &times;
+            </button>
+          </div>
+        } @else {
+          <div class="cart__promo">
+            <input
+              type="text"
+              placeholder="Code promo"
+              [value]="promoCodeInput()"
+              (input)="promoCodeInput.set($any($event.target).value)"
+            />
+            <button
+              type="button"
+              class="btn btn--ghost"
+              [disabled]="validatingPromoCode()"
+              (click)="applyPromoCode()"
+            >
+              {{ validatingPromoCode() ? '...' : 'Appliquer' }}
+            </button>
+          </div>
+          @if (promoCodeError(); as error) {
+            <p class="cart__promo-error">{{ error }}</p>
+          }
+        }
+
+        @if (appliedPromoCode()) {
+          <div class="cart__summary-row cart__summary-row--muted">
+            <span>Sous-total</span>
+            <span>{{ total() | currency: 'EUR' }}</span>
+          </div>
+          <div class="cart__summary-row cart__summary-row--muted">
+            <span>Réduction</span>
+            <span>-{{ discountAmount() | currency: 'EUR' }}</span>
+          </div>
+        }
+
         <div class="cart__summary-row">
           <span>Total</span>
-          <strong>{{ total() | currency: 'EUR' }}</strong>
+          <strong>{{ discountedTotal() | currency: 'EUR' }}</strong>
         </div>
 
         <button type="button" class="btn btn--primary cart__checkout" (click)="checkout()">

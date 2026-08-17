@@ -38,6 +38,9 @@
                   @for (line of order.lines; track line.gameId) {
                     <li>{{ line.quantity }} x {{ line.gameName }} — {{ line.lineTotal | currency: 'EUR' }}</li>
                   }
+                  @if (order.discountAmount) {
+                    <li>Code {{ order.promoCode }} — -{{ order.discountAmount | currency: 'EUR' }}</li>
+                  }
                 </ul>
                 @if (canDownloadInvoice(order.status)) {
                   <button

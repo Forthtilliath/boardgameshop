@@ -7,6 +7,8 @@ import { AdminGameFormComponent } from './pages/admin/admin-game-form/admin-game
 import { AdminGamesListComponent } from './pages/admin/admin-games-list/admin-games-list.component';
 import { AdminLayoutComponent } from './pages/admin/admin-layout/admin-layout.component';
 import { AdminOrdersListComponent } from './pages/admin/admin-orders-list/admin-orders-list.component';
+import { AdminPromoCodeFormComponent } from './pages/admin/admin-promo-code-form/admin-promo-code-form.component';
+import { AdminPromoCodesListComponent } from './pages/admin/admin-promo-codes-list/admin-promo-codes-list.component';
 import { AdminStatsComponent } from './pages/admin/admin-stats/admin-stats.component';
 import { AdminUsersListComponent } from './pages/admin/admin-users-list/admin-users-list.component';
 import { CartComponent } from './pages/cart/cart.component';
@@ -52,6 +54,17 @@ export const routes: Routes = [
       { path: 'jeux/nouveau', component: AdminGameFormComponent, title: 'BGS Admin - Nouveau jeu' },
       { path: 'jeux/:id/modifier', component: AdminGameFormComponent, title: 'BGS Admin - Modifier le jeu' },
       { path: 'commandes', component: AdminOrdersListComponent, title: 'BGS Admin - Commandes' },
+      { path: 'codes-promo', component: AdminPromoCodesListComponent, title: 'BGS Admin - Codes promo' },
+      {
+        path: 'codes-promo/nouveau',
+        component: AdminPromoCodeFormComponent,
+        title: 'BGS Admin - Nouveau code promo'
+      },
+      {
+        path: 'codes-promo/:id/modifier',
+        component: AdminPromoCodeFormComponent,
+        title: 'BGS Admin - Modifier le code promo'
+      },
       { path: 'utilisateurs', component: AdminUsersListComponent, title: 'BGS Admin - Utilisateurs' }
     ]
   },
