@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * L'utilisateur authentifié fourni par le controller (via @AuthenticationPrincipal)
@@ -50,6 +51,28 @@ public class FavoriteService {
         User user = loadUser(userId);
         user.getFavoriteGames().removeIf(game -> game.getId().equals(gameId));
         userRepository.save(user);
+    }
+
+    /** Renvoie le jeton de partage de l'utilisateur, en le générant s'il n'existe pas encore. */
+    @Transactional
+    public String getOrCreateShareToken(Long userId) {
+        User user = loadUser(userId);
+        if (user.getShareToken() == null) {
+            user.setShareToken(UUID.randomUUID().toString());
+            userRepository.save(user);
+        }
+        return user.getShareToken();
+    }
+
+    /** Favoris consultables publiquement via un lien de partage (lecture seule, sans authentification). */
+    @Transactional(readOnly = true)
+    public List<GameResponse> getFavoritesByShareToken(String token) {
+        User user = userRepository.findByShareToken(token)
+                .orElseThrow(() -> new ShareLinkNotFoundException(token));
+        return user.getFavoriteGames().stream()
+                .map(GameResponse::fromEntity)
+                .sorted(Comparator.comparing(GameResponse::name))
+                .toList();
     }
 
     private User loadUser(Long userId) {

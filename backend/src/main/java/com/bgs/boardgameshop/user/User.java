@@ -59,6 +59,10 @@ public class User {
     @Column(nullable = false)
     private Instant createdAt;
 
+    /** Jeton public (UUID) permettant de partager la liste de favoris en lecture seule ; généré à la demande. */
+    @Column(unique = true)
+    private String shareToken;
+
     // Adresse de livraison basique, en colonnes plates (pas d'entite dediee pour rester simple)
     private String addressLine1;
     private String addressLine2;

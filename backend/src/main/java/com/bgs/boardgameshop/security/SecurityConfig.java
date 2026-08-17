@@ -90,6 +90,9 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/games/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/tags").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/home").permitAll()
+                        // Consultation d'une liste de favoris partagee : public par construction
+                        // (c'est le but du lien), avant la regle generale /api/favorites/** ci-dessous.
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/favorites/shared/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
