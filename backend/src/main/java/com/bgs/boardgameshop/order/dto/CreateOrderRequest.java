@@ -8,6 +8,8 @@ import java.util.List;
 public record CreateOrderRequest(
         @NotEmpty(message = "Le panier ne peut pas être vide")
         @Valid
-        List<OrderItemRequest> items
+        List<OrderItemRequest> items,
+        /** Optionnel : revalidé côté serveur (voir OrderService#createOrder), jamais fait confiance au montant client. */
+        String promoCode
 ) {
 }

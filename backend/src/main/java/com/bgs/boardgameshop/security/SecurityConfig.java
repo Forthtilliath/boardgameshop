@@ -93,6 +93,9 @@ public class SecurityConfig {
                         // Consultation d'une liste de favoris partagee : public par construction
                         // (c'est le but du lien), avant la regle generale /api/favorites/** ci-dessous.
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/favorites/shared/**").permitAll()
+                        // Previsualisation d'un code promo avant de passer commande (public : pas
+                        // besoin d'etre connecte pour voir si un code est valide).
+                        .requestMatchers("/api/promo-codes/validate").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

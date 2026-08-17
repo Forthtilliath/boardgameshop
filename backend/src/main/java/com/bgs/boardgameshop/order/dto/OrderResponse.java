@@ -11,7 +11,9 @@ public record OrderResponse(
         Instant createdAt,
         String status,
         List<OrderLineResponse> lines,
-        BigDecimal totalAmount
+        BigDecimal totalAmount,
+        String promoCode,
+        BigDecimal discountAmount
 ) {
 
     public static OrderResponse fromEntity(Order order) {
@@ -20,7 +22,9 @@ public record OrderResponse(
                 order.getCreatedAt(),
                 order.getStatus().name(),
                 order.getLines().stream().map(OrderLineResponse::fromEntity).toList(),
-                order.getTotalAmount()
+                order.getTotalAmount(),
+                order.getPromoCode(),
+                order.getDiscountAmount()
         );
     }
 }
