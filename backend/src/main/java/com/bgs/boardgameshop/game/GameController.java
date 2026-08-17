@@ -38,4 +38,9 @@ public class GameController {
     public GameResponse getGame(@PathVariable Long id) {
         return gameService.getGame(id);
     }
+
+    @GetMapping("/{id}/related")
+    public List<GameResponse> getRelatedGames(@PathVariable Long id) {
+        return gameService.getRelatedGames(id);
+    }
 }

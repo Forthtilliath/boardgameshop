@@ -44,7 +44,7 @@
           @if (g.minAge) {
             <li><strong>Âge conseillé :</strong> {{ g.minAge }} ans et plus</li>
           }
-          <li><strong>Stock :</strong> {{ g.stock > 0 ? g.stock + ' en stock' : 'Épuisé' }}</li>
+          <li><strong>Disponibilité :</strong> {{ g.stock > 0 ? 'En stock' : 'Épuisé' }}</li>
         </ul>
 
         <div class="detail__price">
@@ -71,6 +71,12 @@
         }
       </div>
     </div>
+
+    <app-game-slider
+      title="Vous pourriez aussi aimer"
+      [games]="relatedGames()"
+      (addToCart)="addRelatedToCart($event)"
+    />
 
     <section class="reviews">
       <h2>Avis clients</h2>

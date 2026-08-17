@@ -117,10 +117,13 @@
         <p class="catalog__status">Aucun jeu ne correspond à ces filtres.</p>
       } @else {
         <div class="catalog__grid">
-          @for (game of games(); track game.id) {
+          @for (game of visibleGames(); track game.id) {
             <app-game-card [game]="game" (addToCart)="addToCart($event)" />
           }
         </div>
+        @if (hasMore()) {
+          <div #sentinel class="catalog__sentinel">Chargement de jeux supplémentaires...</div>
+        }
       }
     </div>
   </div>

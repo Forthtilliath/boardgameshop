@@ -33,4 +33,9 @@ export class GameService {
   getGame(id: number): Observable<Game> {
     return this.http.get<Game>(`${this.baseUrl}/${id}`);
   }
+
+  /** Jeux suggérés sur la fiche d'un jeu : extension/jeu de base, même éditeur, tags ou catégorie en commun. */
+  getRelatedGames(id: number): Observable<Game[]> {
+    return this.http.get<Game[]>(`${this.baseUrl}/${id}/related`);
+  }
 }

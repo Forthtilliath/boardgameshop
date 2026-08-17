@@ -1,4 +1,14 @@
+// Isole le layout flex du header : mettre "display: flex/grid" directement sur
+// :host casse le "position: sticky" du header (repro Chromium confirmee), donc
+// le conteneur qui pousse le footer en bas des pages courtes ne doit englober
+// que main + footer, jamais le header lui-meme.
+.page-body {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 4.2rem);
+}
+
 main {
   display: block;
-  min-height: calc(100vh - 4.5rem);
+  flex: 1;
 }

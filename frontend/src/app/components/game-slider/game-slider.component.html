@@ -1,0 +1,19 @@
+@if (games().length > 0) {
+  <section class="slider">
+    <div class="slider__header">
+      <h2>{{ title() }}</h2>
+      <div class="slider__nav">
+        <button type="button" class="slider__nav-btn" (click)="scroll(-1)" aria-label="Précédent">&larr;</button>
+        <button type="button" class="slider__nav-btn" (click)="scroll(1)" aria-label="Suivant">&rarr;</button>
+      </div>
+    </div>
+
+    <div class="slider__track" #track>
+      @for (game of games(); track game.id) {
+        <div class="slider__item">
+          <app-game-card [game]="game" (addToCart)="addToCart.emit($event)" />
+        </div>
+      }
+    </div>
+  </section>
+}

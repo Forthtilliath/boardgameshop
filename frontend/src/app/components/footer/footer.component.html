@@ -1,0 +1,34 @@
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <span class="footer__logo">BGS</span>
+      <p>Votre boutique de jeux de société, du jeu d'ambiance à la grande stratégie.</p>
+    </div>
+
+    <nav class="footer__nav">
+      <h3>Boutique</h3>
+      <a routerLink="/jeux">Catalogue</a>
+      <a routerLink="/favoris">Favoris</a>
+      <a routerLink="/panier">Panier</a>
+    </nav>
+
+    <nav class="footer__nav">
+      <h3>Compte</h3>
+      <a routerLink="/connexion">Connexion</a>
+      <a routerLink="/inscription">Créer un compte</a>
+      <a routerLink="/mon-compte">Mon compte</a>
+    </nav>
+
+    <div class="footer__nav">
+      <h3>À propos</h3>
+      <p class="footer__text">
+        BGS est un site fictif construit pour explorer Angular et Spring Boot —
+        aucune commande n'est réellement expédiée.
+      </p>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <p class="container">© {{ currentYear }} BGS — BoardGameShop. Projet de démonstration.</p>
+  </div>
+</footer>
