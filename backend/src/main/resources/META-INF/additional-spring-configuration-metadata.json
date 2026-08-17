@@ -6,9 +6,14 @@
       "description": "Cle secrete HMAC (Base64) utilisee pour signer et verifier les JWT."
     },
     {
-      "name": "jwt.expiration-minutes",
+      "name": "jwt.access-expiration-minutes",
       "type": "java.lang.Long",
-      "description": "Duree de validite d'un JWT, en minutes."
+      "description": "Duree de validite d'un access token JWT, en minutes."
+    },
+    {
+      "name": "jwt.refresh-expiration-days",
+      "type": "java.lang.Long",
+      "description": "Duree de validite d'un refresh token JWT, en jours."
     },
     {
       "name": "stripe.secret-key",
