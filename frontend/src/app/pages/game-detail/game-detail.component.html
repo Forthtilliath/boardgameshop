@@ -67,7 +67,19 @@
             </button>
           </div>
         } @else {
-          <button type="button" class="btn btn--primary" disabled>Épuisé</button>
+          <div class="detail__actions">
+            <button type="button" class="btn btn--primary" disabled>Épuisé</button>
+            @if (isAuthenticated()) {
+              <button
+                type="button"
+                class="btn btn--ghost"
+                [disabled]="stockAlertPending()"
+                (click)="toggleStockAlert()"
+              >
+                {{ subscribedToStockAlert() ? '✓ Vous serez alerté' : "M'alerter du retour en stock" }}
+              </button>
+            }
+          </div>
         }
       </div>
     </div>

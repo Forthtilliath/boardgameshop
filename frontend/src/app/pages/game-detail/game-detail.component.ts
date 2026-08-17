@@ -14,6 +14,7 @@ import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { GameService } from '../../services/game.service';
 import { ReviewService } from '../../services/review.service';
+import { StockAlertService } from '../../services/stock-alert.service';
 
 @Component({
   selector: 'app-game-detail',
@@ -28,6 +29,7 @@ export class GameDetailComponent {
   private readonly favoriteService = inject(FavoriteService);
   private readonly authService = inject(AuthService);
   private readonly reviewService = inject(ReviewService);
+  private readonly stockAlertService = inject(StockAlertService);
   private readonly fb = inject(FormBuilder);
 
   /**
@@ -54,6 +56,9 @@ export class GameDetailComponent {
 
   readonly relatedGames = signal<Game[]>([]);
 
+  readonly subscribedToStockAlert = signal(false);
+  readonly stockAlertPending = signal(false);
+
   readonly reviewForm = this.fb.nonNullable.group({
     rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
     comment: ['']
@@ -69,6 +74,7 @@ export class GameDetailComponent {
       this.reviews.set([]);
       this.canReview.set(false);
       this.relatedGames.set([]);
+      this.subscribedToStockAlert.set(false);
 
       this.gameService.getGame(id).subscribe({
         next: (game) => { this.game.set(game); },
@@ -79,6 +85,7 @@ export class GameDetailComponent {
 
       if (this.isAuthenticated()) {
         this.reviewService.canReview(id).subscribe((canReview) => { this.canReview.set(canReview); });
+        this.stockAlertService.isSubscribed(id).subscribe((subscribed) => { this.subscribedToStockAlert.set(subscribed); });
       }
 
       this.gameService.getRelatedGames(id).subscribe((games) => { this.relatedGames.set(games); });
@@ -142,5 +149,24 @@ export class GameDetailComponent {
     if (game) {
       this.favoriteService.toggle(game.id);
     }
+  }
+
+  toggleStockAlert(): void {
+    const game = this.game();
+    if (!game) {
+      return;
+    }
+    this.stockAlertPending.set(true);
+    const request$ = this.subscribedToStockAlert()
+      ? this.stockAlertService.unsubscribe(game.id)
+      : this.stockAlertService.subscribe(game.id);
+
+    request$.subscribe({
+      next: () => {
+        this.subscribedToStockAlert.update((subscribed) => !subscribed);
+        this.stockAlertPending.set(false);
+      },
+      error: () => { this.stockAlertPending.set(false); }
+    });
   }
 }
