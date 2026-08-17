@@ -19,12 +19,17 @@ import java.util.List;
 @Service
 public class OrderService {
 
+    private static final List<OrderStatus> INVOICEABLE_STATUSES =
+            List.of(OrderStatus.PAYEE, OrderStatus.EXPEDIEE, OrderStatus.LIVREE);
+
     private final OrderRepository orderRepository;
     private final GameRepository gameRepository;
+    private final InvoiceService invoiceService;
 
-    public OrderService(OrderRepository orderRepository, GameRepository gameRepository) {
+    public OrderService(OrderRepository orderRepository, GameRepository gameRepository, InvoiceService invoiceService) {
         this.orderRepository = orderRepository;
         this.gameRepository = gameRepository;
+        this.invoiceService = invoiceService;
     }
 
     /**
@@ -76,6 +81,24 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderResponse getOrder(Long id, User currentUser) {
         return OrderResponse.fromEntity(getOwnedOrder(id, currentUser));
+    }
+
+    /** Historique de commandes de l'utilisateur courant, les plus récentes en premier. */
+    @Transactional(readOnly = true)
+    public List<OrderResponse> listMyOrders(User currentUser) {
+        return orderRepository.findByUserIdOrderByCreatedAtDesc(currentUser.getId()).stream()
+                .map(OrderResponse::fromEntity)
+                .toList();
+    }
+
+    /** Facture PDF, uniquement pour une commande dont le paiement a été confirmé. */
+    @Transactional(readOnly = true)
+    public byte[] downloadInvoice(Long id, User currentUser) {
+        Order order = getOwnedOrder(id, currentUser);
+        if (!INVOICEABLE_STATUSES.contains(order.getStatus())) {
+            throw new InvoiceNotAvailableException(id);
+        }
+        return invoiceService.generateInvoice(order);
     }
 
     /**
