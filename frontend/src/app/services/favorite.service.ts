@@ -5,10 +5,12 @@ import { tap } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type { Game } from '../models/game.model';
+import { ToastService } from './toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class FavoriteService {
   private readonly http = inject(HttpClient);
+  private readonly toastService = inject(ToastService);
   private readonly baseUrl = `${environment.apiUrl}/favorites`;
 
   private readonly favoriteIdsSignal = signal<Set<number>>(new Set());
@@ -57,7 +59,10 @@ export class FavoriteService {
     // Seule façon de typer une réponse HTTP sans corps avec HttpClient.
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     return this.http.post<void>(`${this.baseUrl}/${gameId}`, {}).pipe(
-      tap(() => { this.favoriteIdsSignal.update((ids) => new Set(ids).add(gameId)); })
+      tap(() => {
+        this.favoriteIdsSignal.update((ids) => new Set(ids).add(gameId));
+        this.toastService.success('Ajouté aux favoris');
+      })
     );
   }
 
@@ -70,7 +75,8 @@ export class FavoriteService {
           const next = new Set(ids);
           next.delete(gameId);
           return next;
-        }); }
+        });
+        this.toastService.info('Retiré des favoris'); }
       )
     );
   }

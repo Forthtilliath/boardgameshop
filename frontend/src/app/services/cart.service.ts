@@ -1,7 +1,8 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 
 import type { CartItem } from '../models/cart-item.model';
 import type { Game } from '../models/game.model';
+import { ToastService } from './toast.service';
 
 const STORAGE_KEY = 'bgs-cart';
 
@@ -11,6 +12,8 @@ const STORAGE_KEY = 'bgs-cart';
  */
 @Injectable({ providedIn: 'root' })
 export class CartService {
+  private readonly toastService = inject(ToastService);
+
   private readonly itemsSignal = signal<CartItem[]>(this.loadFromStorage());
 
   readonly items = this.itemsSignal.asReadonly();
@@ -34,11 +37,14 @@ export class CartService {
       return [...items, { game, quantity }];
     });
     this.persist();
+    this.toastService.success(`${game.name} ajouté au panier`);
   }
 
   updateQuantity(gameId: number, quantity: number): void {
     if (quantity <= 0) {
-      this.removeFromCart(gameId);
+      // Silencieux : atteindre 0 via le stepper "-" est une interaction courante
+      // et attendue, pas une suppression volontaire méritant une notification.
+      this.removeFromCart(gameId, { silent: true });
       return;
     }
     this.itemsSignal.update((items) =>
@@ -47,9 +53,13 @@ export class CartService {
     this.persist();
   }
 
-  removeFromCart(gameId: number): void {
+  removeFromCart(gameId: number, options?: { silent?: boolean }): void {
+    const removedItem = this.itemsSignal().find((item) => item.game.id === gameId);
     this.itemsSignal.update((items) => items.filter((item) => item.game.id !== gameId));
     this.persist();
+    if (!options?.silent && removedItem) {
+      this.toastService.info(`${removedItem.game.name} retiré du panier`);
+    }
   }
 
   clear(): void {

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import type { AdminPromoCodeRequest } from '../../../models/promo-code.model';
 import { AdminPromoCodeService } from '../../../services/admin-promo-code.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-admin-promo-code-form',
@@ -15,6 +16,7 @@ import { AdminPromoCodeService } from '../../../services/admin-promo-code.servic
 export class AdminPromoCodeFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly adminPromoCodeService = inject(AdminPromoCodeService);
+  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -73,7 +75,10 @@ export class AdminPromoCodeFormComponent {
       : this.adminPromoCodeService.createPromoCode(request);
 
     save$.subscribe({
-      next: () => { void this.router.navigateByUrl('/admin/codes-promo'); },
+      next: () => {
+        this.toastService.success(this.isEditMode ? 'Code promo modifié' : 'Code promo créé');
+        void this.router.navigateByUrl('/admin/codes-promo');
+      },
       error: (err: HttpErrorResponse) => {
         const message = (err.error as { message?: string } | null)?.message;
         this.errorMessage.set(message ?? 'Enregistrement impossible.');

@@ -7,6 +7,7 @@ import type { AdminGameRequest } from '../../../models/game.model';
 import type { Tag } from '../../../models/tag.model';
 import { AdminGameService } from '../../../services/admin-game.service';
 import { TagService } from '../../../services/tag.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-admin-game-form',
@@ -18,6 +19,7 @@ export class AdminGameFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly adminGameService = inject(AdminGameService);
   private readonly tagService = inject(TagService);
+  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -133,7 +135,10 @@ export class AdminGameFormComponent {
       : this.adminGameService.createGame(request);
 
     save$.subscribe({
-      next: () => { void this.router.navigateByUrl('/admin/jeux'); },
+      next: () => {
+        this.toastService.success(this.isEditMode ? 'Jeu modifié' : 'Jeu créé');
+        void this.router.navigateByUrl('/admin/jeux');
+      },
       error: (err: HttpErrorResponse) => {
         const message = (err.error as { message?: string } | null)?.message;
         this.errorMessage.set(message ?? 'Enregistrement impossible.');

@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 
 import type { Game } from '../../../models/game.model';
 import { AdminGameService } from '../../../services/admin-game.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-admin-games-list',
@@ -13,6 +14,7 @@ import { AdminGameService } from '../../../services/admin-game.service';
 })
 export class AdminGamesListComponent {
   private readonly adminGameService = inject(AdminGameService);
+  private readonly toastService = inject(ToastService);
 
   readonly games = signal<Game[]>([]);
   readonly loading = signal(true);
@@ -33,6 +35,9 @@ export class AdminGamesListComponent {
     if (!confirm(`Supprimer "${game.name}" ? Cette action est irréversible.`)) {
       return;
     }
-    this.adminGameService.deleteGame(game.id).subscribe(() => { this.loadGames(); });
+    this.adminGameService.deleteGame(game.id).subscribe(() => {
+      this.loadGames();
+      this.toastService.success(`"${game.name}" supprimé`);
+    });
   }
 }

@@ -5,6 +5,7 @@ import type { ParamMap } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { GameCardComponent } from '../../components/game-card/game-card.component';
+import { SkeletonCardComponent } from '../../components/skeleton-card/skeleton-card.component';
 import type { Game } from '../../models/game.model';
 import type { GameFilter, GameSort } from '../../models/game-filter.model';
 import type { Tag } from '../../models/tag.model';
@@ -67,7 +68,7 @@ function parseFilters(params: ParamMap): ParsedFilters {
  */
 @Component({
   selector: 'app-catalog',
-  imports: [GameCardComponent],
+  imports: [GameCardComponent, SkeletonCardComponent],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'
 })
@@ -79,6 +80,8 @@ export class CatalogComponent {
   private readonly router = inject(Router);
 
   readonly sortOptions = SORT_OPTIONS;
+  /** Nombre de silhouettes affichées pendant le premier chargement (voir catalog.component.html). */
+  readonly skeletonPlaceholders = Array.from({ length: 8 }, (_, i) => i);
 
   private readonly queryParams = toSignal(this.route.queryParamMap, { requireSync: true });
 
