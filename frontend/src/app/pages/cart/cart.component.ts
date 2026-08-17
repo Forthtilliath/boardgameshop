@@ -37,6 +37,10 @@ export class CartComponent {
   }
 
   remove(gameId: number): void {
+    const item = this.items().find((i) => i.game.id === gameId);
+    if (item && !confirm(`Retirer "${item.game.name}" du panier ?`)) {
+      return;
+    }
     this.cartService.removeFromCart(gameId);
   }
 

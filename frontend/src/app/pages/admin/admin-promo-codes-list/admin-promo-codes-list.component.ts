@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 
 import type { AdminPromoCodeResponse } from '../../../models/promo-code.model';
 import { AdminPromoCodeService } from '../../../services/admin-promo-code.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-admin-promo-codes-list',
@@ -13,6 +14,7 @@ import { AdminPromoCodeService } from '../../../services/admin-promo-code.servic
 })
 export class AdminPromoCodesListComponent {
   private readonly adminPromoCodeService = inject(AdminPromoCodeService);
+  private readonly toastService = inject(ToastService);
 
   readonly promoCodes = signal<AdminPromoCodeResponse[]>([]);
   readonly loading = signal(true);
@@ -33,6 +35,9 @@ export class AdminPromoCodesListComponent {
     if (!confirm(`Supprimer le code "${promoCode.code}" ? Cette action est irréversible.`)) {
       return;
     }
-    this.adminPromoCodeService.deletePromoCode(promoCode.id).subscribe(() => { this.loadPromoCodes(); });
+    this.adminPromoCodeService.deletePromoCode(promoCode.id).subscribe(() => {
+      this.loadPromoCodes();
+      this.toastService.success(`Code "${promoCode.code}" supprimé`);
+    });
   }
 }

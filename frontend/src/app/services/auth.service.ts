@@ -6,6 +6,7 @@ import { catchError, of, shareReplay, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import type { LoginRequest, RegisterRequest } from '../models/auth.model';
 import type { User } from '../models/user.model';
+import { ToastService } from './toast.service';
 
 /**
  * Le JWT n'est plus geré côté client : il est posé par le backend dans un cookie
@@ -16,6 +17,7 @@ import type { User } from '../models/user.model';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly toastService = inject(ToastService);
   private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   private readonly currentUserSignal = signal<User | null>(null);
@@ -28,19 +30,26 @@ export class AuthService {
 
   register(request: RegisterRequest): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}/register`, request).pipe(
-      tap((user) => { this.currentUserSignal.set(user); })
+      tap((user) => {
+        this.currentUserSignal.set(user);
+        this.toastService.success(`Bienvenue, ${user.firstName} !`);
+      })
     );
   }
 
   login(request: LoginRequest): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}/login`, request).pipe(
-      tap((user) => { this.currentUserSignal.set(user); })
+      tap((user) => {
+        this.currentUserSignal.set(user);
+        this.toastService.success(`Connecté en tant que ${user.firstName}`);
+      })
     );
   }
 
   logout(): void {
     this.http.post(`${this.baseUrl}/logout`, {}).subscribe();
     this.currentUserSignal.set(null);
+    this.toastService.info('Déconnecté');
   }
 
   /**

@@ -3,13 +3,15 @@ import { RouterOutlet } from '@angular/router';
 
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
+import { ScrollToTopComponent } from './components/scroll-to-top/scroll-to-top.component';
+import { ToastContainerComponent } from './components/toast-container/toast-container.component';
 import { AuthService } from './services/auth.service';
 import { FavoriteService } from './services/favorite.service';
 import { StockAlertService } from './services/stock-alert.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, ToastContainerComponent, ScrollToTopComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

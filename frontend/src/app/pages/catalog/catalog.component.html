@@ -118,7 +118,11 @@
       </div>
 
       @if (loading()) {
-        <p class="catalog__status">Chargement du catalogue...</p>
+        <div class="catalog__grid">
+          @for (i of skeletonPlaceholders; track i) {
+            <app-skeleton-card />
+          }
+        </div>
       } @else if (error()) {
         <p class="catalog__status catalog__status--error">
           Impossible de charger le catalogue. Vérifiez que le serveur BGS est bien démarré.
