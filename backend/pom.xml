@@ -72,6 +72,14 @@
 		</dependency>
 
 		<dependency>
+			<!-- Generation de la facture PDF telechargeable (voir InvoiceService) : dessin direct,
+			     pas besoin d'un moteur de templating HTML (aucun Thymeleaf dans ce projet). -->
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>

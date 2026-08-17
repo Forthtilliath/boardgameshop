@@ -5,6 +5,7 @@ import com.bgs.boardgameshop.game.TagAlreadyExistsException;
 import com.bgs.boardgameshop.game.TagNotFoundException;
 import com.bgs.boardgameshop.order.InsufficientStockException;
 import com.bgs.boardgameshop.order.InvalidOrderStatusTransitionException;
+import com.bgs.boardgameshop.order.InvoiceNotAvailableException;
 import com.bgs.boardgameshop.order.OrderNotFoundException;
 import com.bgs.boardgameshop.payment.OrderNotPayableException;
 import com.bgs.boardgameshop.review.ReviewNotAllowedException;
@@ -69,7 +70,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             TagAlreadyExistsException.class,
             InvalidOrderStatusTransitionException.class,
-            ReviewNotAllowedException.class
+            ReviewNotAllowedException.class,
+            InvoiceNotAvailableException.class
     })
     public ResponseEntity<ApiError> handleConflict(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
