@@ -20,6 +20,11 @@
   color: var(--color-accent);
 }
 
+.catalog__search {
+  max-width: 420px;
+  margin-bottom: 1.5rem;
+}
+
 .catalog__filters {
   display: flex;
   flex-wrap: wrap;
