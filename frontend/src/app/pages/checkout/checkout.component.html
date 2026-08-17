@@ -20,7 +20,7 @@
           [disabled]="loading() || submitting()"
           (click)="submit()"
         >
-          {{ submitting() ? 'Validation...' : 'Payer ' + (total() | currency: 'EUR') }}
+          {{ submitting() ? 'Validation...' : 'Payer ' + (order()?.totalAmount ?? 0 | currency: 'EUR') }}
         </button>
       </div>
 
@@ -39,9 +39,16 @@
           </li>
         }
       </ul>
-      <div class="checkout__total">
-        Total <strong>{{ total() | currency: 'EUR' }}</strong>
-      </div>
+      @if (order(); as o) {
+        @if (o.discountAmount) {
+          <div class="checkout__discount">
+            Code {{ o.promoCode }} <span>-{{ o.discountAmount | currency: 'EUR' }}</span>
+          </div>
+        }
+        <div class="checkout__total">
+          Total <strong>{{ o.totalAmount | currency: 'EUR' }}</strong>
+        </div>
+      }
     </aside>
   </div>
 </section>

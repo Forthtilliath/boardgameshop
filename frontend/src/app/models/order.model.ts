@@ -5,6 +5,8 @@ export interface OrderItemRequest {
 
 export interface CreateOrderRequest {
   items: OrderItemRequest[];
+  /** Revalidé côté serveur : voir OrderService#createOrder côté back. */
+  promoCode?: string;
 }
 
 export interface OrderLineResponse {
@@ -21,6 +23,8 @@ export interface OrderResponse {
   status: string;
   lines: OrderLineResponse[];
   totalAmount: number;
+  promoCode: string | null;
+  discountAmount: number | null;
 }
 
 export type OrderStatus =

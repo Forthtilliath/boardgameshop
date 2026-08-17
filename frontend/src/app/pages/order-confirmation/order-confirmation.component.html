@@ -24,6 +24,12 @@
       }
     </ul>
 
+    @if (o.discountAmount) {
+      <div class="confirmation__discount">
+        Code {{ o.promoCode }} : <span>-{{ o.discountAmount | currency: 'EUR' }}</span>
+      </div>
+    }
+
     <div class="confirmation__total">
       Total : <strong>{{ o.totalAmount | currency: 'EUR' }}</strong>
     </div>

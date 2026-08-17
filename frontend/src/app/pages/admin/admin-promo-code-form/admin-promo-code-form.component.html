@@ -1,0 +1,41 @@
+<div class="admin-page__header">
+  <h1>{{ isEditMode ? 'Modifier le code promo' : 'Nouveau code promo' }}</h1>
+  <a routerLink="/admin/codes-promo" class="btn btn--ghost">Retour</a>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="promo-form">
+  <div class="promo-form__grid">
+    <label class="field">
+      <span>Code</span>
+      <input type="text" formControlName="code" placeholder="BIENVENUE10" />
+    </label>
+
+    <label class="field">
+      <span>Réduction (%)</span>
+      <input type="number" min="1" max="100" formControlName="discountPercent" />
+    </label>
+
+    <label class="field">
+      <span>Date d'expiration (optionnel)</span>
+      <input type="date" formControlName="expiresAt" />
+    </label>
+
+    <label class="field">
+      <span>Nombre d'utilisations max (optionnel)</span>
+      <input type="number" min="1" formControlName="maxUses" />
+    </label>
+
+    <label class="field field--checkbox">
+      <input type="checkbox" formControlName="active" />
+      <span>Actif</span>
+    </label>
+  </div>
+
+  @if (errorMessage(); as message) {
+    <p class="promo-form__error">{{ message }}</p>
+  }
+
+  <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+    {{ submitting() ? 'Enregistrement...' : 'Enregistrer' }}
+  </button>
+</form>

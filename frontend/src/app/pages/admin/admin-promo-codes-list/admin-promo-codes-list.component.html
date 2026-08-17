@@ -1,0 +1,44 @@
+<div class="admin-page__header">
+  <h1>Codes promo</h1>
+  <a routerLink="/admin/codes-promo/nouveau" class="btn btn--primary">+ Nouveau code</a>
+</div>
+
+@if (loading()) {
+  <p class="admin-page__status">Chargement...</p>
+} @else {
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Réduction</th>
+          <th>Statut</th>
+          <th>Expiration</th>
+          <th>Utilisations</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (promoCode of promoCodes(); track promoCode.id) {
+          <tr>
+            <td>{{ promoCode.code }}</td>
+            <td>-{{ promoCode.discountPercent }}%</td>
+            <td>
+              <span class="status" [class.status--payee]="promoCode.active" [class.status--annulee]="!promoCode.active">
+                {{ promoCode.active ? 'Actif' : 'Inactif' }}
+              </span>
+            </td>
+            <td>{{ promoCode.expiresAt ? (promoCode.expiresAt | date: 'dd/MM/yyyy') : 'Sans limite' }}</td>
+            <td>{{ promoCode.usesCount }}{{ promoCode.maxUses ? ' / ' + promoCode.maxUses : '' }}</td>
+            <td class="admin-table__actions">
+              <a [routerLink]="['/admin/codes-promo', promoCode.id, 'modifier']" class="btn btn--ghost">Modifier</a>
+              <button type="button" class="btn btn--ghost admin-table__delete" (click)="deletePromoCode(promoCode)">
+                Supprimer
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
