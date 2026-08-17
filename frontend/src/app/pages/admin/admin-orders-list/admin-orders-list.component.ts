@@ -2,20 +2,12 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 
 import type { AdminOrderResponse, OrderStatus } from '../../../models/order.model';
+import { orderStatusLabel } from '../../../models/order.model';
 import { AdminOrderService } from '../../../services/admin-order.service';
 
 const NEXT_STATUSES: Partial<Record<OrderStatus, OrderStatus[]>> = {
   PAYEE: ['EXPEDIEE', 'ANNULEE'],
   EXPEDIEE: ['LIVREE', 'ANNULEE']
-};
-
-const STATUS_LABELS: Record<OrderStatus, string> = {
-  EN_ATTENTE_PAIEMENT: 'En attente de paiement',
-  PAYEE: 'Payée',
-  ECHOUEE: 'Paiement échoué',
-  EXPEDIEE: 'Expédiée',
-  LIVREE: 'Livrée',
-  ANNULEE: 'Annulée'
 };
 
 @Component({
@@ -36,10 +28,7 @@ export class AdminOrdersListComponent {
   }
 
   statusLabel(status: string): string {
-    // Cast défensif : `status` vient du backend et n'est pas garanti d'être
-    // une valeur connue de OrderStatus, même si le typage le suppose.
-    const label = STATUS_LABELS[status as OrderStatus] as string | undefined;
-    return label ?? status;
+    return orderStatusLabel(status);
   }
 
   nextStatuses(status: string): OrderStatus[] {

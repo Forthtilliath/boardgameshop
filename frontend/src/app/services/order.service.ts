@@ -14,7 +14,16 @@ export class OrderService {
     return this.http.post<OrderResponse>(this.baseUrl, request);
   }
 
+  /** Historique des commandes de l'utilisateur connecté, les plus récentes en premier. */
+  listMyOrders(): Observable<OrderResponse[]> {
+    return this.http.get<OrderResponse[]>(this.baseUrl);
+  }
+
   getOrder(id: number): Observable<OrderResponse> {
     return this.http.get<OrderResponse>(`${this.baseUrl}/${id}`);
+  }
+
+  downloadInvoice(id: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${id}/invoice`, { responseType: 'blob' });
   }
 }
