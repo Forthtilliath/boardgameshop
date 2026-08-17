@@ -3,10 +3,15 @@ package com.bgs.boardgameshop.game;
 import com.bgs.boardgameshop.order.OrderLine;
 import com.bgs.boardgameshop.order.OrderLineRepository;
 import com.bgs.boardgameshop.order.OrderStatus;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,15 +34,36 @@ public class GameService {
         this.orderLineRepository = orderLineRepository;
     }
 
+    /** Usage interne (admin, page d'accueil) : liste complète, non paginée. */
     @Transactional(readOnly = true)
     public List<GameResponse> getGames(GameFilter filter) {
-        List<GameResponse> games = gameRepository.findAll().stream()
-                .map(GameResponse::fromEntity)
-                .filter(g -> matches(g, filter))
-                .collect(Collectors.toCollection(ArrayList::new));
+        return getGames(filter, Pageable.unpaged()).getContent();
+    }
 
-        sort(games, filter.sort());
-        return games;
+    /** Catalogue public : filtré, trié et paginé côté base de données (voir GameSpecifications). */
+    @Transactional(readOnly = true)
+    public Page<GameResponse> getGames(GameFilter filter, Pageable pageable) {
+        var spec = GameSpecifications.fromFilter(filter);
+
+        // La popularité (nb de ventes) vient d'une agrégation sur OrderLine, pas d'une
+        // colonne de Game : pas exprimable simplement dans la même Specification/Sort
+        // JPA. Traitée à part : tri en mémoire sur le sous-ensemble déjà filtré par la
+        // DB (déjà petit vu les autres filtres), puis pagination manuelle.
+        if ("popularity".equals(filter.sort())) {
+            return getGamesSortedByPopularity(spec, pageable);
+        }
+
+        Sort sort = resolveSort(filter.sort());
+        Pageable effectivePageable = pageable.isPaged()
+                ? PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort)
+                : (sort.isSorted() ? Pageable.unpaged(sort) : Pageable.unpaged());
+
+        return gameRepository.findAll(spec, effectivePageable).map(GameResponse::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getCategories() {
+        return gameRepository.findDistinctCategories();
     }
 
     @Transactional(readOnly = true)
@@ -104,69 +130,37 @@ public class GameService {
                 .toList();
     }
 
-    private boolean matches(GameResponse game, GameFilter filter) {
-        if (filter.category() != null && !filter.category().isBlank()
-                && !filter.category().equalsIgnoreCase(game.category())) {
-            return false;
+    private Sort resolveSort(String sortKey) {
+        if (sortKey == null) {
+            return Sort.unsorted();
         }
-        if (filter.priceMin() != null && game.finalPrice().compareTo(filter.priceMin()) < 0) {
-            return false;
-        }
-        if (filter.priceMax() != null && game.finalPrice().compareTo(filter.priceMax()) > 0) {
-            return false;
-        }
-        if (filter.players() != null) {
-            if (game.minPlayers() != null && filter.players() < game.minPlayers()) {
-                return false;
-            }
-            if (game.maxPlayers() != null && filter.players() > game.maxPlayers()) {
-                return false;
-            }
-        }
-        if (filter.maxDuration() != null && game.durationMinutes() != null
-                && game.durationMinutes() > filter.maxDuration()) {
-            return false;
-        }
-        if (filter.age() != null && game.minAge() != null && game.minAge() > filter.age()) {
-            return false;
-        }
-        if (filter.tagIds() != null && !filter.tagIds().isEmpty()) {
-            boolean hasRequestedTag = game.tags().stream()
-                    .anyMatch(tag -> filter.tagIds().contains(tag.id()));
-            if (!hasRequestedTag) {
-                return false;
-            }
-        }
-        return true;
+        return switch (sortKey) {
+            case "price_asc" -> Sort.by(Sort.Order.asc("price"));
+            case "price_desc" -> Sort.by(Sort.Order.desc("price"));
+            case "newest" -> Sort.by(Sort.Order.desc("releaseDate").nullsLast());
+            case "rating" -> Sort.by(Sort.Order.desc("reviewsAverage").nullsLast());
+            default -> Sort.unsorted();
+        };
     }
 
-    private void sort(List<GameResponse> games, String sortKey) {
-        if (sortKey == null) {
-            return;
-        }
-
-        Comparator<GameResponse> comparator = switch (sortKey) {
-            case "price_asc" -> Comparator.comparing(GameResponse::finalPrice);
-            case "price_desc" -> Comparator.comparing(GameResponse::finalPrice).reversed();
-            case "newest" -> Comparator.comparing(
-                    GameResponse::releaseDate,
-                    Comparator.nullsLast(Comparator.reverseOrder())
-            );
-            case "popularity" -> {
-                Map<Long, Long> quantitySoldByGame = computeQuantitySoldByGame();
-                yield Comparator.<GameResponse, Long>comparing(
+    private Page<GameResponse> getGamesSortedByPopularity(Specification<Game> spec, Pageable pageable) {
+        Map<Long, Long> quantitySoldByGame = computeQuantitySoldByGame();
+        List<GameResponse> sorted = gameRepository.findAll(spec).stream()
+                .map(GameResponse::fromEntity)
+                .sorted(Comparator.<GameResponse, Long>comparing(
                         g -> quantitySoldByGame.getOrDefault(g.id(), 0L)
-                ).reversed();
-            }
-            case "rating" -> Comparator.comparing(
-                    (GameResponse g) -> g.reviewsAverage() == null ? -1.0 : g.reviewsAverage()
-            ).reversed();
-            default -> null;
-        };
+                ).reversed())
+                .toList();
 
-        if (comparator != null) {
-            games.sort(comparator);
+        if (!pageable.isPaged()) {
+            return new PageImpl<>(sorted, Pageable.unpaged(), sorted.size());
         }
+        int start = (int) pageable.getOffset();
+        if (start >= sorted.size()) {
+            return new PageImpl<>(List.of(), pageable, sorted.size());
+        }
+        int end = Math.min(start + pageable.getPageSize(), sorted.size());
+        return new PageImpl<>(sorted.subList(start, end), pageable, sorted.size());
     }
 
     private Map<Long, Long> computeQuantitySoldByGame() {
