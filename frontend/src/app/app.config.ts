@@ -16,6 +16,9 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    // Le header CSRF (X-XSRF-TOKEN) est ajoute a la main dans authInterceptor plutot
+    // que via withXsrfConfiguration : voir le commentaire de authInterceptor pour le
+    // pourquoi (le support XSRF integre d'Angular n'agit pas sur les URLs absolues).
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAppInitializer(() => {
       const authService = inject(AuthService);

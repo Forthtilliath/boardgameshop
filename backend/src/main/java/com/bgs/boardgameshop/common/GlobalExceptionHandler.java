@@ -8,6 +8,7 @@ import com.bgs.boardgameshop.order.InvalidOrderStatusTransitionException;
 import com.bgs.boardgameshop.order.OrderNotFoundException;
 import com.bgs.boardgameshop.payment.OrderNotPayableException;
 import com.bgs.boardgameshop.review.ReviewNotAllowedException;
+import com.bgs.boardgameshop.security.TooManyLoginAttemptsException;
 import com.bgs.boardgameshop.user.EmailAlreadyUsedException;
 import com.stripe.exception.StripeException;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleEmailAlreadyUsed(EmailAlreadyUsedException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ApiError.of(HttpStatus.CONFLICT.value(), "Conflict", ex.getMessage()));
+    }
+
+    @ExceptionHandler(TooManyLoginAttemptsException.class)
+    public ResponseEntity<ApiError> handleTooManyLoginAttempts(TooManyLoginAttemptsException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(ApiError.of(HttpStatus.TOO_MANY_REQUESTS.value(), "Too Many Requests", ex.getMessage()));
     }
 
     @ExceptionHandler(BadCredentialsException.class)

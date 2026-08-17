@@ -1,67 +1,79 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import type { Observable} from 'rxjs';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, of, shareReplay, tap, throwError } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import type { AuthResponse, LoginRequest, RegisterRequest } from '../models/auth.model';
+import type { LoginRequest, RegisterRequest } from '../models/auth.model';
 import type { User } from '../models/user.model';
 
-const TOKEN_KEY = 'bgs-token';
-
+/**
+ * Le JWT n'est plus geré côté client : il est posé par le backend dans un cookie
+ * HttpOnly (access + refresh), invisible en JS (immunisé contre le vol par XSS).
+ * Ce service ne fait plus que suivre l'utilisateur courant en mémoire (signal) ;
+ * `withCredentials` (voir authInterceptor) fait circuler les cookies automatiquement.
+ */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   private readonly currentUserSignal = signal<User | null>(null);
+  /** Dédupe les refresh concurrents (plusieurs 401 en rafale ne déclenchent qu'un seul appel). */
+  private refreshInProgress$: Observable<unknown> | null = null;
 
   readonly currentUser = this.currentUserSignal.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
   readonly isAdmin = computed(() => this.currentUserSignal()?.role === 'ADMIN');
 
-  register(request: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, request).pipe(
-      tap((response) => { this.applyAuth(response); })
+  register(request: RegisterRequest): Observable<User> {
+    return this.http.post<User>(`${this.baseUrl}/register`, request).pipe(
+      tap((user) => { this.currentUserSignal.set(user); })
     );
   }
 
-  login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request).pipe(
-      tap((response) => { this.applyAuth(response); })
+  login(request: LoginRequest): Observable<User> {
+    return this.http.post<User>(`${this.baseUrl}/login`, request).pipe(
+      tap((user) => { this.currentUserSignal.set(user); })
     );
   }
 
   logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
+    this.http.post(`${this.baseUrl}/logout`, {}).subscribe();
     this.currentUserSignal.set(null);
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+  /**
+   * Renouvelle l'access token via le refresh token (cookie), utilisé par authInterceptor
+   * sur un 401. Les appels concurrents partagent le même Observable (shareReplay) plutôt
+   * que de déclencher un refresh par requête en échec.
+   */
+  refresh(): Observable<unknown> {
+    if (!this.refreshInProgress$) {
+      this.refreshInProgress$ = this.http.post(`${this.baseUrl}/refresh`, {}).pipe(
+        tap({ complete: () => { this.refreshInProgress$ = null; } }),
+        catchError((err) => {
+          this.refreshInProgress$ = null;
+          return throwError(() => err);
+        }),
+        shareReplay(1)
+      );
+    }
+    return this.refreshInProgress$;
   }
 
   /**
-   * Recharge l'utilisateur courant à partir d'un token déjà stocké (au démarrage
-   * de l'app). Appelé une seule fois via provideAppInitializer.
+   * Recharge l'utilisateur courant depuis le backend (le cookie de session, s'il
+   * existe, est invisible en JS donc on tente toujours l'appel). Appelé une seule
+   * fois via provideAppInitializer.
    */
   restoreSession(): Observable<unknown> {
-    const token = this.getToken();
-    if (!token) {
-      return of(null);
-    }
-
     return this.http.get<User>(`${this.baseUrl}/me`).pipe(
       tap((user) => { this.currentUserSignal.set(user); }),
       catchError(() => {
-        this.logout();
+        this.currentUserSignal.set(null);
         return of(null);
       })
     );
-  }
-
-  private applyAuth(response: AuthResponse): void {
-    localStorage.setItem(TOKEN_KEY, response.token);
-    this.currentUserSignal.set(response.user);
   }
 }
