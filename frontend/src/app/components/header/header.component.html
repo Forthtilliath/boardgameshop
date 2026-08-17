@@ -71,6 +71,15 @@
           Connexion
         </a>
       }
+
+      <button
+        type="button"
+        class="header__theme-toggle"
+        (click)="toggleTheme()"
+        [attr.aria-label]="theme() === 'dark' ? 'Passer en thème clair' : 'Passer en thème sombre'"
+      >
+        {{ theme() === 'dark' ? '☀️' : '🌙' }}
+      </button>
     </nav>
   </div>
 </header>

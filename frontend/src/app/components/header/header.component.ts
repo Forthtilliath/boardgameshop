@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { StockAlertService } from '../../services/stock-alert.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +16,14 @@ export class HeaderComponent {
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
   private readonly stockAlertService = inject(StockAlertService);
+  private readonly themeService = inject(ThemeService);
   private readonly router = inject(Router);
+
+  readonly theme = this.themeService.theme;
+
+  toggleTheme(): void {
+    this.themeService.toggle();
+  }
 
   readonly itemCount = this.cartService.itemCount;
   readonly isAuthenticated = this.authService.isAuthenticated;

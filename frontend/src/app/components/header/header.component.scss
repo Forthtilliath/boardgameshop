@@ -81,6 +81,15 @@
   font-weight: 700;
 }
 
+.header__theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+}
+
 .header__alerts {
   position: relative;
 }

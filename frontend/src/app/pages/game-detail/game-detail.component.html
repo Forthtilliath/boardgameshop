@@ -58,9 +58,9 @@
         @if (g.stock > 0) {
           <div class="detail__actions">
             <div class="stepper">
-              <button type="button" (click)="decrement()">-</button>
+              <button type="button" aria-label="Diminuer la quantité" (click)="decrement()">-</button>
               <span>{{ quantity() }}</span>
-              <button type="button" (click)="increment()">+</button>
+              <button type="button" aria-label="Augmenter la quantité" (click)="increment()">+</button>
             </div>
             <button type="button" class="btn btn--primary" (click)="addToCart()">
               {{ added() ? 'Ajouté !' : 'Ajouter au panier' }}
