@@ -19,6 +19,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { SharedFavoritesComponent } from './pages/shared-favorites/shared-favorites.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'BGS - Accueil' },
@@ -26,6 +27,11 @@ export const routes: Routes = [
   { path: 'jeux/:id', component: GameDetailComponent, title: 'BGS - Détail du jeu' },
   { path: 'panier', component: CartComponent, title: 'BGS - Panier' },
   { path: 'favoris', component: FavoritesComponent, title: 'BGS - Mes favoris', canActivate: [authGuard] },
+  {
+    path: 'favoris/partages/:token',
+    component: SharedFavoritesComponent,
+    title: 'BGS - Favoris partagés'
+  },
   { path: 'commande', component: CheckoutComponent, title: 'BGS - Paiement', canActivate: [authGuard] },
   {
     path: 'confirmation/:id',

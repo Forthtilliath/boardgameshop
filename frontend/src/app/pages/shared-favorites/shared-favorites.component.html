@@ -1,0 +1,20 @@
+<section class="container shared-favorites">
+  <h1>Liste de favoris partagée</h1>
+
+  @if (loading()) {
+    <p class="shared-favorites__status">Chargement...</p>
+  } @else if (notFound()) {
+    <p class="shared-favorites__status">
+      Ce lien de partage n'existe pas ou n'est plus valide.
+      <a routerLink="/jeux">Voir le catalogue</a>
+    </p>
+  } @else if (games().length === 0) {
+    <p class="shared-favorites__status">Cette liste ne contient aucun favori pour le moment.</p>
+  } @else {
+    <div class="shared-favorites__grid">
+      @for (game of games(); track game.id) {
+        <app-game-card [game]="game" (addToCart)="addToCart($event)" />
+      }
+    </div>
+  }
+</section>

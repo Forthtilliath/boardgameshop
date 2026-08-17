@@ -35,6 +35,16 @@ export class FavoriteService {
     return this.http.get<Game[]>(this.baseUrl);
   }
 
+  /** Crée (ou récupère) le lien de partage en lecture seule de ses favoris. */
+  getShareLink(): Observable<{ token: string }> {
+    return this.http.get<{ token: string }>(`${this.baseUrl}/share-link`);
+  }
+
+  /** Consultation publique (sans authentification) d'une liste de favoris partagée. */
+  getSharedFavorites(token: string): Observable<Game[]> {
+    return this.http.get<Game[]>(`${this.baseUrl}/shared/${token}`);
+  }
+
   toggle(gameId: number): void {
     if (this.isFavorite(gameId)) {
       this.remove(gameId).subscribe();
