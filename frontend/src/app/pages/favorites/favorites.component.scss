@@ -2,6 +2,20 @@
   padding: 2.5rem 1.5rem 4rem;
 }
 
+.favorites__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.favorites__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
 .favorites__status {
   color: var(--color-text-muted);
   padding: 2rem 0;

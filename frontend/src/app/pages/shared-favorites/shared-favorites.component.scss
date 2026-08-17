@@ -1,0 +1,15 @@
+.shared-favorites {
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.shared-favorites__status {
+  color: var(--color-text-muted);
+  padding: 2rem 0;
+}
+
+.shared-favorites__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}

@@ -1,5 +1,15 @@
 <section class="container favorites">
-  <h1>Mes favoris</h1>
+  <div class="favorites__header">
+    <h1>Mes favoris</h1>
+    @if (games().length > 0) {
+      <div class="favorites__actions">
+        <button type="button" class="btn btn--ghost" [disabled]="sharing()" (click)="shareFavorites()">
+          {{ shareLinkCopied() ? 'Lien copié !' : (sharing() ? 'Génération...' : 'Partager mes favoris') }}
+        </button>
+        <button type="button" class="btn btn--ghost" (click)="exportCsv()">Exporter en CSV</button>
+      </div>
+    }
+  </div>
 
   @if (loading()) {
     <p class="favorites__status">Chargement...</p>
