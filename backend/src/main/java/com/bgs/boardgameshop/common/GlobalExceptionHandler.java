@@ -1,5 +1,6 @@
 package com.bgs.boardgameshop.common;
 
+import com.bgs.boardgameshop.favorite.ShareLinkNotFoundException;
 import com.bgs.boardgameshop.game.GameNotFoundException;
 import com.bgs.boardgameshop.game.TagAlreadyExistsException;
 import com.bgs.boardgameshop.game.TagNotFoundException;
@@ -25,7 +26,12 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({GameNotFoundException.class, OrderNotFoundException.class, TagNotFoundException.class})
+    @ExceptionHandler({
+            GameNotFoundException.class,
+            OrderNotFoundException.class,
+            TagNotFoundException.class,
+            ShareLinkNotFoundException.class
+    })
     public ResponseEntity<ApiError> handleNotFound(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ApiError.of(HttpStatus.NOT_FOUND.value(), "Not Found", ex.getMessage()));

@@ -29,6 +29,18 @@ public class FavoriteController {
         return favoriteService.getFavorites(principal.getUser().getId());
     }
 
+    /** Génère (ou renvoie) le jeton permettant de partager sa liste de favoris en lecture seule. */
+    @GetMapping("/share-link")
+    public ShareLinkResponse getShareLink(@AuthenticationPrincipal SecurityUser principal) {
+        return new ShareLinkResponse(favoriteService.getOrCreateShareToken(principal.getUser().getId()));
+    }
+
+    /** Consultation publique d'une liste de favoris partagée, sans authentification. */
+    @GetMapping("/shared/{token}")
+    public List<GameResponse> getSharedFavorites(@PathVariable String token) {
+        return favoriteService.getFavoritesByShareToken(token);
+    }
+
     @PostMapping("/{gameId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addFavorite(@PathVariable Long gameId, @AuthenticationPrincipal SecurityUser principal) {
