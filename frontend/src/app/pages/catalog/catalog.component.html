@@ -4,6 +4,16 @@
     <p>Des jeux de société pour toutes les tablées, du jeu d'ambiance à la grande stratégie.</p>
   </div>
 
+  <label class="catalog__search field">
+    <span>Rechercher</span>
+    <input
+      type="search"
+      placeholder="Nom du jeu, éditeur..."
+      [value]="searchInput()"
+      (input)="onSearchInput($event)"
+    />
+  </label>
+
   <div class="catalog__filters">
     @for (category of categories(); track category) {
       <button
@@ -27,8 +37,8 @@
           <input
             type="number"
             min="0"
-            [value]="priceMin()"
-            (input)="priceMin.set($any($event.target).value ? +$any($event.target).value : null)"
+            [value]="priceMinInput()"
+            (input)="priceMinInput.set($any($event.target).value ? +$any($event.target).value : null)"
           />
         </label>
         <label class="field">
@@ -36,8 +46,8 @@
           <input
             type="number"
             min="0"
-            [value]="priceMax()"
-            (input)="priceMax.set($any($event.target).value ? +$any($event.target).value : null)"
+            [value]="priceMaxInput()"
+            (input)="priceMaxInput.set($any($event.target).value ? +$any($event.target).value : null)"
           />
         </label>
       </div>
@@ -47,8 +57,8 @@
         <input
           type="number"
           min="1"
-          [value]="players()"
-          (input)="players.set($any($event.target).value ? +$any($event.target).value : null)"
+          [value]="playersInput()"
+          (input)="playersInput.set($any($event.target).value ? +$any($event.target).value : null)"
         />
       </label>
 
@@ -57,8 +67,8 @@
         <input
           type="number"
           min="0"
-          [value]="maxDuration()"
-          (input)="maxDuration.set($any($event.target).value ? +$any($event.target).value : null)"
+          [value]="maxDurationInput()"
+          (input)="maxDurationInput.set($any($event.target).value ? +$any($event.target).value : null)"
         />
       </label>
 
@@ -67,8 +77,8 @@
         <input
           type="number"
           min="0"
-          [value]="age()"
-          (input)="age.set($any($event.target).value ? +$any($event.target).value : null)"
+          [value]="ageInput()"
+          (input)="ageInput.set($any($event.target).value ? +$any($event.target).value : null)"
         />
       </label>
 
@@ -96,7 +106,7 @@
 
     <div class="catalog__results">
       <div class="catalog__toolbar">
-        <span class="catalog__count">{{ games().length }} jeu(x)</span>
+        <span class="catalog__count">{{ totalElements() }} jeu(x)</span>
         <label class="catalog__sort">
           <span>Trier par</span>
           <select (change)="onSortChange($event)">
@@ -117,12 +127,14 @@
         <p class="catalog__status">Aucun jeu ne correspond à ces filtres.</p>
       } @else {
         <div class="catalog__grid">
-          @for (game of visibleGames(); track game.id) {
+          @for (game of games(); track game.id) {
             <app-game-card [game]="game" (addToCart)="addToCart($event)" />
           }
         </div>
         @if (hasMore()) {
-          <div #sentinel class="catalog__sentinel">Chargement de jeux supplémentaires...</div>
+          <div #sentinel class="catalog__sentinel">
+            {{ loadingMore() ? 'Chargement de jeux supplémentaires...' : '' }}
+          </div>
         }
       }
     </div>

@@ -1,4 +1,4 @@
-export type GameSort = 'newest' | 'price_asc' | 'price_desc' | 'popularity';
+export type GameSort = 'newest' | 'price_asc' | 'price_desc' | 'popularity' | 'rating';
 
 export interface GameFilter {
   category?: string;
@@ -9,4 +9,5 @@ export interface GameFilter {
   age?: number;
   tags?: number[];
   sort?: GameSort;
+  search?: string;
 }
