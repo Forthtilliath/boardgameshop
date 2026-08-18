@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import type { Game } from '../../../models/game.model';
@@ -18,6 +18,19 @@ export class AdminGamesListComponent {
 
   readonly games = signal<Game[]>([]);
   readonly loading = signal(true);
+  readonly searchTerm = signal('');
+
+  /** Recherche cote client (nom/editeur) : la liste complete est deja chargee en memoire. */
+  readonly filteredGames = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    if (!term) {
+      return this.games();
+    }
+    return this.games().filter(
+      (game) =>
+        game.name.toLowerCase().includes(term) || (game.publisher?.toLowerCase().includes(term) ?? false)
+    );
+  });
 
   constructor() {
     this.loadGames();

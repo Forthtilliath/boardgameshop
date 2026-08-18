@@ -3,8 +3,20 @@
   <a routerLink="/admin/jeux/nouveau" class="btn btn--primary">+ Nouveau jeu</a>
 </div>
 
+<label class="admin-page__search field">
+  <span>Rechercher</span>
+  <input
+    type="search"
+    placeholder="Nom du jeu, éditeur..."
+    [value]="searchTerm()"
+    (input)="searchTerm.set($any($event.target).value)"
+  />
+</label>
+
 @if (loading()) {
   <p class="admin-page__status">Chargement...</p>
+} @else if (filteredGames().length === 0) {
+  <p class="admin-page__status">Aucun jeu ne correspond à cette recherche.</p>
 } @else {
   <div class="table-wrap">
     <table class="admin-table">
@@ -19,7 +31,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (game of games(); track game.id) {
+        @for (game of filteredGames(); track game.id) {
           <tr>
             <td>
               <img class="admin-table__thumb" [src]="game.imageUrl" [alt]="game.name" loading="lazy" decoding="async" />
