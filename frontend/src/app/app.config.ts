@@ -1,5 +1,5 @@
 import { registerLocaleData } from '@angular/common';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import localeFr from '@angular/common/locales/fr';
 import type { ApplicationConfig} from '@angular/core';
 import { inject, LOCALE_ID, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
@@ -20,7 +20,9 @@ export const appConfig: ApplicationConfig = {
     // Le header CSRF (X-XSRF-TOKEN) est ajoute a la main dans authInterceptor plutot
     // que via withXsrfConfiguration : voir le commentaire de authInterceptor pour le
     // pourquoi (le support XSRF integre d'Angular n'agit pas sur les URLs absolues).
-    provideHttpClient(withInterceptors([authInterceptor])),
+    // withFetch() : recommande par Angular pour le SSR (meilleure compatibilite/perf
+    // que l'emulation XHR cote serveur).
+    provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
     provideAppInitializer(() => {
       const authService = inject(AuthService);
       return authService.restoreSession();
