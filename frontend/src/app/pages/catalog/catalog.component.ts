@@ -1,5 +1,6 @@
+import { isPlatformBrowser } from '@angular/common';
 import type { ElementRef } from '@angular/core';
-import { Component, effect, inject, signal, viewChild } from '@angular/core';
+import { Component, effect, inject, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import type { ParamMap } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -78,6 +79,7 @@ export class CatalogComponent {
   private readonly cartService = inject(CartService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly sortOptions = SORT_OPTIONS;
   /** Nombre de silhouettes affichées pendant le premier chargement (voir catalog.component.html). */
@@ -136,7 +138,12 @@ export class CatalogComponent {
 
     // Reobserve le repere de fin de liste a chaque fois qu'il (re)apparait dans le DOM
     // (nouveau chargement, changement de filtres, ou epuisement de la page courante).
+    // IntersectionObserver n'existe pas cote serveur (SSR) : pas de scroll infini pendant
+    // le rendu serveur, la premiere page suffit puis l'observer prend le relai au client.
     effect(() => {
+      if (!this.isBrowser) {
+        return;
+      }
       const element = this.sentinel()?.nativeElement;
       this.observer?.disconnect();
       if (!element) {
