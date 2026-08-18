@@ -8,6 +8,7 @@ import { provideRouter } from '@angular/router';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { AuthService } from './services/auth.service';
 import { routes } from './app.routes';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 registerLocaleData(localeFr);
 
@@ -23,6 +24,6 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       const authService = inject(AuthService);
       return authService.restoreSession();
-    })
+    }), provideClientHydration(withEventReplay())
   ]
 };
