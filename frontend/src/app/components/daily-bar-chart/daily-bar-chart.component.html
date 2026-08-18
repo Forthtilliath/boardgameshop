@@ -1,0 +1,32 @@
+@if (data().length === 0) {
+  <p class="daily-chart__empty">Pas encore de données.</p>
+} @else {
+  <div class="daily-chart">
+    <div class="daily-chart__plot">
+      @for (point of data(); track point.date; let i = $index) {
+        <div
+          class="daily-chart__col"
+          (mouseenter)="hoveredIndex.set(i)"
+          (mouseleave)="hoveredIndex.set(null)"
+        >
+          @if (hoveredIndex() === i) {
+            <div class="daily-chart__tooltip">
+              <strong>{{ formatValue(point.value) }}</strong>
+              <span>{{ formatDate(point.date, true) }}</span>
+            </div>
+          }
+          <div
+            class="daily-chart__bar"
+            [class.daily-chart__bar--hovered]="hoveredIndex() === i"
+            [style.height.%]="barHeightPercent(point.value)"
+            [style.background]="color()"
+          ></div>
+        </div>
+      }
+    </div>
+    <div class="daily-chart__axis">
+      <span>{{ formatDate(data()[0].date) }}</span>
+      <span>{{ formatDate(data()[data().length - 1].date) }}</span>
+    </div>
+  </div>
+}
