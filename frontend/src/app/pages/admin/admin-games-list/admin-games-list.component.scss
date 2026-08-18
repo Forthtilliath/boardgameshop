@@ -9,6 +9,24 @@
   color: var(--color-text-muted);
 }
 
+.admin-page__search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  max-width: 320px;
+  margin-bottom: 1.25rem;
+}
+
+.admin-page__search input {
+  padding: 0.55em 0.75em;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
 .table-wrap {
   overflow-x: auto;
   background: var(--color-surface);
