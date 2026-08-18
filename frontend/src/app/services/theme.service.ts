@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 
 export type Theme = 'light' | 'dark';
 
@@ -9,9 +10,15 @@ const STORAGE_KEY = 'bgs-theme';
  * header, aucun attribut n'est posé sur <html> : le thème suit `prefers-color-scheme`
  * nativement en CSS (voir styles.scss). Le premier clic fige un choix explicite,
  * mémorisé en localStorage.
+ *
+ * `localStorage`/`window.matchMedia` n'existent pas côté serveur (SSR) : tout accès
+ * est gardé par `isPlatformBrowser`, avec repli sur "light" pendant le rendu serveur
+ * (le thème réel s'applique ensuite côté client après hydratation).
  */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   private readonly explicitThemeSignal = signal<Theme | null>(this.loadStoredTheme());
   private readonly themeSignal = signal<Theme>(this.explicitThemeSignal() ?? this.systemPreference());
 
@@ -26,11 +33,16 @@ export class ThemeService {
     const next: Theme = this.themeSignal() === 'dark' ? 'light' : 'dark';
     this.explicitThemeSignal.set(next);
     this.themeSignal.set(next);
-    localStorage.setItem(STORAGE_KEY, next);
+    if (this.isBrowser) {
+      localStorage.setItem(STORAGE_KEY, next);
+    }
     this.apply(next);
   }
 
   private apply(theme: Theme | null): void {
+    if (!this.isBrowser) {
+      return;
+    }
     if (theme) {
       document.documentElement.setAttribute('data-theme', theme);
     } else {
@@ -39,11 +51,17 @@ export class ThemeService {
   }
 
   private loadStoredTheme(): Theme | null {
+    if (!this.isBrowser) {
+      return null;
+    }
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored === 'light' || stored === 'dark' ? stored : null;
   }
 
   private systemPreference(): Theme {
+    if (!this.isBrowser) {
+      return 'light';
+    }
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 }

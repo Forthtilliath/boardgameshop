@@ -1,4 +1,5 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 
 import type { CartItem } from '../models/cart-item.model';
 import type { Game } from '../models/game.model';
@@ -9,10 +10,14 @@ const STORAGE_KEY = 'bgs-cart';
 /**
  * Panier gere entierement cote client (signals + localStorage), sans compte
  * utilisateur : il persiste d'une visite a l'autre sur le meme navigateur.
+ * `localStorage` n'existe pas cote serveur (SSR) : gardé par `isPlatformBrowser`,
+ * le panier est simplement vide pendant le rendu serveur (repris cote client
+ * apres hydratation).
  */
 @Injectable({ providedIn: 'root' })
 export class CartService {
   private readonly toastService = inject(ToastService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private readonly itemsSignal = signal<CartItem[]>(this.loadFromStorage());
 
@@ -68,10 +73,16 @@ export class CartService {
   }
 
   private persist(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(this.itemsSignal()));
   }
 
   private loadFromStorage(): CartItem[] {
+    if (!this.isBrowser) {
+      return [];
+    }
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       return raw ? (JSON.parse(raw) as CartItem[]) : [];

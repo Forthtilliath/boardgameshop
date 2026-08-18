@@ -77,6 +77,25 @@ npm start
 
 L'application est disponible sur `http://localhost:4200` et appelle l'API sur `http://localhost:8080/api`.
 
+## Rendu côté serveur (SSR)
+
+Le frontend supporte le SSR (Angular Universal, hydratation) en plus du build classique :
+
+```bash
+cd frontend
+npm run build
+node dist/frontend/server/server.mjs   # sert sur http://localhost:4000
+```
+
+**Important** : le build de production utilise `environment.ts` avec `apiUrl: '/api'`
+(chemin relatif), qui suppose un reverse proxy unifiant frontend et backend sous une
+même origine (ex. nginx routant `/api/**` vers le backend Spring Boot et le reste vers
+le serveur Node SSR). Sans ce proxy, les pages se rendent et s'hydratent correctement
+(header, footer, navigation, changement de thème... testé sans erreur d'hydratation),
+mais les sections dépendant de données (catalogue, fiche jeu...) restent vides tant que
+`/api/**` n'est pas accessible depuis l'origine du serveur SSR — comportement attendu
+de cette configuration, pas un bug du SSR lui-même.
+
 ## Authentification (JWT en cookies HttpOnly)
 
 Le backend signe ses propres JWT (HMAC/HS256) et les pose en cookies HttpOnly (jamais
