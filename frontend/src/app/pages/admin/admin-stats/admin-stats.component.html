@@ -1,28 +1,35 @@
 <h1>Tableau de bord</h1>
 
 @if (stats(); as s) {
+  <!-- ============================================================ VENTES -->
+  <h2 class="stats__section-title">Ventes</h2>
+
   <div class="stats__tiles">
     <div class="tile">
       <span class="tile__label">Chiffre d'affaires</span>
-      <span class="tile__value">{{ s.totalRevenue | currency: 'EUR' }}</span>
+      <span class="tile__value">{{ s.sales.totalRevenue | currency: 'EUR' }}</span>
     </div>
     <div class="tile">
       <span class="tile__label">Commandes payées</span>
-      <span class="tile__value">{{ s.totalOrders }}</span>
+      <span class="tile__value">{{ s.sales.totalOrders }}</span>
     </div>
     <div class="tile">
       <span class="tile__label">Panier moyen</span>
-      <span class="tile__value">{{ s.averageOrderAmount | currency: 'EUR' }}</span>
+      <span class="tile__value">{{ s.sales.averageOrderAmount | currency: 'EUR' }}</span>
     </div>
     <div class="tile" title="Le panier n'existe que côté client : ceci compte les commandes créées mais pas encore payées.">
       <span class="tile__label">Paniers en cours</span>
-      <span class="tile__value">{{ s.pendingPaymentOrders }}</span>
+      <span class="tile__value">{{ s.sales.pendingPaymentOrders }}</span>
+    </div>
+    <div class="tile">
+      <span class="tile__label">Réductions accordées</span>
+      <span class="tile__value">{{ s.sales.totalDiscountGiven | currency: 'EUR' }}</span>
     </div>
   </div>
 
-  @if (s.bestOrder; as best) {
+  @if (s.sales.bestOrder; as best) {
     <section class="chart-card best-order">
-      <h2>Meilleure commande</h2>
+      <h3>Meilleure commande</h3>
       <div class="best-order__body">
         <span class="best-order__amount">{{ best.totalAmount | currency: 'EUR' }}</span>
         <span class="best-order__meta">
@@ -34,35 +41,138 @@
 
   <div class="stats__charts">
     <section class="chart-card">
-      <h2>Commandes par jour <span class="chart-card__subtitle">(30 derniers jours)</span></h2>
+      <h3>Commandes par jour <span class="chart-card__subtitle">(30 derniers jours)</span></h3>
       <app-daily-bar-chart [data]="ordersByDayPoints()" valueFormat="number" color="var(--color-primary)" />
     </section>
 
     <section class="chart-card">
-      <h2>Chiffre d'affaires par jour <span class="chart-card__subtitle">(30 derniers jours)</span></h2>
+      <h3>Chiffre d'affaires par jour <span class="chart-card__subtitle">(30 derniers jours)</span></h3>
       <app-daily-bar-chart [data]="revenueByDayPoints()" valueFormat="currency" color="var(--color-accent)" />
     </section>
   </div>
 
-  <section class="chart-card">
-    <h2>Top des ventes</h2>
+  <div class="stats__ranked-grid">
+    <section class="chart-card">
+      <h3>Top des ventes</h3>
+      <app-ranked-bar-list [items]="topSellingItems()" emptyMessage="Pas encore de vente enregistrée." />
+    </section>
 
-    @if (s.topSellingGames.length === 0) {
-      <p class="stats__status">Pas encore de vente enregistrée.</p>
-    } @else {
-      <div class="bar-chart">
-        @for (game of s.topSellingGames; track game.gameId) {
-          <div class="bar-row" [attr.title]="game.gameName + ' : ' + game.quantitySold + ' vendu(s), ' + (game.revenue | currency: 'EUR')">
-            <span class="bar-row__label">{{ game.gameName }}</span>
-            <div class="bar-row__track">
-              <div class="bar-row__fill" [style.width.%]="barWidth(game.quantitySold)"></div>
-            </div>
-            <span class="bar-row__value">{{ game.quantitySold }}</span>
-          </div>
-        }
-      </div>
-    }
-  </section>
+    <section class="chart-card">
+      <h3>Statuts des commandes</h3>
+      <app-ranked-bar-list [items]="ordersByStatusItems()" emptyMessage="Aucune commande enregistrée." />
+    </section>
+
+    <section class="chart-card">
+      <h3>CA par catégorie</h3>
+      <app-ranked-bar-list [items]="revenueByCategoryItems()" color="var(--color-accent)" emptyMessage="Pas encore de vente enregistrée." />
+    </section>
+
+    <section class="chart-card">
+      <h3>Codes promo</h3>
+      <app-ranked-bar-list [items]="promoCodeItems()" emptyMessage="Aucun code promo créé." />
+    </section>
+  </div>
+
+  <!-- ======================================================== CATALOGUE -->
+  <h2 class="stats__section-title">Catalogue &amp; stock</h2>
+
+  <div class="stats__tiles">
+    <div class="tile">
+      <span class="tile__label">Valeur du stock</span>
+      <span class="tile__value">{{ s.catalog.totalStockValue | currency: 'EUR' }}</span>
+    </div>
+    <div class="tile">
+      <span class="tile__label">Ruptures de stock</span>
+      <span class="tile__value">{{ s.catalog.outOfStockCount }}</span>
+    </div>
+    <div class="tile">
+      <span class="tile__label">Stock faible</span>
+      <span class="tile__value">{{ s.catalog.lowStockCount }}</span>
+    </div>
+    <div class="tile">
+      <span class="tile__label">Promotions actives</span>
+      <span class="tile__value">{{ s.catalog.activePromotionsCount }}</span>
+    </div>
+  </div>
+
+  <div class="stats__ranked-grid">
+    <section class="chart-card">
+      <h3>Jeux à réapprovisionner</h3>
+      <app-ranked-bar-list [items]="lowStockItems()" color="var(--color-accent)" emptyMessage="Tous les jeux sont bien approvisionnés." />
+    </section>
+
+    <section class="chart-card">
+      <h3>Jeux les plus favoris</h3>
+      <app-ranked-bar-list [items]="topFavoriteItems()" emptyMessage="Aucun favori enregistré." />
+    </section>
+
+    <section class="chart-card">
+      <h3>Demande de réassort</h3>
+      <app-ranked-bar-list [items]="restockDemandItems()" color="var(--color-accent)" emptyMessage="Aucune alerte de retour en stock en attente." />
+    </section>
+  </div>
+
+  <!-- ============================================================== AVIS -->
+  <h2 class="stats__section-title">Avis clients</h2>
+
+  <div class="stats__tiles">
+    <div class="tile">
+      <span class="tile__label">Note moyenne</span>
+      <span class="tile__value">{{ s.reviews.averageRating != null ? (s.reviews.averageRating | number: '1.1-1') + ' ★' : '—' }}</span>
+    </div>
+    <div class="tile">
+      <span class="tile__label">Avis publiés</span>
+      <span class="tile__value">{{ s.reviews.totalReviews }}</span>
+    </div>
+  </div>
+
+  <div class="stats__ranked-grid">
+    <section class="chart-card">
+      <h3>Répartition des notes</h3>
+      <app-ranked-bar-list [items]="ratingDistributionItems()" emptyMessage="Aucun avis publié." />
+    </section>
+
+    <section class="chart-card">
+      <h3>Jeux les mieux notés</h3>
+      <app-ranked-bar-list [items]="topRatedItems()" emptyMessage="Pas encore assez d'avis." />
+    </section>
+
+    <section class="chart-card">
+      <h3>Jeux les moins bien notés</h3>
+      <app-ranked-bar-list [items]="worstRatedItems()" color="var(--color-accent)" emptyMessage="Pas encore assez d'avis." />
+    </section>
+
+    <section class="chart-card">
+      <h3>Jeux les plus commentés</h3>
+      <app-ranked-bar-list [items]="mostReviewedItems()" emptyMessage="Aucun avis publié." />
+    </section>
+  </div>
+
+  <!-- ======================================================= UTILISATEURS -->
+  <h2 class="stats__section-title">Utilisateurs</h2>
+
+  <div class="stats__tiles">
+    <div class="tile">
+      <span class="tile__label">Inscrits</span>
+      <span class="tile__value">{{ s.users.totalUsers }}</span>
+    </div>
+    <div class="tile" title="Part des inscrits ayant déjà réglé au moins une commande.">
+      <span class="tile__label">Taux de conversion</span>
+      <span class="tile__value">{{ s.users.conversionRate | number: '1.0-1' }} %</span>
+    </div>
+  </div>
+
+  <div class="stats__charts">
+    <section class="chart-card">
+      <h3>Inscriptions par jour <span class="chart-card__subtitle">(30 derniers jours)</span></h3>
+      <app-daily-bar-chart [data]="signupsByDayPoints()" valueFormat="number" color="var(--color-primary)" />
+    </section>
+
+    <section class="chart-card">
+      <h3>Meilleurs clients</h3>
+      <app-ranked-bar-list [items]="topCustomerItems()" emptyMessage="Aucun client n'a encore commandé." />
+    </section>
+  </div>
 } @else {
   <p class="stats__status">Chargement des statistiques...</p>
 }
