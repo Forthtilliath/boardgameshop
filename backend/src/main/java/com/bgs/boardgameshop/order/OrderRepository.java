@@ -23,4 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     /** "Meilleure commande" du dashboard admin : la plus grosse commande réellement payée. */
     Optional<Order> findFirstByStatusInOrderByTotalAmountDesc(List<OrderStatus> statuses);
+
+    /** Toutes les commandes payées, sans limite de date (top clients, réductions accordées). */
+    List<Order> findByStatusIn(List<OrderStatus> statuses);
 }
