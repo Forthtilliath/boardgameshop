@@ -43,6 +43,46 @@
   margin-bottom: 1.25rem;
 }
 
+.chart-card + .chart-card,
+.stats__charts + .chart-card {
+  margin-top: 1.5rem;
+}
+
+.chart-card__subtitle {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.best-order {
+  margin-bottom: 1.5rem;
+}
+
+.best-order__body {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+}
+
+.best-order__amount {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.best-order__meta {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.stats__charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
 .bar-chart {
   display: flex;
   flex-direction: column;

@@ -10,6 +10,38 @@
       <span class="tile__label">Commandes payées</span>
       <span class="tile__value">{{ s.totalOrders }}</span>
     </div>
+    <div class="tile">
+      <span class="tile__label">Panier moyen</span>
+      <span class="tile__value">{{ s.averageOrderAmount | currency: 'EUR' }}</span>
+    </div>
+    <div class="tile" title="Le panier n'existe que côté client : ceci compte les commandes créées mais pas encore payées.">
+      <span class="tile__label">Paniers en cours</span>
+      <span class="tile__value">{{ s.pendingPaymentOrders }}</span>
+    </div>
+  </div>
+
+  @if (s.bestOrder; as best) {
+    <section class="chart-card best-order">
+      <h2>Meilleure commande</h2>
+      <div class="best-order__body">
+        <span class="best-order__amount">{{ best.totalAmount | currency: 'EUR' }}</span>
+        <span class="best-order__meta">
+          Commande #{{ best.orderId }} — {{ best.customerName }} — {{ best.createdAt | date: 'dd/MM/yyyy' }}
+        </span>
+      </div>
+    </section>
+  }
+
+  <div class="stats__charts">
+    <section class="chart-card">
+      <h2>Commandes par jour <span class="chart-card__subtitle">(30 derniers jours)</span></h2>
+      <app-daily-bar-chart [data]="ordersByDayPoints()" valueFormat="number" color="var(--color-primary)" />
+    </section>
+
+    <section class="chart-card">
+      <h2>Chiffre d'affaires par jour <span class="chart-card__subtitle">(30 derniers jours)</span></h2>
+      <app-daily-bar-chart [data]="revenueByDayPoints()" valueFormat="currency" color="var(--color-accent)" />
+    </section>
   </div>
 
   <section class="chart-card">
