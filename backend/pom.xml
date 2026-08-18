@@ -80,6 +80,19 @@
 		</dependency>
 
 		<dependency>
+			<!-- Migrations versionnees (voir src/main/resources/db/migration) : remplace
+			     ddl-auto=update par un schema explicite et reproductible. Spring Boot 4.x
+			     a sorti l'auto-configuration Flyway dans ce starter dedie (comme pour
+			     -webmvc/-security) : flyway-core seul ne suffit pas a l'activer. -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-flyway</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
