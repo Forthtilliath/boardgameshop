@@ -1,0 +1,19 @@
+@if (items().length === 0) {
+  <p class="ranked-bar-list__empty">{{ emptyMessage() }}</p>
+} @else {
+  <div class="ranked-bar-list">
+    @for (item of items(); track item.id) {
+      <div class="ranked-bar-list__row" [attr.title]="item.tooltip ?? null">
+        <span class="ranked-bar-list__label">{{ item.label }}</span>
+        <div class="ranked-bar-list__track">
+          <div
+            class="ranked-bar-list__fill"
+            [style.width.%]="barWidth(item.value)"
+            [style.background]="color()"
+          ></div>
+        </div>
+        <span class="ranked-bar-list__value">{{ item.formattedValue }}</span>
+      </div>
+    }
+  </div>
+}
