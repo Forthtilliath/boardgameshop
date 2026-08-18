@@ -28,7 +28,6 @@ export class HeaderComponent {
   readonly itemCount = this.cartService.itemCount;
   readonly isAuthenticated = this.authService.isAuthenticated;
   readonly isAdmin = this.authService.isAdmin;
-  readonly currentUser = this.authService.currentUser;
 
   readonly readyAlerts = this.stockAlertService.readyAlerts;
   readonly readyAlertsMenuOpen = signal(false);
