@@ -1,0 +1,61 @@
+// Classes partagées par plusieurs pages (évite de dupliquer leurs styles dans
+// chaque composant, et de gonfler le budget CSS par composant).
+@use 'mixins' as *;
+
+/** Avis client (accueil, fiche jeu) : liseré supérieur d'une couleur de pion. */
+.review-card {
+  @include chunky-box(var(--shadow-card));
+  border-top: 8px solid var(--review-color);
+  padding: 1.1rem;
+  @include pion-cycle(--review-color);
+}
+
+.review-card__stars {
+  color: var(--color-border);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.review-card__star--filled {
+  color: var(--color-star);
+}
+
+.review-card__comment {
+  margin: 0 0 0.6rem;
+  color: var(--color-text);
+}
+
+.review-card__meta {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.review-card__meta a {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/** Tag sélectionnable (filtres du catalogue, formulaire jeu admin). */
+.tag-chip {
+  border: 2px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: 999px;
+  padding: 0.25em 0.7em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  @include pion-cycle(--chip-color);
+}
+
+.tag-chip:hover {
+  border-color: var(--chip-color);
+}
+
+.tag-chip--active {
+  background: var(--chip-color);
+  border-color: var(--color-outline);
+  color: var(--color-ink);
+}

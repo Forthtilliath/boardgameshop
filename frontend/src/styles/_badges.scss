@@ -1,0 +1,82 @@
+/** Logo « BGS » en trois tuiles de couleur légèrement de travers (header, footer). */
+.logo-tiles {
+  display: inline-flex;
+  gap: 0.18em;
+  font-size: 1.15rem;
+}
+
+.logo-tiles > span {
+  display: inline-grid;
+  place-items: center;
+  width: 1.7em;
+  height: 1.7em;
+  border: var(--border-chunky);
+  border-radius: 0.35em;
+  box-shadow: 0 2px 0 var(--color-shadow);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.logo-tiles > span:nth-child(1) {
+  background: var(--pion-red);
+  transform: rotate(-6deg);
+}
+
+.logo-tiles > span:nth-child(2) {
+  background: var(--pion-yellow);
+  transform: rotate(4deg);
+}
+
+.logo-tiles > span:nth-child(3) {
+  background: var(--pion-blue);
+  transform: rotate(-3deg);
+}
+
+a:hover > .logo-tiles > span {
+  transform: rotate(0) translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-tiles > span {
+    transition: none;
+  }
+}
+
+/** Badge de statut de commande, partagé entre l'historique client et l'admin. */
+.status {
+  display: inline-block;
+  padding: 0.2em 0.65em;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.status--payee,
+.status--livree {
+  background: #dff3e6;
+  color: #1f6f42;
+}
+
+.status--expediee {
+  background: #e2ecff;
+  color: #2453a6;
+}
+
+.status--echouee,
+.status--annulee {
+  background: #fbe3df;
+  color: #b3402f;
+}
+
+.status--en_attente_paiement {
+  background: #fdf1d6;
+  // #93690e ne passait pas tout a fait WCAG AA (~4.4:1) ; assombri a #87610d (~5:1).
+  color: #87610d;
+}
