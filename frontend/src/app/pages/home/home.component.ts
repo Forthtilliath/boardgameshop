@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { GameCardComponent } from '../../components/game-card/game-card.component';
+import { HomeHeroComponent } from '../../components/home-hero/home-hero.component';
 import type { Game } from '../../models/game.model';
 import type { Home } from '../../models/home.model';
 import { CartService } from '../../services/cart.service';
@@ -10,7 +11,7 @@ import { HomeService } from '../../services/home.service';
 
 @Component({
   selector: 'app-home',
-  imports: [GameCardComponent, RouterLink, DatePipe],
+  imports: [GameCardComponent, HomeHeroComponent, RouterLink, DatePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
