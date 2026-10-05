@@ -1,15 +1,25 @@
+@use '../../../styles/mixins' as *;
+
 .header {
   background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-chunky);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
+// Piste de score arc-en-ciel au-dessus de la barre.
+.header::before {
+  content: '';
+  display: block;
+  height: 6px;
+  background: var(--rainbow);
+}
+
 .header__inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0.9rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -17,42 +27,67 @@
 
 .header__brand {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.header__logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--color-primary);
-  letter-spacing: 0.02em;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .header__tagline {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
 }
 
 .header__nav {
   display: flex;
-  gap: 1.75rem;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+// Chaque lien a sa couleur de pion, révélée par un soulignement épais au survol
+// et en permanence sur la page active.
+.header__nav > * {
+  @include pion-cycle(--link-color);
 }
 
 .header__link {
   position: relative;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-muted);
   padding: 0.4rem 0;
+}
+
+.header__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.1rem;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--link-color);
+  transform: scaleX(0);
+  transition: transform 0.15s ease;
 }
 
 .header__link:hover {
   color: var(--color-text);
 }
 
-.header__link--active {
-  color: var(--color-primary);
+.header__link:hover::after,
+.header__link--active::after {
+  transform: scaleX(1);
 }
 
+.header__link--active {
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header__link::after {
+    transition: none;
+  }
+}
 .header__link--cart {
   display: inline-flex;
   align-items: center;
@@ -75,17 +110,24 @@
   height: 1.35rem;
   padding: 0 0.35rem;
   border-radius: 999px;
-  background: var(--color-accent);
-  color: #fff;
+  border: 2px solid var(--color-outline);
+  background: var(--pion-red);
+  color: var(--color-ink);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .header__theme-toggle {
-  background: none;
-  border: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  border: var(--border-chunky);
+  background: var(--pion-yellow);
+  box-shadow: 0 2px 0 var(--color-shadow);
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: 1;
   padding: 0;
 }
@@ -111,10 +153,7 @@
   right: 0;
   margin-top: 0.5rem;
   width: 260px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-card);
+  @include chunky-box;
   padding: 0.75rem;
   z-index: 20;
 }
