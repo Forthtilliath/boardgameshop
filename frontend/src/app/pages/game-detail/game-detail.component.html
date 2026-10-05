@@ -1,5 +1,5 @@
 @if (game(); as g) {
-  <section class="container detail">
+  <section class="container detail" [style.--game-color]="gameColor()">
     <a routerLink="/jeux" class="detail__back">&larr; Retour au catalogue</a>
 
     <div class="detail__grid">

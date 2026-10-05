@@ -1,6 +1,6 @@
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import type { HttpErrorResponse } from '@angular/common/http';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -15,6 +15,7 @@ import { FavoriteService } from '../../services/favorite.service';
 import { GameService } from '../../services/game.service';
 import { ReviewService } from '../../services/review.service';
 import { StockAlertService } from '../../services/stock-alert.service';
+import { pionColor } from '../../utils/pion-color';
 
 @Component({
   selector: 'app-game-detail',
@@ -43,6 +44,10 @@ export class GameDetailComponent {
   );
 
   readonly game = signal<Game | null>(null);
+  readonly gameColor = computed(() => {
+    const game = this.game();
+    return game ? pionColor(game.id) : null;
+  });
   readonly notFound = signal(false);
   readonly quantity = signal(1);
   readonly added = signal(false);
