@@ -15,23 +15,25 @@
   box-shadow: var(--shadow-card);
   font-size: 0.9rem;
   font-family: inherit;
+  font-weight: 700;
   text-align: left;
-  border: none;
-  color: #fff;
+  border: var(--border-chunky);
+  color: var(--color-ink);
   cursor: pointer;
   animation: toast-in 0.2s ease-out;
 }
 
 .toast--success {
-  background: var(--color-primary);
+  background: var(--pion-green);
 }
 
 .toast--error {
   background: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 .toast--info {
-  background: var(--color-text);
+  background: var(--pion-blue);
 }
 
 @keyframes toast-in {

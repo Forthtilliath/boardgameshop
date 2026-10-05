@@ -7,7 +7,8 @@
 
 .promo-form {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-chunky);
+  box-shadow: var(--shadow-card);
   border-radius: var(--radius);
   padding: 1.75rem;
   max-width: 480px;
@@ -36,7 +37,7 @@
 
 .field input {
   padding: 0.55em 0.75em;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.95rem;
   font-family: inherit;

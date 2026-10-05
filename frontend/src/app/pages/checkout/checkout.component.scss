@@ -18,7 +18,8 @@
 
 .checkout__payment {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-chunky);
+  box-shadow: var(--shadow-card);
   border-radius: var(--radius);
   padding: 1.75rem;
 }
@@ -55,7 +56,8 @@
 
 .checkout__summary {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-chunky);
+  box-shadow: var(--shadow-card);
   border-radius: var(--radius);
   padding: 1.5rem;
   position: sticky;

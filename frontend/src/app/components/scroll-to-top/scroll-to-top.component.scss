@@ -4,19 +4,22 @@
   left: 1.5rem;
   width: 2.75rem;
   height: 2.75rem;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-primary);
-  color: #fff;
+  border-radius: 12px;
+  border: var(--border-chunky);
+  background: var(--pion-yellow);
+  color: var(--color-ink);
   font-size: 1.2rem;
+  font-weight: 700;
   cursor: pointer;
   box-shadow: var(--shadow-card);
   z-index: 90;
-  transition: background 0.15s ease;
+  rotate: -6deg;
+  transition: background 0.15s ease, rotate 0.15s ease;
 }
 
 .scroll-to-top:hover {
-  background: var(--color-primary-dark);
+  background: var(--pion-orange);
+  rotate: 0deg;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -5,7 +5,8 @@
 .table-wrap {
   overflow-x: auto;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-chunky);
+  box-shadow: var(--shadow-card);
   border-radius: var(--radius);
   margin-top: 1.5rem;
 }
@@ -47,5 +48,5 @@
 
 .badge--accent {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-primary);
 }
