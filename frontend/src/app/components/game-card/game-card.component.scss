@@ -1,23 +1,38 @@
+@use '../../../styles/mixins' as *;
+
+// --card-color : couleur de pion propre au jeu, posée sur l'hôte (voir le .ts).
+:host {
+  display: block;
+}
+
 .card {
+  @include chunky-box(var(--shadow-card));
   display: flex;
   flex-direction: column;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  height: 100%;
   overflow: hidden;
-  box-shadow: var(--shadow-card);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(31, 36, 33, 0.12);
+  transform: translate(-2px, -2px) rotate(-0.5deg);
+  box-shadow: 6px 6px 0 var(--card-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  .card:hover {
+    transform: none;
+  }
 }
 
 .card__image {
   position: relative;
   height: 160px;
-  background-color: var(--color-border);
+  background-color: color-mix(in srgb, var(--card-color) 28%, var(--color-surface));
+  border-bottom: var(--border-chunky);
 }
 
 .card__image img {
@@ -28,21 +43,25 @@
   object-position: center;
 }
 
+// Badges façon autocollant, légèrement de travers.
 .card__badge {
   position: absolute;
   top: 0.6rem;
   left: 0.6rem;
-  padding: 0.2em 0.6em;
+  padding: 0.15em 0.6em;
+  border: var(--border-chunky);
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
   font-weight: 700;
-  background: var(--color-surface);
-  color: var(--color-text-muted);
+  background: var(--pion-yellow);
+  color: var(--color-ink);
+  transform: rotate(-4deg);
 }
 
 .card__badge--accent {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 .card__favorite {
@@ -52,10 +71,10 @@
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  border: none;
+  border: var(--border-chunky);
   background: var(--color-surface);
   color: var(--color-text-muted);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   line-height: 1;
   cursor: pointer;
   display: flex;
@@ -64,10 +83,12 @@
 }
 
 .card__favorite--active {
-  color: var(--color-accent);
+  background: var(--pion-pink);
+  color: var(--color-ink);
 }
 
 .card__price-original {
+  font-family: var(--font-body);
   font-weight: 400;
   font-size: 0.8rem;
   color: var(--color-text-muted);
@@ -78,21 +99,19 @@
 .card__body {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  padding: 1rem;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem 1rem;
   flex: 1;
 }
 
 .card__category {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-primary);
+  @include pion-pill(var(--card-color));
+  font-size: 0.68rem;
 }
 
 .card__name {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   line-height: 1.25;
   margin: 0;
   min-height: calc(1.25em * 2);
@@ -112,10 +131,16 @@
   margin: 0;
   min-height: 1.2em;
   font-size: 0.8rem;
-  color: var(--color-accent);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.card__star {
+  color: var(--color-star);
 }
 
 .card__footer {
+  align-self: stretch;
   margin-top: auto;
   padding-top: 0.75rem;
   display: flex;
@@ -124,11 +149,12 @@
 }
 
 .card__price {
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .card__add {
-  padding: 0.5em 1.1em;
+  padding: 0.45em 1.1em;
   font-size: 0.85rem;
 }
