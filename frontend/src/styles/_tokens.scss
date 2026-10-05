@@ -1,0 +1,91 @@
+// Thème « Pions » : une palette de couleurs de joueurs (comme les pions d'un jeu
+// de société) posée sur un plateau crème, avec un contour encre épais et des
+// ombres franches décalées façon boîte de jeu en carton.
+
+// Variables de thème clair/sombre, factorisées pour ne pas dupliquer le bloc
+// sombre entre la préférence système et le choix explicite (data-theme).
+@mixin light-tokens {
+  --color-bg: #fff8ec;
+  --color-bg-dots: rgba(35, 25, 66, 0.1);
+  --color-surface: #ffffff;
+  --color-text: #231942;
+  --color-text-muted: #5c5470;
+  // Texte et fond de bouton (texte --color-on-primary par-dessus) : ~7.5:1 dans
+  // les deux rôles. Idem pour --color-accent (~5.2:1).
+  --color-primary: #4338ca;
+  --color-primary-dark: #3730a3;
+  --color-on-primary: #ffffff;
+  --color-accent: #c8264f;
+  --color-on-accent: #ffffff;
+  --color-border: #eadfcc;
+  --color-outline: #231942;
+  --color-shadow: #231942;
+  --color-star: #f59e0b;
+  --color-footer-bg: #231942;
+}
+
+// En sombre, primary/accent deviennent clairs (lisibles sur le fond nuit) et le
+// texte posé dessus devient foncé : plus besoin du compromis de contraste de
+// l'ancien thème, chaque rôle dépasse 6.5:1.
+@mixin dark-tokens {
+  --color-bg: #17122b;
+  --color-bg-dots: rgba(255, 255, 255, 0.07);
+  --color-surface: #221b3d;
+  --color-text: #f5f0ff;
+  --color-text-muted: #b4abd0;
+  --color-primary: #a99cff;
+  --color-primary-dark: #c3baff;
+  --color-on-primary: #17122b;
+  --color-accent: #ff7a93;
+  --color-on-accent: #17122b;
+  --color-border: #3a3060;
+  --color-outline: #5b4f94;
+  --color-shadow: #07050f;
+  --color-star: #ffd23f;
+  --color-footer-bg: #0f0b1f;
+}
+
+:root {
+  // Couleurs de pions : identiques dans les deux thèmes, toujours utilisées en
+  // fond avec --color-ink par-dessus (contraste >= 4.6:1 pour chacune).
+  --pion-red: #ff5a5f;
+  --pion-orange: #ff9f1c;
+  --pion-yellow: #ffd23f;
+  --pion-green: #4cc35a;
+  --pion-blue: #3a86ff;
+  --pion-purple: #a77bf0;
+  --pion-pink: #f15bb5;
+  --color-ink: #231942;
+
+  // Bande « piste de score » : un segment net par couleur de pion.
+  --rainbow: linear-gradient(
+    90deg,
+    var(--pion-red) 0 14.28%,
+    var(--pion-orange) 0 28.57%,
+    var(--pion-yellow) 0 42.85%,
+    var(--pion-green) 0 57.14%,
+    var(--pion-blue) 0 71.42%,
+    var(--pion-purple) 0 85.71%,
+    var(--pion-pink) 0
+  );
+
+  --font-display: 'Fredoka', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --radius: 14px;
+  --border-chunky: 2px solid var(--color-outline);
+  --shadow-hard: 4px 4px 0 var(--color-shadow);
+  --shadow-card: 3px 3px 0 var(--color-shadow);
+
+  @include light-tokens;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-tokens;
+  }
+}
+
+:root[data-theme='dark'] {
+  @include dark-tokens;
+}

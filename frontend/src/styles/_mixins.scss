@@ -1,0 +1,50 @@
+// Mixins partagés par les composants : `@use '<chemin relatif>/styles/mixins' as *;`
+@use 'sass:list';
+
+$pions: red, orange, yellow, green, blue, purple, pink;
+
+/// Attribue une couleur de pion différente à chaque élément d'une fratrie, en
+/// boucle, via la propriété personnalisée `$prop` (à lire avec var($prop)).
+@mixin pion-cycle($prop: --pion) {
+  $count: list.length($pions);
+  @for $i from 1 through $count {
+    &:nth-child(#{$count}n + #{$i}) {
+      #{$prop}: var(--pion-#{list.nth($pions, $i)});
+    }
+  }
+}
+
+/// Boîte « carton de jeu » : contour encre épais et ombre franche décalée.
+@mixin chunky-box($shadow: var(--shadow-hard)) {
+  background: var(--color-surface);
+  border: var(--border-chunky);
+  border-radius: var(--radius);
+  box-shadow: $shadow;
+}
+
+/// Bande arc-en-ciel en haut de l'élément (qui doit être en position relative
+/// ou absolue, avec overflow: hidden si ses coins sont arrondis).
+@mixin rainbow-top($height: 6px) {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: $height;
+    background: var(--rainbow);
+  }
+}
+
+/// Pastille colorée (catégorie, tag…) : fond `$color`, texte encre.
+@mixin pion-pill($color) {
+  display: inline-block;
+  padding: 0.2em 0.7em;
+  border: 2px solid var(--color-outline);
+  border-radius: 999px;
+  background: $color;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
