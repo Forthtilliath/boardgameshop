@@ -6,7 +6,8 @@
 
 .account__card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-chunky);
+  box-shadow: var(--shadow-card);
   border-radius: var(--radius);
   padding: 1.75rem;
 }
@@ -46,7 +47,8 @@ dd {
 
 .order-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-chunky);
+  box-shadow: var(--shadow-card);
   border-radius: var(--radius);
   overflow: hidden;
 }
