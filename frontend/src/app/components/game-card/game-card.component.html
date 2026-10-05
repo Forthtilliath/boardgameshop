@@ -28,7 +28,7 @@
     <p class="card__meta">{{ g.minPlayers }}–{{ g.maxPlayers }} joueurs · {{ g.durationMinutes }} min</p>
     <p class="card__rating">
       @if (g.reviewsCount > 0) {
-        &starf; {{ g.reviewsAverage | number: '1.1-1' }} ({{ g.reviewsCount }})
+        <span class="card__star" aria-hidden="true">&starf;</span> {{ g.reviewsAverage | number: '1.1-1' }} ({{ g.reviewsCount }})
       }
     </p>
 
