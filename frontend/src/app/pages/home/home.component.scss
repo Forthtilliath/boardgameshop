@@ -1,18 +1,4 @@
-.hero {
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: 2.5rem;
-}
-
-.hero__inner {
-  padding: 3.5rem 1.5rem;
-  max-width: 640px;
-}
-
-.hero__inner p {
-  color: var(--color-text-muted);
-  margin-bottom: 1.5rem;
-}
+@use '../../../styles/mixins' as *;
 
 .home__status {
   color: var(--color-text-muted);
@@ -23,21 +9,53 @@
   color: var(--color-accent);
 }
 
+// Chaque section prend une couleur de pion pour son titre.
 .home__section {
   margin-bottom: 3rem;
+  @include pion-cycle(--section-color);
 }
 
 .home__section-heading {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 1.25rem;
 }
 
+.home__section-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+// Petit pion rond devant le titre.
+.home__section-heading h2::before {
+  content: '';
+  width: 0.8em;
+  height: 0.8em;
+  flex-shrink: 0;
+  border: var(--border-chunky);
+  border-radius: 50%;
+  background: var(--section-color);
+  box-shadow: 0 2px 0 var(--color-shadow);
+}
+
 .home__section-link {
+  padding: 0.3em 0.9em;
+  border: var(--border-chunky);
+  border-radius: 999px;
+  background: var(--section-color);
+  color: var(--color-ink);
+  font-family: var(--font-display);
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--color-primary);
+  box-shadow: 0 2px 0 var(--color-shadow);
+}
+
+.home__section-link:hover {
+  transform: translateY(-1px);
 }
 
 .home__grid {
@@ -52,36 +70,3 @@
   gap: 1.25rem;
 }
 
-.review-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 1.1rem;
-}
-
-.review-card__stars {
-  color: var(--color-border);
-  font-size: 0.9rem;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.5rem;
-}
-
-.review-card__star--filled {
-  color: var(--color-accent);
-}
-
-.review-card__comment {
-  margin: 0 0 0.6rem;
-  color: var(--color-text);
-}
-
-.review-card__meta {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-}
-
-.review-card__meta a {
-  color: var(--color-primary);
-  font-weight: 600;
-}
